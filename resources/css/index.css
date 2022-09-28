@@ -1,0 +1,116 @@
+.scrollmenu {
+    /*  background-color: #333;  */
+    overflow: auto;
+    white-space: nowrap;
+
+  }
+
+  .scroll-item {
+    margin-left: 1px;
+    display: inline-block;
+     color: black;
+    /* background: red; */
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+  }
+
+/* .scrollmenu a:hover {
+background-color: #ffc107
+} */
+    .capital{
+        text-transform: capitalize;
+    }
+    .loader {
+        position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+
+  margin: -76px 0 0 -76px;
+
+
+
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* new side scroll */
+.contentWrap {
+    border-radius: 5px;
+    padding-top: .25rem;
+    max-width: 350px;
+    padding-bottom: 2rem;
+    display: block;
+    margin: auto;
+    height: 100vh;
+    background: white;
+  }
+
+  /*
+  * make the menu scroll left and right
+  * If content overflows the container
+  */
+  .menuWrap {
+    -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  /*
+  * allow menu items to alter their dimensions
+  * to fill available space
+  */
+  .menu {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /*
+  * styles for individual menu items
+  */
+  .menu-item {
+    /* spacing styles */
+    -ms-flex-preferred-size: 120px;
+    flex-basis: 120px; /* sets the initial main size of a each menu item */
+    -ms-flex-negative: 0;
+    flex-shrink: 0; /* don't allow menu item to shrink below 120px when there isn’t enough space on the row. */
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1; /* allow items to grow up to 150px wide if the container is big enough */
+    max-width: 150px;
+    margin: 0 2px;
+
+    /* additional styles */
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    background: white;
+    -o-text-overflow: ellipsis;
+       text-overflow: ellipsis;
+  }
+
+
+  .menu-item a {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    padding: 11px 0;
+  }
+
+  .menu-item:hover,
+  .menu-item:focus {
+    background: #f3f3f3;
+  }
