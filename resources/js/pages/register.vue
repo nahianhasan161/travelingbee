@@ -122,25 +122,49 @@
             const router = new useRouter();
             const store = new UserStore();
             const register = async()=>{
-                await axios.post('/api/register',form).then(res=>{
-                   if(res.data.success){
 
-                    store.setToken(res.data.data.token)
-                    router.push({name:'dashboard'})
-                    console.log('success');
-                    console.log(res);
-                    }else{
-                        errors.value = res.data[0].data
 
-                    }
-                }).catch(e=>{
+try{
+  await axios.post('/api/register',form).then(res=>{
+    if(res.data.success){
 
-                    errors.value = e.response.data
-                })
+       store.setToken(res.data.data.token)
+       store.setCurrentUser(res.data.data)
+         console.log(res.data.data.roles[0])
+        errors.value = res.data.message
+        var role = res.data.data.roles[0]
+        if(role == 'user'){
+            console.log(res.data.data.roles[0]+'user')
+            router.push({name:'dashboard'})
+        }
+        else if(role == 'admin'){
+            console.log(role == 'admin'? 'admin' :'notadmin')
+            router.push({name:'admin.dashboard'})
+        }
+        else if(role == 'suadmin'){
+            console.log(res.data.data.roles[0]+'suadmin')
+            router.push({name:'suadmin.dashboard'})
+        }
+        else{
+            console.log(role == 'admin'? 'admin' :'notadmin')
 
-                console.log('finally');
-            }
+            router.push({name:'dashboard'})
+        }
+    }
+    else{
+        toaster.info('success')
+        errmsg.value =  res.data.message
+        console.log(errmsg)
+        errors.value =  res.data[0].data
+           }
+})
+}catch(e){
+console.log(e.data)
+/* error.value = e.data.message */
+}
+}
 
+         
             let form = reactive({
                 name:'',
                 email:'',

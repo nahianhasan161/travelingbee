@@ -90,6 +90,9 @@ export const PlaceStore = defineStore({
             });
 
         },
+        setPlaceId($id){
+            this.placeId = $id
+        }
        /*  createRole($data){
             this.loading = true
             axios.post(this.url,$data).then(res=>{

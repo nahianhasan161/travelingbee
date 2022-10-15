@@ -11,6 +11,8 @@ import posts from './pages/posts.vue';
 import manage_user from './pages/suadmin/manage_user.vue';
 import manage_roles from './pages/suadmin/manage_roles.vue';
 
+import verify_email from './pages/verify-email.vue';
+import reset_password from './pages/reset-password.vue';
 
 import {UserStore} from '@/store/UserStore'
 import { storeToRefs } from 'pinia';
@@ -56,6 +58,30 @@ const routes = [
     component : dashboard ,
     meta:{
         requiresAuth: true,
+    }
+},
+{
+    path : '/auth/verify_email',
+    name : 'verify_email',
+    component : verify_email ,
+    meta:{
+        
+    }
+},
+{
+    path : '/auth/reset-password',
+    name : 'reset_password',
+    component : reset_password ,
+    meta:{
+        
+    }
+},
+{
+    path : '/api/email/verify/:id/:hash',
+    name : 'verify_email_success',
+    component : verify_email ,
+    meta:{
+        
     }
 },
 {
@@ -120,20 +146,26 @@ const router = createRouter({
             return {name:'login'}
 
         }
-        if(to.meta.requiresAuth == false && store.getToken != 0 ){
-            return {name:'posts'}
-        }
-        if(to.meta.requiresAuth == false && store.getToken != 0 ){
+        /* if(to.meta.requiresAuth  && store.getToken != 0 && currentUser.email_verified == false){
+            return {name:'verify_email'}
+        } 
+        else{ */
 
-          /*   if(store.getCurrentUser.roles[0] =='user'){
+            if(to.meta.requiresAuth == false && store.getToken != 0 ){
                 return {name:'posts'}
+            }
+            if(to.meta.requiresAuth == false && store.getToken != 0 ){
+                
+                /*   if(store.getCurrentUser.roles[0] =='user'){
+                    return {name:'posts'}
             }else{ */
-           /*  console.log(store.getCurrentUser) */
-                return {name:'dashboard'}
+            /*  console.log(store.getCurrentUser) */
+            return {name:'dashboard'}
             /* } */
-
-
+            
+            
         }
+   /*  } */
 
     })
     export default router;

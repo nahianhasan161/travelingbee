@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
@@ -23,6 +25,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/forget-password', [PasswordController::class,'forgetPassword'])->name('password.email');
+Route::post('/reset', [PasswordController::class,'reset'])->name('password.reset');
+
+Route::post('/email/verification-notification', [EmailVerificationController::class,'sendVerificationEmail'])->middleware('auth:sanctum');
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class,'verify']
+)->middleware('auth:sanctum')->name('verification.verify');
+
+
+
+
 Route::controller(AuthController::class)->group(function(){
     Route::post('login','login');
     Route::post('register','register');
@@ -30,6 +42,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('alluser','allUser');
     Route::put('/user/{user}','update');
     Route::delete('/user/{user}','destroy');
+    Route::get('/user','authUser');
 });
 
 Route::resource('/posts', PostController::class);

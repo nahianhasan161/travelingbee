@@ -132,8 +132,8 @@
         </div>
         <ul class="list-group list-group-flush">
             <div class="form-group">
-    <label for="exampleInputEmail1">Date:</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <label for="InputDate">Date:</label>
+    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date">
 
   </div>
 

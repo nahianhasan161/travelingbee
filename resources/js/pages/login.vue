@@ -56,7 +56,7 @@
              </div>
               </div>
 
-              <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+              <p class="small mb-5 pb-lg-2"><router-link to="/auth/reset-password" class="text-white-50" >Forgot password?</router-link> </p>
 
               <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
             </form>
@@ -82,7 +82,7 @@
 </div>
 </template>
 
-<script>
+<script setup>
 
     import axios from 'axios';
 import {reactive,ref} from 'vue';
@@ -90,12 +90,14 @@ import { useRouter } from 'vue-router';
 import {UserStore } from '@/store/UserStore';
 import { mapState } from 'pinia';
 import { useToastr } from './toaster';
-export default{
-   conputed:{
-    ...mapState('UserState',['token'])
 
-   },
-    setup(){
+   conputed:{
+    /* ... */
+     mapState('UserState',['token']) 
+
+   }
+   
+  
         const toaster = useToastr();
         const router = new useRouter();
         const store = new UserStore();
@@ -112,12 +114,17 @@ export default{
                      console.log(res.data.data.roles[0])
                     errors.value = res.data.message
                     var role = res.data.data.roles[0]
-                    if(role == 'user'){
+                    var verified = res.data.data.email_verified
+                    if(verified){
+
+                    
+
+                      if(role == 'user'){
                         console.log(res.data.data.roles[0]+'user')
                         router.push({name:'dashboard'})
                     }
                     else if(role == 'admin'){
-                        console.log(role == 'admin'? 'admin' :'notadmin')
+                      console.log(role == 'admin'? 'admin' :'notadmin')
                         router.push({name:'admin.dashboard'})
                     }
                     else if(role == 'suadmin'){
@@ -129,7 +136,11 @@ export default{
 
                         router.push({name:'dashboard'})
                     }
+                    }
+                    else{
+                    router.push({name:'verify_email'})
                 }
+                  }
                 else{
                     toaster.info('success')
                     errmsg.value =  res.data.message
@@ -148,16 +159,16 @@ export default{
             password:'',
         });
         let errors = ref([]);
-        return {
+        /* return {
             form,
             login,
             errors,
             errmsg
 
 
-        };
-    }
-}
+        }; */
+    
+
 
 </script>
 <style>

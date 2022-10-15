@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             'token' => $this->createToken('Token')->plainTextToken,
             'roles' => $this->roles->pluck('name') ?? [] ,
             'permissions' => $this->permissions->pluck('name') ?? [],
+            'email_verified' => $this->email_verified_at ? true : false,
             'created_at' => $this->created_at->format('d-m-Y')
         ];
     }

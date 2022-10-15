@@ -90,7 +90,7 @@
 
         <a class="nav-link dropdown-toggle group-input" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle">
-     <strong class="p-1 h3 text-dark text-bold">{{currentUser.name}}</strong>
+      <strong class="p-1 h3 text-dark text-bold">{{currentUser.name}}</strong>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="#">Dashboard</a>
@@ -141,8 +141,17 @@
         </router-link>
 
 </li>
+    <li class="nav-item " v-if="currentUser.email_verified == false">
 
-<li class="nav-item menu-open" v-if="currentUser.roles[0] == 'suadmin'">
+
+        <router-link active-class="active" :to="{name:'verify_email'}"  class="nav-link ">
+            <i class="nav-icon fa fa-envelope"></i>
+        <p>Verify Mail</p>
+        </router-link>
+
+</li>
+
+<li class="nav-item menu-open"  v-if="currentUser.roles[0] == 'suadmin'"> 
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >

@@ -18,7 +18,7 @@
     <div class="row mt-5">
 
 
-  <div class="card col-md-4" v-for="place in ($index,places)" @click="setId(place.id)">
+  <div class="card col-md-4" v-for="place in ($index,places)" @click="setPlaceId(place.id)">
     <router-link :to="{name:'place'}" class="text-dark text-decoration-none">
     <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Dark_Small-branded_Swift.jpg/250px-Dark_Small-branded_Swift.jpg" alt="Card image cap">
     <div class="card-body d-flex justify-content-between">
@@ -63,11 +63,11 @@
             const router = new useRouter();
             const store = new UserStore();
             const {places,placeId,categories} = storeToRefs(PlaceStore())
-            const {fetchPlaces,fetchCategories} = PlaceStore();
+            const {fetchPlaces,fetchCategories,setPlaceId} = PlaceStore();
 
-            function setId(id){
+            /* function setId(id){
                 placeId = id
-            }
+            } */
             function logout(){
                 store.removeToken();
                 store.removeUser();
