@@ -10,7 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -57,7 +57,7 @@ class AuthController extends Controller
                 return response()->json($response,400);
             }
 
-       if( Auth::attempt(['email' => $request->email, 'password' => $request->password]) )
+       if( Auth::attempt(['email' => $request->email, 'password' => $request->password],true) )
        {
         $user = Auth::user();
         /* $success['token'] = $user->createToken('MyApp')->plainTextToken;
@@ -78,13 +78,14 @@ class AuthController extends Controller
            return response()->json($response);
        }
     }
-    public function authUser()
+    public function authUser(Request $request)
     {
+       /*  return response()->json(); */
         if(Auth::check()){
 
             $response = [
                 'success' => true,
-                'data' => new UserResource(Auth::user()),
+                'data' => new UserResource($request->user()),
                 'message' => 'Auth User Details Fetching Successfull'
             ];
                    return response()->json($response,200);

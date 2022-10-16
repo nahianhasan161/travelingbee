@@ -26,23 +26,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/forget-password', [PasswordController::class,'forgetPassword'])->name('password.email');
-Route::post('/reset', [PasswordController::class,'reset'])->name('password.reset');
+Route::post('/reset-password', [PasswordController::class,'reset'])->name('password.reset');
 
 Route::post('/email/verification-notification', [EmailVerificationController::class,'sendVerificationEmail'])->middleware('auth:sanctum');
-Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class,'verify']
-)->middleware('auth:sanctum')->name('verification.verify');
+Route::post('/email/verify/{id}/{hash}', [EmailVerificationController::class,'verify']
+)->name('verification.verify')->middleware('auth:sanctum');
+
+
 
 
 
 
 Route::controller(AuthController::class)->group(function(){
-    Route::post('login','login');
-    Route::post('register','register');
-    Route::post('auth/user','authUser');
-    Route::post('alluser','allUser');
+    Route::post('/login','login')->name('login');
+    Route::post('/register','register');
+    Route::post('/auth/user','authUser')->middleware('auth:sanctum');
+    Route::post('/alluser','allUser');
     Route::put('/user/{user}','update');
     Route::delete('/user/{user}','destroy');
-    Route::get('/user','authUser');
+     /* Route::get('/user','authUser')->middleware('auth:sanctum');  */
 });
 
 Route::resource('/posts', PostController::class);

@@ -75,7 +75,24 @@
             try{
               axios.post('/api/forget-password',form).then(res=>{
             console.log(res)
-            toaster.info('Success')
+       /*      if(res.success == false){
+              toaster.error(res.data.message)
+            }else{ */
+              if(res.data.success){
+                toaster.success(res.data.message)
+              }else{
+                errmsg.value =  res.data.message
+                    console.log(errmsg)
+                    errors.value =  res.data[0].data
+              }
+              if(res.data.status == 200){
+                toaster.success(res.data.message)
+                
+              }else{
+                
+                toaster.error("Something Went Wrong")
+              }
+            /* } */
         })
             }catch(e){
             console.log(e.data)

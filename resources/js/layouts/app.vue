@@ -90,7 +90,7 @@
 
         <a class="nav-link dropdown-toggle group-input" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle">
-      <strong class="p-1 h3 text-dark text-bold">{{currentUser.name}}</strong>
+     <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong> 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="#">Dashboard</a>
@@ -123,7 +123,8 @@
 <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
 </div>
 <div class="info">
- <a href="#" class="d-block">{{currentUser.name}}</a>
+<a href="#" class="d-block">{{currentUser ? currentUser.name : 'Anonymous'}}</a> 
+
 <!-- {{JSON.parse(currentUser)}} -->
 </div>
 </div>
@@ -141,17 +142,17 @@
         </router-link>
 
 </li>
-    <li class="nav-item " v-if="currentUser.email_verified == false">
+    <li class="nav-item " v-if="currentUser ? currentUser.email_verified == false : true">
 
 
         <router-link active-class="active" :to="{name:'verify_email'}"  class="nav-link ">
             <i class="nav-icon fa fa-envelope"></i>
-        <p>Verify Mail</p>
+        <p>Verify Mail </p>
         </router-link>
 
 </li>
 
-<li class="nav-item menu-open"  v-if="currentUser.roles[0] == 'suadmin'"> 
+<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >
@@ -168,6 +169,7 @@ Manage Users
 
 
 </li>
+
 <li class="nav-item">
 
     <router-link active-class="active" :to="{name:'suadmin.manage.user'}"  class="nav-link " >
@@ -186,6 +188,7 @@ Manage Users
 
 <i class="nav-icon fas fa-sign-out-alt text-danger"></i>
 <p   class="text-danger">
+  
     Logout
 </p>
 </a>
@@ -200,6 +203,7 @@ Manage Users
 <div :class="token? 'content-wrapper' : ''" >
 
 <div class="content-header"  v-if="token">
+
 <!-- <div class="container-fluid" >
 <div class="row mb-2">
 <div class="col-sm-6">
@@ -240,6 +244,7 @@ Manage Users
 <footer class="main-footer">
 
     <div class="float-right d-none d-sm-inline">
+  
         Anything you want
     </div>
 
@@ -286,12 +291,12 @@ Manage Users
        onMounted(()=>{
             /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
             /*  this.store.fetchCurrentUser(); */
-            axios.get('/api/user').then(res=>{
+           /*  axios.get('/api/user').then(res=>{ */
 
                 /* console.log(res.data) */
-            }).catch((err)=>{
+         /*    }).catch((err)=>{
                 console.log(err);
-            })
+            }) */
         })
           /*   ...mapState(UserStore,['token'])
 

@@ -34,12 +34,12 @@ import axios from 'axios';
 
         /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
         /*  this.store.fetchCurrentUser(); */
-        axios.get('/api/user').then(res=>{
+        /* axios.get('/api/user').then(res=>{
 
          console.log(res.data)
         }).catch((err)=>{
             console.log(err)
-        })
+        }) */
         })
 
 

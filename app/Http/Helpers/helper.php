@@ -16,9 +16,10 @@ class Helper{
 
     }
     public static function sendSuccess($message,$data = [],$code = 200){
-        $response = ['success' => true, 'message' => $message];
+        $response = ['status' => $code ,'success' => true, 'message' => $message];
         if(!empty($data)){
             $response['data'] = $data;
+            
         }
         return response()->json($response);
 

@@ -31,8 +31,8 @@
 
             <div class="mb-md-5 mt-md-4 pb-5">
 
-              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-              <p class="text-white-50 mb-5">Please enter your login and password!</p>
+              <h2 class="fw-bold mb-2 text-uppercase">Reset Password</h2>
+              <p class="text-white-50 mb-5">Please enter your Email and New password!</p>
               <p class="text-danger mb-5" v-if="errmsg">{{errmsg}}</p>
 
                 <form @submit.prevent="login">
@@ -55,11 +55,21 @@
                </p>
              </div>
               </div>
+              <div class="form-outline form-white mb-4">
+                <input type="password" id="PasswordConfirmation" class="form-control form-control-lg" :class="errors.password_confirmation ? 'is-invalid' : ''" placeholder="Password" v-model="form.password_confirmation"/>
+               <!--  <label class="form-label" for="typePasswordConfirmation">Password</label> -->
+               <div class="text-danger" v-if="errors.password_confirmation">
+               <p v-for="error in errors.password_confirmation">
+                {{error}}
+               </p>
+             </div>
+              </div>
 
-              <p class="small mb-5 pb-lg-2"><router-link to="/auth/reset-password" class="text-white-50" >Forgot password?</router-link> </p>
+              
 
-              <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+              <button class="btn btn-outline-light btn-lg px-5" type="submit">Reset</button>
             </form>
+            <!-- <p class="small mb-5 pb-lg-2"><router-link to="/login" class="text-white-50 " > <i class="fas fa-arrow-right mr-1 text-warning"></i> Login</router-link> </p>  -->
               <!-- <div class="d-flex justify-content-center text-center mt-4 pt-1">
                 <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
                 <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
@@ -70,7 +80,7 @@
 
             <div>
 
-              <p class="mb-0">Don't have an account? <router-link to="/register" class="text-white-50 fw-bold" >Sign Up</router-link>
+              <p class="mb-0">Login to your  account <router-link to="/login" class="text-white-50 fw-bold" >Login</router-link>
               </p>
             </div>
 
@@ -85,68 +95,56 @@
 <script setup>
 
     import axios from 'axios';
-import {reactive,ref} from 'vue';
+import {reactive,ref,onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import {UserStore } from '@/store/UserStore';
 import { mapState } from 'pinia';
 import { useToastr } from './toaster';
 
-   conputed:{
-    /* ... */
+ /*   conputed:{
+  
      mapState('UserState',['token']) 
 
-   }
-   
+   } */
+  
   
         const toaster = useToastr();
         const router = new useRouter();
         const store = new UserStore();
+        let verifyToken;
+        let form = reactive({
+            email:'',
+            password:'',
+            password_confirmation:'',
+            token : ''
+        });
+        let errors = ref([]);
+
+        onMounted(()=>{
+          verifyToken = router.currentRoute.value.query ? router.currentRoute.value.query.token : '';
+          form.token = verifyToken;
+            console.log(form);
+  })
+
         let errmsg = ref('');
         const login = async()=>{
-
-
+        
             try{
-            await axios.post('/api/login',form).then(res=>{
-                if(res.data.success){
-
-                   store.setToken(res.data.data.token)
-                   store.setCurrentUser(res.data.data)
-                     console.log(res.data.data.roles[0])
-                    errors.value = res.data.message
-                    var role = res.data.data.roles[0]
-                    var verified = res.data.data.email_verified
-                    if(verified){
-
-                    
-
-                      if(role == 'user'){
-                        console.log(res.data.data.roles[0]+'user')
-                        router.push({name:'dashboard'})
-                    }
-                    else if(role == 'admin'){
-                      console.log(role == 'admin'? 'admin' :'notadmin')
-                        router.push({name:'admin.dashboard'})
-                    }
-                    else if(role == 'suadmin'){
-                        console.log(res.data.data.roles[0]+'suadmin')
-                        router.push({name:'suadmin.dashboard'})
-                    }
-                    else{
-                        console.log(role == 'admin'? 'admin' :'notadmin')
-
-                        router.push({name:'dashboard'})
-                    }
-                    }
-                    else{
-                    router.push({name:'verify_email'})
+            await axios.post('/api/reset-password',form).then(res=>{
+              if(res.data.success){
+                  toaster.success(res.data.message)
                 }
-                  }
+               
                 else{
-                    toaster.info('success')
+                      toaster.error('something Went Wrong')
+                    /* toaster.info('success') */
                     errmsg.value =  res.data.message
                     console.log(errmsg)
                     errors.value =  res.data[0].data
+                       
+                    
                        }
+                       console.log(res)
             })
         }catch(e){
             console.log(e.data)
@@ -154,19 +152,8 @@ import { useToastr } from './toaster';
         }
         }
 
-        let form = reactive({
-            email:'',
-            password:'',
-        });
-        let errors = ref([]);
-        /* return {
-            form,
-            login,
-            errors,
-            errmsg
-
-
-        }; */
+      
+       
     
 
 

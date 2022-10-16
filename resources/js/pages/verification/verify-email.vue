@@ -40,11 +40,11 @@
   <script setup>
   
       import axios from 'axios';
-  import {reactive,ref} from 'vue';
+  import {reactive,ref,onMounted} from 'vue';
   import { useRouter } from 'vue-router';
   import {UserStore } from '@/store/UserStore';
 
-  import { useToastr } from './toaster';
+  import { useToastr } from '@/pages/toaster.js';
   
     
    
@@ -55,10 +55,28 @@
           const {token} = UserStore();
           let errmsg = ref('');
           
+         onMounted(()=>{
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        }) 
+
           function sendLink(){
-            console.log(token)
-        axios.post('/api/email/verification-notification',token).then(res=>{
+           
+            
+        axios.post('/api/email/verification-notification').then(res=>{
             console.log(res)
+            if(res.status == 200){
+             
+              if(res.data.status){
+                toaster.success(res.data.status)
+                
+              }else{
+                toaster.info(res.data.message)
+
+              }
+            }
+            else{
+              toaster.error('Something went wrong')
+            }
         })
      }
           let form = reactive({
@@ -66,14 +84,7 @@
               password:'',
           });
           let errors = ref([]);
-          /* return {
-              form,
-              login,
-              errors,
-              errmsg
-  
-  
-          }; */
+          
       
   
   

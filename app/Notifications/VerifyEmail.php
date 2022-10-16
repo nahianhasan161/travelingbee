@@ -2,25 +2,37 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
 
-class ResetPasswordNotification extends Notification
+class VerifyEmail extends Notification
 {
     use Queueable;
-
-    public $url;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $url)
+    public function __construct()
     {
-        $this->url = $url;
+        //
+    }
+    protected function verificationUrl($notifiable)
+    {
+        return 'https://frontend.com/bla?' . http_build_query(
+                [
+                    'verifyLink' => URL::temporarySignedRoute(
+                        'verification.verify',
+                        Carbon::now()->addMinutes(60),
+                        ['id' => $notifiable->getKey()]
+                    )
+                ]
+            );
     }
 
     /**
@@ -42,12 +54,11 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $newUrl = 'http://127.0.0.1:8000/auth/reset/password?token='.$this->url; 
         return (new MailMessage)
-                    ->line('Forgot Password?')
-                    ->action('Click to reset', str_replace('https','http',$this->url))
+                    ->line('Click the button below to verify your email address')
+                    ->action('Verify Email Address', $this->verificationUrl($notifiable))
                     ->line('Thank you for using our application!');
-    }               
+    }
 
     /**
      * Get the array representation of the notification.

@@ -43,7 +43,7 @@ export const UserStore = defineStore({
 
         fetchCurrentUser:function(){
 
-            axios.post('api/auth/user').then(res=>{
+            axios.post('/api/auth/user').then(res=>{
                 if(res.data.success){
 
 

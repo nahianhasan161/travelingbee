@@ -11,12 +11,15 @@ import posts from './pages/posts.vue';
 import manage_user from './pages/suadmin/manage_user.vue';
 import manage_roles from './pages/suadmin/manage_roles.vue';
 
-import verify_email from './pages/verify-email.vue';
+import verify_email from './pages/verification/verify-email.vue';
+import email_verified from './pages/verification/email-verified.vue';
 import reset_password from './pages/reset-password.vue';
+import password_reset_form from './pages/password-reset-form.vue';
 
 import {UserStore} from '@/store/UserStore'
 import { storeToRefs } from 'pinia';
 const {currentUser} = storeToRefs(UserStore);
+
 
 const routes = [
 
@@ -72,6 +75,24 @@ const routes = [
     path : '/auth/reset-password',
     name : 'reset_password',
     component : reset_password ,
+    meta:{
+        
+    }
+},
+
+{
+    path : '/reset-password',
+    name : 'password_reset_form',
+    component : password_reset_form ,
+    meta:{
+        requiresAuth: false,
+    }
+},
+
+{
+    path : '/verify/:url',
+    name : 'email_verified',
+    component : email_verified ,
     meta:{
         
     }
