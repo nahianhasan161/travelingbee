@@ -129,11 +129,13 @@ try{
     /* if(!res.data[0].success){
       errors.value =  res.data[0].data
     } */
+    
+    console.log('start:'+res);
     if(res.data.success){
 
        store.setToken(res.data.data.token)
        store.setCurrentUser(res.data.data)
-         console.log(res.data.data.roles[0])
+         console.log('if:'+res.data.data.roles[0])
         errors.value = res.data.message
         var role = res.data.data.roles[0]
         if(role == 'user'){
@@ -155,11 +157,17 @@ try{
         }
     }
     else{
-        toaster.info('success')
-        errmsg.value =  res.data.message
-        console.log(errmsg)
+      /* console.log(res.data[0].data) */
+       /*  toaster.info('success') */
+        if(res.data.message){
+          errmsg.value =  res.data.message
+          console.log(res.data[0].data)
+          console.log(errmsg)
+
+        }
         errors.value =  res.data[0].data
            }
+           
 })
 }catch(e){
 console.log(e.data)
