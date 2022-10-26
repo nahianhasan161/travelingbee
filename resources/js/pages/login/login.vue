@@ -89,7 +89,7 @@ import {reactive,ref} from 'vue';
 import { useRouter } from 'vue-router';
 import {UserStore } from '@/store/UserStore';
 import { mapState } from 'pinia';
-import { useToastr } from './toaster';
+import { useToastr } from '@/pages/toaster';
 
    conputed:{
     /* ... */

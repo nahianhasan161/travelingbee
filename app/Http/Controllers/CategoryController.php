@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Helper;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -24,9 +25,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+    
+      //
+    
     }
 
     /**
@@ -37,7 +40,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = Validator::make($request->all(),
+        [
+            'name' => 'required'
+        ]
+        );
+        if($validated->fails()){
+            Helper::sendError('Validation Failed',$validated->errors());
+        }
+        $created = Category::create($request->only('name'));
+      return  Helper::sendSuccess('Category Successfully Created'); 
     }
 
     /**
@@ -69,9 +81,25 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(  $category,Request $request)
     {
-        //
+       
+        $selectedCategory = Category::find($category);
+       
+        if(!$selectedCategory){
+            Helper::sendError('Category Not Found');
+        } 
+        $validated = Validator::make($request->all(),[
+            'name' => 'required'
+        ]);
+        if($validated->fails()){
+
+            Helper::sendError('Validation Failed',$validated->errors());
+        }else{
+            $selectedCategory->update($request->only('name'));
+            return Helper::sendSuccess('Category Successfully Updated');
+        }
+
     }
 
     /**
@@ -80,8 +108,14 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy( $category)
     {
-        //
+        $selectedCategory = Category::find($category);
+       
+        if(!$selectedCategory){
+            Helper::sendError('Category Not Found');
+        }
+        $selectedCategory->delete();
+        return Helper::sendSuccess('Category Successfully Deleted');
     }
 }

@@ -4,12 +4,12 @@
         <div class="text-monospace">
 
             <h1>
-               {{place.name}}
+               {{places.name}}
             </h1>
 
             <div class="row">
 
-                <p class="ml-3 "><i class="fas fa-star text-warning"></i>{{place.rating}}</p>
+                <p class="ml-3 "><i class="fas fa-star text-warning"></i>{{places.rating}}</p>
                <!--  <p class="ml-3">YO</p>
                 <p class="ml-3">YO</p> -->
 
@@ -70,7 +70,7 @@
 <div class="">
 <h1>Features</h1>
 <ul>
-    {{place.features}}
+    {{places.features}}
 
 </ul>
 <hr>
@@ -110,7 +110,7 @@
 <div class="">
 <h1>Description</h1>
 <ul>
-    {{place.description}}
+    {{places.description}}
 
 </ul>
 <hr>
@@ -127,7 +127,7 @@
           <h5>Payment</h5>
         </div>
         <div class="card-body">
-          <h1> ৳{{place.price}}</h1>
+          <h1> ৳{{places.price}}</h1>
           <h5 class="text-muted"><small> per Day</small></h5>
         </div>
         <ul class="list-group list-group-flush">
@@ -161,16 +161,17 @@
        import {UserStore} from '@/store/UserStore'
        import { PlaceStore } from '../store/place/PlaceStore';
         import {storeToRefs} from 'pinia'
-
+        
 
 
 
 
             const router = new useRouter();
             const store = new UserStore();
-            const {place} = storeToRefs(PlaceStore())
+            const {places,placeId} = storeToRefs(PlaceStore())
             const {fetchPlace} = PlaceStore()
-            let currentUser;
+            /* let currentUser; */
+            let currentPlaceID;
 
             function logout(){
                 store.removeToken();
@@ -178,10 +179,12 @@
                 router.push({name:'login'})
             }
             onMounted(()=>{
-
+              currentPlaceID = router.currentRoute.value? router.currentRoute.value.params.id : ''
             /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
             /*  this.store.fetchCurrentUser(); */
-           fetchPlace(1);
+           fetchPlace(currentPlaceID);
+          
+           console.log(places);
             })
 
 

@@ -1,28 +1,42 @@
 import {createWebHistory,createRouter} from 'vue-router';
-
+/* landing pages */
 import welcome from './pages/welcome.vue';
-import dashboard from './pages/dashboard.vue';
+import dashboard from './pages/auth/user/dashboard.vue';
 import place from './pages/place.vue';
+/* Authentication */
 
-import login from './pages/login.vue';
-import register from './pages/register.vue';
-import posts from './pages/posts.vue';
+import login from './pages/login/login.vue';
+import register from './pages/login/register.vue';
+import posts from './pages/auth/posts.vue';
+import user_profile from './pages/auth/profile.vue';
 
-import manage_user from './pages/suadmin/manage_user.vue';
-import manage_roles from './pages/suadmin/manage_roles.vue';
+/* Management */
+import manage_user from './pages/auth/suadmin/manage_user.vue';
+import manage_roles from './pages/auth/suadmin/manage_roles.vue';
 
-import verify_email from './pages/verification/verify-email.vue';
-import email_verified from './pages/verification/email-verified.vue';
-import reset_password from './pages/reset-password.vue';
-import password_reset_form from './pages/password-reset-form.vue';
+import manage_place from './pages/auth/admin/Place/manage_place.vue';
 
+
+import category from './pages/auth/suadmin/category.vue';     
+
+/* Verify and Reset */
+
+import verify_email from './pages/auth/verification/verify-email.vue';
+import email_verified from './pages/auth/verification/email-verified.vue';
+import reset_password from './pages/login/reset-password/reset-password.vue';
+import password_reset_form from './pages/login/reset-password/password-reset-form.vue';
+
+/* Stores */
 import {UserStore} from '@/store/UserStore'
 import { storeToRefs } from 'pinia';
+
+/* Veriables */
 const {currentUser} = storeToRefs(UserStore);
 
 
 const routes = [
 
+/*  Landing Pages */
 
     {
     path : '/',
@@ -31,12 +45,13 @@ const routes = [
 
 },
     {
-    path : '/place',
+    path : '/place/:id',
     name : 'place',
     component : place ,
     props: true
 
 },
+/*  Authentication */
     {
     path : '/login',
     name : 'login',
@@ -55,22 +70,9 @@ const routes = [
 
 
 },
-{
-    path : '/user/dashboard',
-    name : 'dashboard',
-    component : dashboard ,
-    meta:{
-        requiresAuth: true,
-    }
-},
-{
-    path : '/auth/verify_email',
-    name : 'verify_email',
-    component : verify_email ,
-    meta:{
-        
-    }
-},
+/* Verification And Reset */
+
+
 {
     path : '/auth/reset-password',
     name : 'reset_password',
@@ -106,6 +108,36 @@ const routes = [
     }
 },
 {
+    path : '/auth/verify_email',
+    name : 'verify_email',
+    component : verify_email ,
+    meta:{
+        
+    }
+},
+
+{
+    path : '/auth/profile',
+    name : 'user_profile',
+    component : user_profile ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+
+/* User */
+
+{
+    path : '/user/dashboard',
+    name : 'dashboard',
+    component : dashboard ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+/* Admin */
+
+{
     path : '/admin/dashboard',
     name : 'admin.dashboard',
     component : dashboard ,
@@ -114,9 +146,27 @@ const routes = [
     }
 },
 {
+    path : '/manage/place',
+    name : 'manage.place',
+    component : manage_place ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+
+/* Super Admin */
+{
     path : '/suadmin/dashboard',
     name : 'suadmin.dashboard',
     component : dashboard ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/suadmin/place/category',
+    name : 'suadmin.place.category',
+    component : category ,
     meta:{
         requiresAuth: true,
     }
@@ -137,7 +187,7 @@ const routes = [
         requiresAuth: true,
     }
 },
-
+/* Others */
 {
     path : '/posts',
     name: 'posts',
@@ -162,8 +212,9 @@ const router = createRouter({
         var currentUser = store.getCurrentUser;
 
          console.log(currentUser);
+         
         if(to.meta.requiresAuth && store.getToken == 0){
-
+            
             return {name:'login'}
 
         }

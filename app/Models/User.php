@@ -48,6 +48,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function Bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
     public function sendPasswordResetNotification($token)
     {
 

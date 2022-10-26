@@ -55,7 +55,7 @@
   import { useRouter } from 'vue-router';
   import {UserStore } from '@/store/UserStore';
 
-  import { useToastr } from './toaster';
+  import { useToastr } from '@/pages/toaster';
   
     
    

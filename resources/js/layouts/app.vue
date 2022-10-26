@@ -93,9 +93,9 @@
      <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong> 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Dashboard</a>
-          <a class="dropdown-item" href="#">Edit Profile</a>
-          <button class="btn btn-danger dropdown-item" @click="logout">Logout</button>
+          <router-link active-class="active" :to="{name:'user_profile'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Profile</router-link>
+         
+          <a class=" dropdown-item text-danger" @click="logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
         </div>
     </li>
 
@@ -139,6 +139,24 @@
         <router-link active-class="active" :to="{name:'dashboard'}"  class="nav-link " >
             <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>Home</p>
+        </router-link>
+
+</li>
+    <li class="nav-item " v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
+
+
+        <router-link active-class="active" :to="{name:'suadmin.place.category'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>Category</p>
+        </router-link>
+
+</li>
+    <li class="nav-item " v-if="currentUser ? currentUser.roles[0] != 'user' : false">
+
+
+        <router-link active-class="active" :to="{name:'manage.place'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>Add Place</p>
         </router-link>
 
 </li>

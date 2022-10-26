@@ -8,8 +8,8 @@
         <div class="scrollmenu  " >
 
 
-
-      <router-link v-for="category in (index,categories)" :to="{name:'place'}" href="#home" class="btn btn-outline-warning active scroll-item">{{category.name}}</router-link>
+<!-- :to="{name:'place',}" --> 
+      <router-link v-for="category in (categories)" to="/place/1" href="#home" class="btn btn-outline-warning active scroll-item">{{category.name}}</router-link>
 
 
 
@@ -18,8 +18,8 @@
     <div class="row mt-5">
 
 
-  <div class="card col-md-4" v-for="place in ($index,places)" @click="setPlaceId(place.id)">
-    <router-link :to="{name:'place'}" class="text-dark text-decoration-none">
+  <div class="card col-md-4" v-for="place in (places)" @click="setPlaceId(place.id)">
+    <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
     <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Dark_Small-branded_Swift.jpg/250px-Dark_Small-branded_Swift.jpg" alt="Card image cap">
     <div class="card-body d-flex justify-content-between">
       <h5 class="card-title">{{place.name}}</h5>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Helper;
+use App\Http\Requests\PlaceRequest;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use PHPUnit\TextUI\Help;
@@ -14,21 +15,30 @@ class PlaceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $userID)
     {
-        $places = Place::latest()->get();
+        
+       /*  if($userID){
+            $places = Place::latest()
+        ->where('user_id',3)->get();
+        }else{
 
+            $places = Place::latest()->get();
+        }  */
+        $places = Place::latest()->get();
+        
         return Helper::sendSuccess('succesfully Fetched Place',$places);
     }
+    /* $places = Place::latest()->get(); */
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(PlaceRequest $request)
     {
-        //
+        
     }
 
     /**
@@ -37,9 +47,11 @@ class PlaceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PlaceRequest $request)
     {
-        //
+        $input = $request->all();
+        Place::create($input);
+       return Helper::sendSuccess('Place Successfully Created');
     }
 
     /**
@@ -48,9 +60,22 @@ class PlaceController extends Controller
      * @param  \App\Models\Place  $place
      * @return \Illuminate\Http\Response
      */
-    public function show(Place $place)
+    public function show($place)
     {
-        return Helper::sendSuccess('succesfully Fetched Place',$place);
+        if($place){
+           $currentPlace = Place::find($place);
+           if($currentPlace){
+            return Helper::sendSuccess('Succesfully Fetched Place',$currentPlace);
+           }
+           else
+           {
+            Helper::sendError('Error! Can not find Place',$currentPlace);
+           }  
+        }else{
+            Helper::sendError('Error!');
+        }
+       
+        
     }
 
     /**
@@ -71,9 +96,17 @@ class PlaceController extends Controller
      * @param  \App\Models\Place  $place
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Place $place)
+    public function update( $place,Request $request)
     {
-        //
+        $thisPlace = Place::find($place);
+      
+        if($thisPlace) {
+            $input = $request->all();
+            $updated = $thisPlace->update($input);
+        }  else{ Helper::sendError('Something Went Wrong');}
+       
+
+       return Helper::sendSuccess( $updated); 
     }
 
     /**
@@ -82,8 +115,15 @@ class PlaceController extends Controller
      * @param  \App\Models\Place  $place
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Place $place)
+    public function destroy($place)
     {
-        //
+       $thisPlace = Place::find($place);
+      
+       if($thisPlace) {
+        $thisPlace->delete();
+        return Helper::sendSuccess($thisPlace->name .' Succesfully Deleted');
+       }  else{ Helper::sendError('Something Went Wrong');}
+        
+     
     }
 }

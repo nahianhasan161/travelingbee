@@ -10,9 +10,10 @@ export const PlaceStore = defineStore({
         /* JSON.parse() */
 
         loading: false,
-        placeId:ref(''),
+      
+        roleId:ref(''),
         places:ref([]),
-        place:ref([]),
+        /* place:ref([]), */
         url : '/api/place',
 
         categories:ref([]),
@@ -22,23 +23,32 @@ export const PlaceStore = defineStore({
     getters:{
 
 
-       getplace : function(){
-        return this.place;
+       getPlaces : function(){
+
+        return this.places;
+       },
+       getCategories : function(){
+        return this.categories;
        }
     },
 
     actions:{
 
+        setRoleId($id){
+            console.log($id);
+            this.roleId = $id;
+        },
 
 
 
         async fetchPlaces(){
             this.loading = true
-           await axios.get(this.url).then(res=>{
+           await axios.get(this.url,this.roleId? this.roleId : null).then(res=>{
                 if(res.data.success){
 
                     this.places = res.data.data
 
+                   /*  console.log(res) */
 
                 }else{
                     console.log(res)
@@ -51,12 +61,14 @@ export const PlaceStore = defineStore({
             });
 
         },
-        async fetchPlace($id){
+         fetchPlace($id){
             this.loading = true
-            await axios.get(this.url+'/'+$id).then(res=>{
+            let cID = null;
+            this.placeId ?  cID = this.placeId : cID = $id;
+             axios.get(this.url+'/'+cID).then(res=>{
                 if(res.data.success){
 
-                    this.place = res.data.data
+                    this.places = res.data.data
 
 
                 }else{
@@ -77,6 +89,10 @@ export const PlaceStore = defineStore({
                 if(res.data.success){
 
                     this.categories = res.data.data
+                    console.log(res.data.data)
+                   /*  console.log('categories')
+                    console.log(this.places)
+                    console.log(this.categories) */
 
 
                 }else{
@@ -92,6 +108,23 @@ export const PlaceStore = defineStore({
         },
         setPlaceId($id){
             this.placeId = $id
+        },
+
+        deletePlace(placeId){
+           
+                this.loading = true;
+                /* console.log(placeId); */
+                axios.delete(this.url+'/'+placeId).then(res=>{
+                    let index = this.places.findIndex(places=>places.id == placeId);
+                    this.places.splice(index,1);
+                    toastr.error('success')
+                    /* console.log(this.places); */
+                    toastr.success(res.data.message);
+                    console.log(res.data);
+                }).finally(()=>{
+                    this.loading = false
+        
+                })
         }
        /*  createRole($data){
             this.loading = true

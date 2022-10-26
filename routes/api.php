@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PasswordController;
@@ -52,4 +53,6 @@ Route::resource('/roles', RoleController::class);
 
 Route::resource('/place', PlaceController::class);
 Route::resource('/category', CategoryController::class);
+
+Route::resource('/booking',BookingController::class);
 
