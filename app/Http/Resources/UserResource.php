@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'user_id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'image' => $this->image,
             'token' => $this->createToken('Token')->plainTextToken,
             'roles' => $this->roles->pluck('name') ?? [] ,
             'permissions' => $this->permissions->pluck('name') ?? [],

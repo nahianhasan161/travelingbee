@@ -3,6 +3,7 @@ import {createWebHistory,createRouter} from 'vue-router';
 import welcome from './pages/welcome.vue';
 import dashboard from './pages/auth/user/dashboard.vue';
 import place from './pages/place.vue';
+import test from './pages/test.vue';
 /* Authentication */
 
 import login from './pages/login/login.vue';
@@ -11,10 +12,16 @@ import posts from './pages/auth/posts.vue';
 import user_profile from './pages/auth/profile.vue';
 
 /* Management */
+/* SuAdmin */
+import suadmin_dashboard from './pages/auth/suadmin/dashboard.vue';
 import manage_user from './pages/auth/suadmin/manage_user.vue';
 import manage_roles from './pages/auth/suadmin/manage_roles.vue';
 
+/* Admin */
+import admin_dashboard from './pages/auth/admin/dashboard.vue';
 import manage_place from './pages/auth/admin/Place/manage_place.vue';
+/* Payment */
+import invoice from './pages/auth/user/payment/invoice.vue'
 
 
 import category from './pages/auth/suadmin/category.vue';     
@@ -28,9 +35,11 @@ import password_reset_form from './pages/login/reset-password/password-reset-for
 
 /* Stores */
 import {UserStore} from '@/store/UserStore'
+
 import { storeToRefs } from 'pinia';
 
 /* Veriables */
+
 const {currentUser} = storeToRefs(UserStore);
 
 
@@ -39,10 +48,17 @@ const routes = [
 /*  Landing Pages */
 
     {
+    path : '/test',
+    name : 'test',
+    component : test ,
+
+},
+    {
     path : '/',
     name : 'welcome',
     component : welcome ,
-
+   
+    
 },
     {
     path : '/place/:id',
@@ -63,7 +79,7 @@ const routes = [
     {
     path : '/register',
     name : 'register',
-    component : register ,
+component : register ,
     meta:{
         requiresAuth: false,
     }
@@ -116,6 +132,7 @@ const routes = [
     }
 },
 
+
 {
     path : '/auth/profile',
     name : 'user_profile',
@@ -140,7 +157,7 @@ const routes = [
 {
     path : '/admin/dashboard',
     name : 'admin.dashboard',
-    component : dashboard ,
+    component : admin_dashboard ,
     meta:{
         requiresAuth: true,
     }
@@ -158,7 +175,7 @@ const routes = [
 {
     path : '/suadmin/dashboard',
     name : 'suadmin.dashboard',
-    component : dashboard ,
+    component : suadmin_dashboard ,
     meta:{
         requiresAuth: true,
     }
@@ -187,6 +204,16 @@ const routes = [
         requiresAuth: true,
     }
 },
+/* Payment */
+{
+    path : '/payment/invoice/:id',
+    name : 'payment.invoice',
+    component : invoice ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+
 /* Others */
 {
     path : '/posts',

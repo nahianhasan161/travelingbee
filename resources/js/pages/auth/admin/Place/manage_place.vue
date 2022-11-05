@@ -61,9 +61,9 @@
      
 
     </div>
-    <label for="inputPrice">Category</label>
-
+    
     <div class="form-group " >
+      <label for="inputPrice">Category</label>
       <select class="custom-select" :class="errors.category_id ? 'is-invalid' : '' " id="inputCategory"  v-model="form.category_id">
   <!-- <option selected>Open this select menu</option> -->
   <option  v-for="category in categories" :value="category.id">{{category.name}}</option>
@@ -74,6 +74,23 @@
       </select> -->
 
 
+     
+
+    </div>
+    <div class="form-group " >
+      <label for="inputFeatureImage">Feature Image </label><br>
+      <input type="file" class="file-control" :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
+      
+
+     
+
+    </div>
+    <div class="form-group " >
+      <label for="inputImages">More Image </label><br>
+      <input type="file" class="file-control" multiple
+       :class="errors.images ? 'is-invalid' : '' " id="inputImages" @change="setImages($event)">
+      
+      
      
 
     </div>
@@ -116,9 +133,11 @@
 </tr>
 </thead>
 <tbody>
-<tr v-for="(place,index) in places" :key="place.id">
+  <tr v-for="(place,index) in places" :key="place.id">
+    
     <td>{{index+1}}</td>
-<td > <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class="rounded-circle img-fluid"></td>
+    <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
+<td v-else> <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class=" img-fluid" ></td>
 <td ><strong>{{place.name}}</strong></td>
 <td > 
   <textarea name="description" id="description" class="form-control" cols="30" rows="10" disabled>{{place.description}}</textarea>
@@ -145,8 +164,7 @@
 
 </tr>
 
-
-
+{{currentUser.roles[0]}}
 
 
 
@@ -177,7 +195,7 @@ import { storeToRefs } from 'pinia';
         const toastr = useToastr();
 
         const store = new UserStore();
-        const {deleteUser} = UserStore();
+        const {deleteUser,currentUser} = UserStore();
         const {allUser,loading,getCurrentUser} = storeToRefs(UserStore());
 
         const placeStore = new PlaceStore();
@@ -190,6 +208,7 @@ import { storeToRefs } from 'pinia';
         let p = ref([]);
         let form = reactive({
                 name:'',
+                feature_image: '',
                 description:'',
                 features:'',
                 rating:'',
@@ -207,9 +226,20 @@ import { storeToRefs } from 'pinia';
                if(editing.value){
                 updateUser()
                }else{
-                register()
+                createPlace()
                }
               /*  console.log(editing.value); */
+            }
+            function setFeatureImage(event){
+              form.feature_image = event.target.files[0];
+              console.log(event)
+            }
+            function setImages(event){
+              form.images = event.target.files;
+              /* let form_data = new FormData();
+              form_data.append('images',event.target.files[0])
+              console.log(form_data) */
+              console.log(event)
             }
             const resetForm = ()=>{
                     form.name =''
@@ -217,13 +247,30 @@ import { storeToRefs } from 'pinia';
                     form.features=''
                     form.rating=''
                     form.price=''
+                    form.images= ''
+                    form.feature_image=''
+                   /*  this.$refs.fileupload.value=null; */
                    /*  form.category='' */
+            }
+            
+            function setForm_Data(){
+                  let form_data = new FormData();
+                  form_data.append('user_id',form.user_id)
+                form_data.append('category_id',form.category_id)
+                form_data.append('name',form.name)
+                form_data.append('feature_image',form.feature_image)
+                form_data.append('description',form.description)
+                form_data.append('features',form.features)
+                form_data.append('rating',form.rating)
+                form_data.append('price',form.price)
+                form_data.append('images',form.images)
+                   return form_data;
             }
 
             function editPlace(place){  
                 editing.value = true
                 editId = place.id
-                /* form.value = $user; */
+                
 
                 /* toastr.success('success') */
                 form.name =place.name
@@ -231,16 +278,38 @@ import { storeToRefs } from 'pinia';
                 form.features =place.features
                 form.rating = place.rating
                 form.price = place.price
-                form.category_id = place.category_id
-                form.user_id = place.user_id
-
+                form.category_id = place.category.id
+                form.user_id = place.id
+                console.log('category') 
+                console.log(form.category_id) 
+                console.log(place) 
                 $('#ModalCenter').modal('show');
         }
-            const register = async()=>{
+            const createPlace = async()=>{
             
              form.user_id =  getCurrentUser.value.user_id;
+            /*  console.log('id') */
             
-                await axios.post('/api/place',form).then(res=>{
+             let form_data = new FormData();
+                form_data.append('user_id',form.user_id)
+                form_data.append('category_id',form.category_id)
+                form_data.append('name',form.name)
+                form_data.append('feature_image',form.feature_image)
+                form_data.append('description',form.description)
+                form_data.append('features',form.features)
+                form_data.append('rating',form.rating)
+                form_data.append('price',form.price)
+                form_data.append('images',form.images)
+                form_data.append('_method','post')
+                
+
+                let config = {
+                    header : {
+                        'Content-Type' : 'image/png'
+                    }
+                }
+                /* console.log(form_data) */
+                await axios.post('/api/place',form_data,config).then(res=>{
                    if(res.data.success){
 
 
@@ -264,7 +333,40 @@ import { storeToRefs } from 'pinia';
                 console.log('finally');
             }
             function updateUser(){
-                axios.put('/api/place/'+editId,form).then(res=>{
+              /* let form_data = new FormData(); */
+            /*  let form_data = setForm_Data(); */
+            console.log(form.category_id) 
+            let form_data = new FormData();
+                  form_data.append('user_id',form.user_id)
+                form_data.append('category_id',form.category_id)
+                form_data.append('name',form.name)
+                form_data.append('feature_image',form.feature_image)
+                form_data.append('description',form.description)
+                form_data.append('features',form.features)
+                form_data.append('rating',form.rating)
+                form_data.append('price',form.price)
+              /*   form_data.append('images[]',form.images[0]) */
+              if(form.images){
+                for(let i = 0;i < form.images.length ;i++){
+                  
+                form_data.append('images[]',form.images[i])
+                                   /*  console.log(form.images[i]) */
+              }
+                }  
+              /*   console.log(form.feature_image)
+                console.log(form.images[0]) */
+             /*    for (const value of form_data.values()) {
+                console.log(value);
+                  } */
+                form_data.append('_method','put')
+
+                let config = {
+                    header : {
+                        'Content-Type' : 'image/png'
+                    }
+                  }
+              /* console.log(form_data) */
+                 axios.post('/api/place/'+editId,form_data,config).then(res=>{
                     placeStore.fetchPlaces();
                     toastr.info('success')
                     $('#ModalCenter').modal('hide');
@@ -272,11 +374,11 @@ import { storeToRefs } from 'pinia';
                     resetForm()
 
 
-                })
+                }) 
             }
 
             onMounted(()=>{
-           let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.roles[0] == 'admin' ? 3 : null : null
+           let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
               let pe =  placeStore.fetchPlaces(); 
               fetchCategories(); 
               setRoleId(roleId)

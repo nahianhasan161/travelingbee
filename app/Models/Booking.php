@@ -11,11 +11,11 @@ class Booking extends Model
 
     protected $guarded = [];
 
-    public function User()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function Place()
+    public function place()
     {
         return $this->belongsTo(Place::class);
     }

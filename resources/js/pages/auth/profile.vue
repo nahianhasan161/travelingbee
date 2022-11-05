@@ -6,7 +6,9 @@
 <div class="card card-primary card-outline">
 <div class="card-body box-profile">
 <div class="text-center">
-<img class="profile-user-img img-fluid img-circle" src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" alt="User profile picture">
+ 
+   <img :src="'/image/profile/'+currentUser.image" class="profile-user-img img-fluid img-circle" alt="..." v-if="currentUser.image"> 
+<img class="profile-user-img img-fluid img-circle" src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" alt="User profile picture" v-else>
 </div>
 <h3 class="profile-username text-center">{{currentUser.name}}</h3>
 <p class="text-muted text-center">{{currentUser.email}}</p>
@@ -49,23 +51,23 @@
 <div class="tab-content">
 
 <div class="tab-pane active" id="settings">
-<form class="form-horizontal">
+<form class="form-horizontal" @submit.prevent="editUser">
 <div class="form-group row">
 <label for="inputName" class="col-sm-2 col-form-label">Name</label>
 <div class="col-sm-10">
-<input type="email" class="form-control" id="inputName" placeholder="Name">
+<input type="text" class="form-control" id="inputName" placeholder="Name" v-model="form.name">
 </div>
 </div>
 <div class="form-group row">
 <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
 <div class="col-sm-10">
-<input type="email" class="form-control" id="inputEmail" placeholder="Email">
+<input type="email" class="form-control" id="inputEmail" placeholder="Email" v-model="form.email">
 </div>
 </div>
 <div class="form-group row">
 <label for="inputName2" class="col-sm-2 col-form-label">Role</label>
 <div class="col-sm-10">
-<input type="text" class="form-control " id="inputRole" placeholder="Role" disabled>
+<input type="text" class="form-control " id="inputRole" placeholder="Role"  disabled v-model="form.role">
 </div>
 
 </div>
@@ -73,8 +75,8 @@
 <label for="inputPhoto" class="col-sm-2 col-form-label">Photo</label>
 <div class="col-sm-10">
     <div class="col-sm-10">
-<input type="file" class="form-control-file " id="inputPhoto" placeholder="Photo">
-</div>
+<input type="file" class="form-control-file " id="inputPhoto" @change="setImage($event)">
+</div>  
 </div>
 
 </div>
@@ -88,7 +90,7 @@
 </form>
 </div>
 
-
+<!-- {{currentUser}} -->
 
 
 </div>
@@ -107,7 +109,7 @@
     import {reactive,ref,onMounted} from 'vue';
     import { useRouter } from 'vue-router';
     import {UserStore } from '@/store/UserStore';
-  
+    import {storeToRefs} from 'pinia'
     import { useToastr } from '@/pages/toaster.js';
     
       
@@ -116,19 +118,72 @@
             const toaster = useToastr();
             const router = new useRouter();
             const store = new UserStore();
-            const {token,currentUser,fetchCurrentUser} = UserStore();
+            const {getToken,fetchCurrentUser,getCurrentUser} = UserStore();
+            const {currentUser,token} = storeToRefs(UserStore());
             let verifyUrl;
             let errmsg = ref('');
+            let form = reactive({
+                name : '',
+                email:'',
+                role:'',
+                image: ''
+            });
+            let errors = ref([]);
+
+            function setImage(event){
+              form.image = event.target.files[0];
+            }
+            function editUser() {
+              if(currentUser){
+                
+           
+
+               
+                let form_data = new FormData();
+                form_data.append('name',form.name)
+                form_data.append('email',form.email)
+                form_data.append('role',form.role)
+                form_data.append('image',form.image)
+                form_data.append('_method','put')
+                
+
+                let config = {
+                    header : {
+                        'Content-Type' : 'image/png'
+                    }
+                }
+
+           
+                axios.post('/api/user/'+getCurrentUser.user_id,form_data,config).then(res=>{
+                 if(res.data.success){
+                   toaster.success(res.data.message) 
+                   fetchCurrentUser()
+                  }
+                    console.log(res);
+                })
+              }else{
+                toaster.error('Error Fetching User Details');
+              }
+              
+                  }
+            function setProfileDetails(profile) {
+              form.name = profile.name
+              form.email = profile.email
+              form.role = profile.roles[0] 
+              
+                  }
+
+
             
            onMounted(()=>{
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            axios.defaults.headers.common['Authorization'] = `Bearer ${getToken}`
             verifyUrl = router.currentRoute.value.query ? router.currentRoute.value.query.email_verify_url : '';
             if(verifyUrl){
               axios.post(verifyUrl).then(res=>{
                 if(res.status == 200 ){
-                /*   if(res.data.message == 'Email has been verified') { */
+              
                     fetchCurrentUser()
-                  /* }  */
+                 
                   toaster.success(res.data.message)
   
                   console.log(res);
@@ -136,15 +191,11 @@
               });
             }
            console.log( verifyUrl) 
-        
+           getCurrentUser ? setProfileDetails(getCurrentUser) : console.log(getCurrentUser)
           }) 
   
   
-            let form = reactive({
-                email:'',
-                password:'',
-            });
-            let errors = ref([]);
+          
            
         
     

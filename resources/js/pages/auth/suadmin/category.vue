@@ -129,6 +129,7 @@ import { storeToRefs } from 'pinia';
             const addCategory = ()=>{
                 
                 editing.value = false
+                
                 $('#ModalCenter').modal('show');
             }
             const formAction =()=>{
@@ -137,7 +138,7 @@ import { storeToRefs } from 'pinia';
                }else{
                 console.log(form)
                 createCategory(form)
-                
+              
                }
               /*  console.log(editing.value); */ 
             }

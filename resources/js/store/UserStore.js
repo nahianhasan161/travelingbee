@@ -60,6 +60,7 @@ export const UserStore = defineStore({
         setCurrentUser:function($data){
             localStorage.setItem('currentUser',JSON.stringify($data));
             this.currentUser = $data
+            
         },
         removeUser:function(){
             this.currentUser = []

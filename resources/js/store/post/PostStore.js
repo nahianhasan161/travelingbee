@@ -30,8 +30,8 @@ export const PostStore = defineStore({
         addItem(){
             if(this.title != null && this.description != null){
 
+               
                 let form_data = new FormData();
-
                 form_data.append('title',this.title)
                 form_data.append('description',this.description)
                 form_data.append('image',this.image)

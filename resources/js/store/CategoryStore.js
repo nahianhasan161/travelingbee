@@ -66,6 +66,7 @@ export const CategoryStore = defineStore({
                /*  console.log('Error :'+ $e); */
                 
             })
+            this.fetchCategories()
         },
 
         editCategory(categoryId,data){

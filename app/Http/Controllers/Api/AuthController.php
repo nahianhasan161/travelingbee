@@ -10,7 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -135,11 +135,33 @@ class AuthController extends Controller
 
             Helper::sendError('Validation Failed',$validated->errors());
         }else{
-            $user->update([
+            
+            $request['role'] ? $user-> syncRoles($request['role']) : '';
+            
+            if($request->file('image')){
+
+                $imageName = '';
+                if($user->image){
+
+                    $imagePath = public_path('/image/profile/'.$user->image);
+                    if(File::exists($imagePath)){
+                        unlink($imagePath);
+                    }
+                }
+                $file = $request->file('image');
+                $imageName = $file->getClientOriginalName();
+                
+                $file->move(public_path('image/profile'),$imageName);
+                $user->update([
+                    'image' => $imageName   
+                ]);
+            }
+           $u = $user->update([
+           
                 'name' => $request['name'],
                 'email' => $request['email'],
+                
             ]);
-            $user-> syncRoles($request['role']);
             $response = [
                 'success' => true,
                 'data' => new UserResource($user),
@@ -150,6 +172,7 @@ class AuthController extends Controller
          }
 
         }
+    }
 
 
-}
+

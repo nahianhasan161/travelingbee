@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Helper;
 use App\Http\Requests\PlaceRequest;
+use App\Http\Resources\PlaceResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use PHPUnit\TextUI\Help;
 
 class PlaceController extends Controller
@@ -27,7 +29,7 @@ class PlaceController extends Controller
         }  */
         $places = Place::latest()->get();
         
-        return Helper::sendSuccess('succesfully Fetched Place',$places);
+        return Helper::sendSuccess('succesfully Fetched Place',PlaceResource::collection($places));
     }
     /* $places = Place::latest()->get(); */
 
@@ -49,9 +51,30 @@ class PlaceController extends Controller
      */
     public function store(PlaceRequest $request)
     {
-        $input = $request->all();
-        Place::create($input);
-       return Helper::sendSuccess('Place Successfully Created');
+       
+        $input = $request->only('name','description','features','rating','price','category_id','user_id');
+        $place = Place::create($input); 
+         if($request->file('feature_image')){
+
+            $imageName = ''; 
+            /*  if($request->feature_image){
+
+                $imagePath = public_path('/image/place/feature/'.$request->feature_image);
+                if(File::exists($imagePath)){
+                    unlink($imagePath);
+                }
+            }  */
+            $file = $request->file('feature_image');
+            $imageName = $file->getClientOriginalName();
+            
+            $file->move(public_path('image/place/feature/'),$imageName);
+           $place->update([
+                'feature_image' => $imageName   
+            ]); 
+        } 
+
+        
+       return Helper::sendSuccess('Place Successfully Created',$input);
     }
 
     /**
@@ -63,9 +86,11 @@ class PlaceController extends Controller
     public function show($place)
     {
         if($place){
-           $currentPlace = Place::find($place);
-           if($currentPlace){
-            return Helper::sendSuccess('Succesfully Fetched Place',$currentPlace);
+           $currentPlace = Place::with('images','owner')->find($place);
+
+        if($currentPlace){
+        /* $place = new PlaceResource($currentPlace); */
+            return Helper::sendSuccess('Succesfully Fetched Place',new PlaceResource($currentPlace));
            }
            else
            {
@@ -96,17 +121,59 @@ class PlaceController extends Controller
      * @param  \App\Models\Place  $place
      * @return \Illuminate\Http\Response
      */
-    public function update( $place,Request $request)
+    public function update( $place,PlaceRequest $request)
     {
         $thisPlace = Place::find($place);
-      
+        
+       /* return Helper::sendSuccess('success', $request->only('name','description','features','rating','price','category_id','user_id'));   */
         if($thisPlace) {
-            $input = $request->all();
+          /*   if($request->images){
+
+                return Helper::sendSuccess('success');
+            }else{
+
+                return Helper::sendSuccess('failed', $request->images);
+            } */
+            if($request->images){ 
+                foreach($request->file('images') as $image){
+                    $imagesName = '';
+                    /* Help::sendSuccess($request->file($image)) */
+                    $file = $image;
+        
+                    $imagesName = $file->getClientOriginalName();
+                    $file->move(public_path('image/place/more/'),$imagesName);
+                $thisPlace->images()->create([
+                    'name' => $imagesName   
+                ]); 
+                }
+                 
+             } 
+            $input = $request->only('name','description','features','rating','price','category_id','user_id');
             $updated = $thisPlace->update($input);
+            if($request->file('feature_image')){
+
+                $imageName = ''; 
+                 if($request->feature_image){
+    
+                    $imagePath = public_path('/image/place/feature/'.$request->feature_image);
+                    if(File::exists($imagePath)){
+                        unlink($imagePath);
+                    }
+                }  
+                $file = $request->file('feature_image');
+                $imageName = $file->getClientOriginalName();
+                
+                $file->move(public_path('image/place/feature/'),$imageName);
+                $thisPlace->update([
+                    'feature_image' => $imageName   
+                ]); 
+            }
+             
+
         }  else{ Helper::sendError('Something Went Wrong');}
        
 
-       return Helper::sendSuccess( $updated); 
+       return Helper::sendSuccess( $updated,$request->all()); 
     }
 
     /**

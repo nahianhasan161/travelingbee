@@ -25,4 +25,10 @@ class Helper{
 
 
     }
+    public static function takaSign(){
+      
+        return '৳';
+
+
+    }
 }

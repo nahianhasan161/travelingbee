@@ -23,12 +23,12 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    /* protected $fillable = [
         'name',
         'email',
         'password',
-    ];
-
+    ]; */
+    protected $guarded = [];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -48,9 +48,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function Bookings()
+    public function places()
+    {
+    return $this->hasMany(Place::class);
+    }
+    public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+    public function bookingToPlace()
+    {
+       
+        return $this->belongsToMany(Place::class,'bookings','user_id','place_id')->withPivot('id','date');
     }
     public function sendPasswordResetNotification($token)
     {

@@ -25,11 +25,11 @@
 </div>
 <nav class="navbar navbar-expand-lg bg-white sticky-top navbar-light p-3 shadow-sm">
   <div class="container">
-    <router-link active-class="active" :to="{name:'welcome'}"  class="navbar-brand" >
-        <i class="fab fa-forumbee"></i><strong>Traveling Bee </strong>
-    </router-link>
+  <router-link active-class="active" :to="{name:'welcome'}"  class="navbar-brand" >
+      <i class=" fab fa-forumbee"></i><strong>Traveling Bee </strong>
+</router-link>
 
-
+  
     <button class="navbar-toggler"
     type="button"
      data-toggle="collapse"
@@ -58,8 +58,10 @@
       <ul class="navbar-nav ms-auto ">
 
         <li class="nav-item">
-          <router-link active-class="active" :to="{name:'dashboard'}"  class="nav-link mx-2 text-uppercase " >Home</router-link>
-
+          <router-link active-class="active" :to="{name:'dashboard'}"  class="nav-link mx-2 text-uppercase " >Home</router-link><!--  v-if="currentUser.roles[0] == 'User'" -->
+          <!-- <router-link active-class="active" :to="{name:'admin_dashboard'}"  class="nav-link mx-2 text-uppercase " v-if="currentUser.roles[0] == 'Admin'">Home</router-link>
+          <router-link active-class="active" :to="{name:'suadmin_dashboard'}"  class="nav-link mx-2 text-uppercase " v-if="currentUser.roles[0] == 'SuAdmin'">Home</router-link>
+ -->
         </li>
         <li class="nav-item">
             <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" >Posts</router-link>
@@ -89,11 +91,14 @@
         <li class="nav-item dropdown ">
 
         <a class="nav-link dropdown-toggle group-input" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle">
+          <img :src="'/image/profile/'+currentUser.image" width="40" height="40" class="rounded-circle" alt="profile_img" v-if="currentUser.image"> 
+
+          <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else>
      <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong> 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <router-link active-class="active" :to="{name:'user_profile'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Profile</router-link>
+          <router-link active-class="active" :to="{name:'dashboard'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Dashboard</router-link>
          
           <a class=" dropdown-item text-danger" @click="logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
         </div>
@@ -120,7 +125,10 @@
 
 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 <div class="image">
-<img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+  <img :src="'/image/profile/'+currentUser.image" class="img-circle elevation-2" alt="User Image" v-if="currentUser.image"> 
+
+<!-- <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else> -->
+<img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" v-else>
 </div>
 <div class="info">
 <a href="#" class="d-block">{{currentUser ? currentUser.name : 'Anonymous'}}</a> 

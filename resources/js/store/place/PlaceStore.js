@@ -23,7 +23,7 @@ export const PlaceStore = defineStore({
     getters:{
 
 
-       getPlaces : function(){
+    getPlaces : function(){
 
         return this.places;
        },
@@ -61,11 +61,11 @@ export const PlaceStore = defineStore({
             });
 
         },
-         fetchPlace($id){
+       async  fetchPlace($id){
             this.loading = true
             let cID = null;
             this.placeId ?  cID = this.placeId : cID = $id;
-             axios.get(this.url+'/'+cID).then(res=>{
+           await  axios.get(this.url+'/'+cID).then(res=>{
                 if(res.data.success){
 
                     this.places = res.data.data

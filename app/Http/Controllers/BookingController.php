@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Helper;
+use App\Http\Resources\BookingResource;
+use App\Http\Resources\InvoiceResource;
 use App\Models\Booking;
+use App\Models\Place;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -57,9 +61,26 @@ class BookingController extends Controller
      * @param  \App\Models\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function show(Booking $booking)
+    public function show($user)
     {
-        //
+        $currentUser = User::find($user);
+       /*  foreach ($booking->bookingToPlace as $role) {
+            $b = $role->pivot->date;
+        }  */
+        /* $booking->bookingToPlace */
+     return Helper::sendSuccess('Data Fetch Successfull',BookingResource::collection($currentUser->bookingToPlace)); 
+ /*    return Helper::sendSuccess('here', $currentUser); */
+    }
+    public function BookingDetails( $place)
+    {
+        
+        $currentBooking = Booking::find($place);
+       /*  foreach ($booking->bookingToPlace as $role) {
+            $b = $role->pivot->date;
+        }  */
+        /* $booking->bookingToPlace */
+     return Helper::sendSuccess('Data Fetch Successfull',BookingResource::collection($currentBooking)); 
+ /*    return Helper::sendSuccess('here', $currentUser); */
     }
 
     /**
@@ -68,9 +89,10 @@ class BookingController extends Controller
      * @param  \App\Models\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function edit(Booking $booking)
+    public function edit($booking)
     {
-        //
+       $currentBooking =  Place::with('bookingTOUser','owner')->find($booking);
+       return Helper::sendSuccess('Data Fetch Successfull',new InvoiceResource($currentBooking)); 
     }
 
     /**
