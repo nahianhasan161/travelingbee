@@ -60,12 +60,12 @@
 
 <div class="row">
 <div class="col-md-6">
-    <div class="content">
+   <!--  <div class="content">
     <h1>Host Name</h1>
     <small>available Room & People Per Room</small>
     <hr>
 
-</div>
+</div> -->
 
 <div class="">
 <h1>Features</h1>
@@ -76,7 +76,7 @@
 <hr>
 
 </div>
-<div class="">
+<!-- <div class="">
     <h1>What this place offers</h1>
     <div class="row">
 
@@ -105,7 +105,7 @@
     </div>
 <hr>
 
-</div>
+</div> -->
 
 <div class="">
 <h1>Description</h1>
@@ -120,8 +120,8 @@
 </div>
 <div class="col-md-6">
     <div class="container ml-1">
-  <div class="">
-    <div class="">
+ 
+    <form @submit.prevent="booking">
       <div class="card text-center">
         <div class="card-header text-center border-bottom-0 bg-transparent text-success pt-4">
           <h5>Payment</h5>
@@ -133,8 +133,19 @@
         <ul class="list-group list-group-flush">
             <div class="form-group">
     <label for="InputDate">Date:</label>
-    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date">
+    <input type="date" class="form-control" v-model="form.date" :class="errors.date ? 'is-invalid' : '' " 
+    id="InputDate" aria-describedby="DateHelp" placeholder="Select Date">
+    <div class="text-danger" v-if="errors.date">
+               <p v-for="error in errors.date">
+                {{error}}
+               </p>
+  </div>
 
+    <div class="text-danger" v-if="errors.user_id">
+               <p>
+                Not Authenticated
+               </p>
+  </div>
   </div>
 
           <li class="list-group-item"><i class="fas fa-male text-success mx-2"></i>No Return</li>
@@ -142,11 +153,11 @@
           <li class="list-group-item"><i class="fas fa-gavel text-success mx-2"></i> No  hidden fees</li>
         </ul>
         <div class="card-footer border-top-0 bg-warning">
-          <a href="#" class=" text-uppercase">Book Now <i class="fas fa-arrow-right"></i></a>
+          <button type="submit" class="btn text-uppercase">Book Now <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
-    </div>
-  </div>
+      </form>
+    
 </div>
 </div>
 </div>
@@ -156,23 +167,54 @@
     </div>
     </template>
     <script setup>
-        import { onMounted } from 'vue';
+        import { onMounted,reactive,ref } from 'vue';
         import {useRouter} from 'vue-router'
        import {UserStore} from '@/store/UserStore'
        import { PlaceStore } from '../store/place/PlaceStore';
         import {storeToRefs} from 'pinia'
         
+        import { useToastr } from './toaster';
+import axios from 'axios';
 
 
 
-
+            const toastr = new useToastr();
             const router = new useRouter();
             const store = new UserStore();
             const {places,placeId} = storeToRefs(PlaceStore())
             const {fetchPlace} = PlaceStore()
+            const {currentUser} = UserStore()
             /* let currentUser; */
             let currentPlaceID;
+            let errors = ref([]);
+            let form = reactive({
+              date: '',
+              place_id: '',
+              user_id: '',
+              
+            })
+            function reset(){
+              form.date = '',
+              form.place_id ='',
+              form.user_id = ''
+              errors.value = []
+            }
+            function booking(){
+              form.place_id =  currentPlaceID
+             /* currentUser == 'undefine' ? toastr.error('Not Authorize') : form.user_id = currentUser.user_id */
+             axios.post('/api/booking',form).then(res=>{
 
+               if(res.data.success){
+                toastr.success('Booking Successfull');
+                reset()
+               }
+             if(res.data[0].success == false){
+                errors.value = res.data[0].data
+             }
+             
+             })
+              
+            }
             function logout(){
                 store.removeToken();
                 store.removeUser();
@@ -180,11 +222,12 @@
             }
             onMounted(()=>{
               currentPlaceID = router.currentRoute.value? router.currentRoute.value.params.id : ''
+              currentUser ?  form.user_id = currentUser.user_id : ''
             /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
             /*  this.store.fetchCurrentUser(); */
            fetchPlace(currentPlaceID);
-          
-           console.log(places);
+           console.log(currentUser);
+         /*   console.log(places); */
             })
 
 

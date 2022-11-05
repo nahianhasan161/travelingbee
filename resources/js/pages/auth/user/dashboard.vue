@@ -61,21 +61,41 @@
 </div>
 
 </div>
-{{getCurrentUser}}
+<!-- {{getCurrentUser}} -->
+<h1>User</h1>
+<div class="container">
+  <div class="card-group vgr-cards m-5 p-1" v-for="booking in bookings">
+    <div class="card">
+      <div class="card-img-body">
+      <img class="card-img" src="https://picsum.photos/500/230" alt="Card image cap">
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">{{booking.place.name}}</h4>
+        <p class="card-text">{{booking.place.description}}</p>
+        <div class="d-flex justify-content-between m-3">
+            <p class="card-title">৳{{booking.place.price}}</p>
+            <p class="card-text">{{booking.place.rating}}<i class="fas fa-star text-warning"></i></p>
+
+        </div>
+        <a @click="deleteBooking(booking.id)" class="btn btn-outline-danger">Cancle</a>
+      </div>
+    </div>
+    </div>
+    </div>
 
 
 <button class="btn btn-danger" @click="logout">Logout</button>
 </div>
 </template>
 <script setup>
-    import { onMounted } from 'vue';
+    import { onMounted,ref } from 'vue';
     import { storeToRefs } from 'pinia';
     import {useRouter} from 'vue-router'
    import {UserStore} from '@/store/UserStore'
 import axios from 'axios';
 
 
-
+let bookings = ref([]);
 
 
         const router = new useRouter();
@@ -84,6 +104,26 @@ import axios from 'axios';
         const {getCurrentUser} = UserStore()
 
 
+        function deleteBooking($id){
+            axios.delete('/api/booking/'+$id).then(res=>{
+                console.log(res);
+                fetchBooking()
+            })
+                
+            
+        }
+        function fetchBooking($id){
+            axios.get('/api/booking/'+getCurrentUser.user_id).then(res=>{
+          if(res.data.success){
+            bookings.value = res.data.data
+          } 
+         console.log(res.data)
+        }).catch((err)=>{
+            console.log(err)
+        })
+                
+            
+        }
         function logout(){
             store.removeToken();
             store.removeUser();
@@ -93,12 +133,7 @@ import axios from 'axios';
 
         /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
         /*  this.store.fetchCurrentUser(); */
-        /* axios.get('/api/user').then(res=>{
-
-         console.log(res.data)
-        }).catch((err)=>{
-            console.log(err)
-        }) */
+        fetchBooking() 
         })
 
 
@@ -108,3 +143,81 @@ import axios from 'axios';
 
 </script>
 
+<style>
+
+body {
+  margin-top: 20px;
+}
+
+
+.card {
+  border: none;
+}
+.card-img {
+  border-radius: 0;
+}
+
+
+  .card {
+    display: flex;
+    flex-flow: wrap;
+    flex: 100%;
+    margin-bottom: 40px;
+
+  /*   &:nth-child(even) .card-img-body {
+      order: 2;
+    }
+
+    &:nth-child(even) .card-body {
+      padding-left: 0;
+      padding-right: 1.25rem; 
+    } */
+    
+    @media (max-width: 576px) {
+      display: block;
+    }
+    
+  }
+
+  .card-img-body {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    
+    @media (max-width: 576px) {
+      width: 100%;
+      height: 200px;
+          margin-bottom: 20px;
+    }
+    
+  }
+  
+  .card-img {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    
+    @media (max-width: 1140px) {
+          margin: 0;
+    transform: none;
+    width: 100%;
+    height: auto;
+    }
+    
+  }
+
+  .card-body {
+    flex: 2;
+    padding: 0 0 0 1.25rem;
+    
+    @media (max-width: 576px) {
+      padding: 0;
+    }
+    
+  }
+
+
+
+</style>

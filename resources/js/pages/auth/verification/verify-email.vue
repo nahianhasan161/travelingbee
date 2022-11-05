@@ -57,28 +57,34 @@
           
          onMounted(()=>{
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        }) 
+        })
 
           function sendLink(){
            
-            
-        axios.post('/api/email/verification-notification').then(res=>{
-            console.log(res)
-            if(res.status == 200){
-             
-              if(res.data.status){
+            try{
+
+              axios.post('/api/email/verification-notification').then(res=>{
+                console.log(res)
+                if(res.status == 200){
+                  
+                  if(res.data.status){
                 toaster.success(res.data.status)
                 
               }else{
                 toaster.info(res.data.message)
-
+                
               }
             }
             else{
               toaster.error('Something went wrong')
             }
-        })
-     }
+          })
+        }catch($e){
+          console.log($e)
+        }
+        
+
+        }
           let form = reactive({
               email:'',
               password:'',

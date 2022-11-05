@@ -7,7 +7,8 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\Rule;
+use App\Http\Resources\BookingResource;
 class BookingController extends Controller
 {
     /**
@@ -17,7 +18,9 @@ class BookingController extends Controller
      */
     public function index()
     {
-        Helper::sendError('up');
+        $data = BookingResource::collection(Booking::all());
+        
+        return Helper::sendSuccess('Fetched Suceesfully',$data);
     }
 
     /**
@@ -38,8 +41,26 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+       if($request){
+
+           $date = $request->only('date');
+           $user_id = $request->only('user_id');
+           $place_id = $request->only('place_id');
+        }
+        /* 'required,date,after_or_equal:'. Carbon::now()->format('d-m-Y') , */
+
+       /*  $messages = [
+            date => 'This Already Booked'
+        ]; */
       $validated =  Validator::make($request->all(),[
-            'date' => 'required|date|after_or_equal:'. Carbon::now()->format('d-m-Y'),
+            'date' => ['required','date','after_or_equal:'. Carbon::now()->format('d-m-Y'), 
+            Rule::unique('bookings')->where(function ($query) use($date,$user_id,$place_id) {
+                return $query->where('place_id', $place_id)
+                ->where('user_id', $user_id)
+                ->where('date', $date);
+            }),
+            /* $messages */
+        ],
             'user_id' => 'required',
             'place_id' => 'required',
         ]);
@@ -57,9 +78,11 @@ class BookingController extends Controller
      * @param  \App\Models\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function show(Booking $booking)
+    public function show($booking)
     {
-        //
+        $data = BookingResource::collection(Booking::where('user_id',$booking)->get());
+        
+        return Helper::sendSuccess('Fetched Suceesfully',$data);
     }
 
     /**
@@ -93,6 +116,7 @@ class BookingController extends Controller
      */
     public function destroy(Booking $booking)
     {
-        //
+        $booking->delete();
+        return Helper::sendSuccess('Successfully Deleted');
     }
 }

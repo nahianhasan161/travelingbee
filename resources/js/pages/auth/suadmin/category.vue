@@ -137,7 +137,8 @@ import { storeToRefs } from 'pinia';
                }else{
                 console.log(form)
                 createCategory(form)
-                
+              /*   console.log('log'+e); */
+              /*   e ? form.name = '' : console.log(e) */
                }
               /*  console.log(editing.value); */ 
             }

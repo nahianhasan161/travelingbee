@@ -56,6 +56,7 @@ export const CategoryStore = defineStore({
                     console.log(res.data.success);
                     toastr.success(res.data.message); 
                     $('#ModalCenter').modal('hide');
+                   
                   /*   fetchCategories() */
                 }else{
                     toastr.error(res.data[0].message) ;
