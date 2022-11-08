@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\PostController;
@@ -49,6 +50,8 @@ Route::controller(AuthController::class)->group(function(){
      /* Route::get('/user','authUser')->middleware('auth:sanctum');  */
 });
 
+Route::resource('/orders', OrderController::class);
+Route::get('/orders/user/{id}',[OrderController::class,'orderShow']);
 Route::resource('/posts', PostController::class);
 Route::resource('/roles', RoleController::class);
 
@@ -56,7 +59,11 @@ Route::resource('/place', PlaceController::class);
 Route::resource('/category', CategoryController::class);
 
 Route::resource('/booking',BookingController::class);
-Route::post('/place/details/:place', [BookingController::class, 'BookingDetails']); 
+Route::get('/booking/user/{id}', [BookingController::class, 'userBookingDetails']); 
+Route::post('/place/bookings/by', [BookingController::class, 'getBookingBy']); 
+Route::post('/place/details/{place}', [BookingController::class, 'BookingDetails']); 
+Route::get('/manage/place/{place}/booking/all', [BookingController::class, 'BookingByUser']); 
+Route::post('/place/payments', [BookingController::class, 'payments']); 
 
 //SSLCOMMERZ Start
 Route::post('/pay', [SslCommerzPaymentController::class, 'index']);

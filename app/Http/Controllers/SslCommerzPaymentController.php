@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Library\SslCommerz\SslCommerzNotification;
+use App\Models\Booking;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 class SslCommerzPaymentController extends Controller
@@ -105,8 +107,13 @@ class SslCommerzPaymentController extends Controller
         $post_data['currency'] = "BDT";
         $post_data['tran_id'] = uniqid(); // tran_id must be unique
 
+        # Booking INFORMATION
+        $post_data['user_id'] = $data['user_id'];
+        $post_data['place_id'] = $data['place_id'];
+        $post_data['date'] = $data['date'];
         # CUSTOMER INFORMATION
         $post_data['cus_name'] = $data['cus_name'];
+        $post_data['place_id'] = $data['place_id'];
         $post_data['cus_email'] = $data['cus_email'];
         $post_data['cus_add1'] = $data['cus_addr1'];
         $post_data['cus_add2'] = "";
@@ -140,6 +147,24 @@ class SslCommerzPaymentController extends Controller
 
 
         #Before  going to initiate the payment order status need to update as Pending.
+        $update_booking = DB::table('bookings')
+            ->where([
+                'user_id'=> $post_data['user_id'],
+                'place_id'=>$post_data['place_id'],
+                'date'=> $post_data['date']
+            ])
+            ->updateOrInsert([
+                'user_id'=> $post_data['user_id'],
+                'place_id'=>$post_data['place_id'],
+                'date'=> $post_data['date']
+            ]);
+            if($update_booking){
+               $booking = Booking::where([
+                'user_id'=> $post_data['user_id'],
+                'place_id'=>$post_data['place_id'],
+                'date'=> $post_data['date']
+            ])->first();
+            }
         $update_product = DB::table('orders')
             ->where('transaction_id', $post_data['tran_id'])
             ->updateOrInsert([
@@ -149,6 +174,8 @@ class SslCommerzPaymentController extends Controller
                 'amount' => $post_data['total_amount'],
                 'status' => 'Pending',
                 'address' => $post_data['cus_add1'],
+                'place_id' => $post_data['place_id'],
+                'booking_id' =>  $booking->id ,
                 'transaction_id' => $post_data['tran_id'],
                 'currency' => $post_data['currency']
             ]);
@@ -190,7 +217,7 @@ class SslCommerzPaymentController extends Controller
                 */
                 $update_product = DB::table('orders')
                     ->where('transaction_id', $tran_id)
-                    ->update(['status' => 'Processing']);
+                    ->update(['status' => 'Completed']);
 
                 echo "<br >Transaction is successfully Completed";
             } else {
@@ -283,8 +310,9 @@ class SslCommerzPaymentController extends Controller
                     */
                     $update_product = DB::table('orders')
                         ->where('transaction_id', $tran_id)
-                        ->update(['status' => 'Processing']);
-
+                        ->update(['status' => 'Completed']);
+                   /*      $tra =  Order::with('booking')->where('transection_id',$tran_id)->first();
+                        $update_booking = $tra->booking->update(['status' => 0]); */
                     echo "Transaction is successfully Completed";
                 } else {
                     /*

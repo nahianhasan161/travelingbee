@@ -97,8 +97,8 @@
      <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong> 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <router-link active-class="active" :to="{name:'dashboard'}" class="dropdown-item" ><i class="nav-icon fas fa-tachometer-alt mr-1"  ></i> Dashboard</router-link>
           <router-link active-class="active" :to="{name:'user_profile'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Profile</router-link>
-          <router-link active-class="active" :to="{name:'dashboard'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Dashboard</router-link>
          
           <a class=" dropdown-item text-danger" @click="logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
         </div>

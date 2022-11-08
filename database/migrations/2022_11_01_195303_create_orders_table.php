@@ -22,6 +22,8 @@ return new class extends Migration
             $table->double('amount');
             $table->text('address');
             $table->string('status');
+            $table->unsignedBigInteger('place_id');
+            $table->unsignedBigInteger('booking_id')->nullable();
             $table->string('transaction_id');
             $table->string('currency');
             $table->timestamps();

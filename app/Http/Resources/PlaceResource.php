@@ -33,7 +33,8 @@ class PlaceResource extends JsonResource
         'price' => $this->price,
     'category' => $this->category ? $this->category->only('id','name') : [],
        'user' => User::find( $this->user_id) ? User::find( $this->user_id)->only('id','name','email','image') : '', 
-        'images' =>   $this->whenLoaded('images') , 
+        'images' =>   $this->whenLoaded('images') ,
+        'bookings' => $this->bookings 
         /* 'user_name' =>  $this->owner, */
     ];
     }

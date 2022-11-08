@@ -2,6 +2,101 @@
 
 <div class="container">
    
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+       
+      <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Payments</h5>
+       <!--  <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+  <div class="form">
+    <div class="card-body table-responsive">
+<table class="table table-bordered table-hover">
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Amount</th>
+<th>Address</th>
+<th>Status</th>
+<th>Transection ID</th>
+<th>Booking ID</th>
+
+
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr v-for="(order,index) in orders" :key="order.id">
+    <td>{{index+1}}</td>
+<td >{{order.name}}</td>
+ <td >{{order.email}}</td>
+<td >{{order.phone}}</td>
+<td >{{order.amount}}</td>
+<td >{{order.address}}</td>
+<td >{{order.status}}</td>
+<td >{{order.transaction_id}}</td>
+<td >{{order.booking_id}}</td>
+
+<td>
+    <!-- <router-link :to="'/payment/invoice/'+order.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
+     <button class="btn btn-primary mr-3" @click="invoice(order.id)"> 
+ <i class="far fa-edit"></i></button> 
+   <!--  <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
+</td>
+
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+</tbody>
+</table>
+</div>
+    <div v-for="order in orders" :key="order.id">
+
+
+    </div>
+   <!--  <div class="form-group ">
+      <label for="inputName">Name</label>
+      <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
+      <div class="text-danger" v-if="errors.name">
+               <p v-for="error in errors.name">
+                {{error}}
+               </p>
+             </div>
+    </div> -->
+  
+  </div>
+
+
+
+
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+</div>
+
+    </div>
+  </div>
+</div>
 
 
 <div class="container">
@@ -9,7 +104,7 @@
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-blue order-card">
                 <div class="card-block">
-                    <h6 class="m-b-20">Orders Received</h6>
+                    <h6 class="m-b-20">Total Bookings</h6>
                     <h2 class="text-right"><i class="fa fa-cart-plus f-left"></i><span>486</span></h2>
                     <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
                 </div>
@@ -19,7 +114,7 @@
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-green order-card">
                 <div class="card-block">
-                    <h6 class="m-b-20">Orders Received</h6>
+                    <h6 class="m-b-20" > Payments </h6>
                     <h2 class="text-right"><i class="fa fa-rocket f-left"></i><span>486</span></h2>
                     <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
                 </div>
@@ -88,17 +183,19 @@
  <!-- {{bookings}}  -->
         
      <!--    <div class="card" v-if="bookings.value"> --> <!-- style="width: 680px;height: 290px;" -->
-            <router-link :to="'/place/1'" class="row no-gutters my-1 border" v-for="(booking,index) in bookings" :key="index" v-if="bookings">
-               
+        <div class="row no-gutters my-1 border" v-for="(booking,index) in bookings.value" :key="index" v-if="bookings">
+            
+
                 
-                <div class="col-sm-5">
-                   
+                <div class="col-sm-5" >
+                    
                     <img class="card-img" 
                     :src="booking.feature_image ? '/image/place/feature/'+booking.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" alt="" style="height:290px">
                 </div>
                 <div class="col-sm-7 d-flex justify-content-between">
                     <div>
                     <div class="card-body">
+                        <p class="text-bold text-success ">Date:{{booking.date}}</p>
                         <h5 class="card-title">{{booking.name}}</h5>
                         <p class="card-text">{{booking.description}}</p>
                     </div>
@@ -115,25 +212,36 @@
                                     <i class="fas fa-star fa"></i>
                                    <!--  <p style="position: relative;left: 10px;top:-3px; color:black">28 reviews</p> -->
                                 </div>
-                                <p>{{booking.features}}</p>
+                               <!--  <p>{{booking.features}}</p> -->
                                 <h2>৳{{booking.price}}</h2>
-                                <h4 class="text-bold">Pending</h4>
+                                <h4 :class="booking.status == 0?  'text-danger' : 'text-success'" class="text-bold">{{booking.status == 0 ? "COMPLETE" : "PENDING"}} </h4>
                             </div>
                             
                            
                         </div>
                     </div>
                     <div>
-                        BookingID:{{booking.booking_id}}
+                      <p>BookingID:{{booking.booking_id}}</p>  
+                        
                         <div class="d-flex flex-column mt-5">
-                                <router-link :to="'/payment/invoice/'+booking.id" class="btn btn-outline-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link>
-                                
-                                <a href="#" class="btn btn-outline-danger mt-1">Payment</a>
-                            </div>
+                            <router-link :to="'/payment/invoice/'+booking.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link>
+                            
+                            <a href="#" class="btn btn-outline-danger mt-1" @click="getOrdersByBooking(booking.booking_id)">Payment</a>
+                            <router-link class="btn btn-lg btn-primary mt-1" :to="'/place/'+booking.id" >
+                                Details                  
+                        </router-link>
+                        <small class="float-right"><a @click="deleteBooking(booking.booking_id)" class="btn btn-danger mt-1 z-index"> Cancle </a></small>
+                        </div>
                     </div>
                     
                 </div>
-            </router-link>
+           <!--      <div class="card-footer">
+                    <div class="float-right">
+
+                   
+                </div>
+    </div> -->
+        </div>
             
     <!--     </div> -->
        <!--  <div v-else>
@@ -141,9 +249,9 @@
         </div>
  -->
 
+ 
 
-
-<!-- {{getCurrentUser}}  -->
+<!-- {{bookings.value.booking_id}} -->
 <!-- <button class="btn btn-danger" @click="logout">Logout</button> -->
 </div>
 </template>
@@ -152,26 +260,37 @@
     import { storeToRefs } from 'pinia';
     import {useRouter} from 'vue-router'
    import {UserStore} from '@/store/UserStore'
+   import {BookingStore} from '@/store/booking/BookingStore'
     import axios from 'axios';
 
 
 
 
-        let bookings = ref([])
+       /*  let bookings = ref([]) */
         const router = new useRouter();
         const store = new UserStore();
+        const bookingstore = new BookingStore();
+
+        const {bookings} = storeToRefs(BookingStore())
+        const {getBookingsByUserId,deleteBooking} = BookingStore()
+
         const {currentUser} = storeToRefs(UserStore())
         const {getCurrentUser} = UserStore()
+        let orders = ref([])
+        function showPayments(bookingID){
+            $('#exampleModalCenter').modal('show');
+        }
+    function invoice(id){
+        $('#exampleModalCenter').modal('hide');
+        router.push('/payment/invoice/'+id)
+    }
+        function getOrdersByBooking(id){
 
+            $('#exampleModalCenter').modal('show');
 
-       async function bookingapi(){
-        await axios.get('/api/booking/'+getCurrentUser.user_id).then(res=>{
-            if(res.data.success){
-                bookings.value = res.data.data
-
-                console.log(res.data.data)
-            }
-        })
+            axios.get('/api/orders/'+id).then(res=>{
+               orders.value = res.data.data
+            })
         }
         function logout(){
             store.removeToken();
@@ -179,11 +298,12 @@
             router.push({name:'login'})
         }
 
-        watchEffect(()=>{
-            bookingapi()
+        watchEffect( async()=>{
+           /*  bookingapi() */
+           await getBookingsByUserId(getCurrentUser.user_id)
            })
         onMounted(async ()=>{
-            await bookingapi()
+            await getBookingsByUserId(getCurrentUser.user_id)
             
         /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
         /*  this.store.fetchCurrentUser(); */
@@ -289,4 +409,6 @@ body{
     float: right;
 }
 /* status cards style */
+
+
 </style>

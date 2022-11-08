@@ -1,5 +1,6 @@
 <template>
     <div class="wrap">
+        <!-- {{bookings}} -->
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary my-3" @click="addUser"> <!-- data-toggle="modal" data-target="#exampleModalCenter" -->
@@ -85,7 +86,7 @@
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3 class="card-title">Manage Users</h3>
+<h3 class="card-title">Manage Bookings</h3>
 </div>
 
 <div class="card-body table-responsive">
@@ -93,21 +94,22 @@
 <thead>
 <tr>
 <th>#</th>
-<th>Name</th>
-<th>Email</th>
-<th>Created</th>
-<th>Role</th>
+<th>Booking ID</th>
+<th>Place </th>
+<th>User</th>
+<th>Date</th>
 <th>Actions</th>
 </tr>
 </thead>
 <tbody>
-<tr v-for="(User,index) in allUser" :key="User.id">
+<tr v-for="(User,index) in bookings" :key="User.id">
     <td>{{index+1}}</td>
-<td >{{User.name}}</td>
-<td >{{User.email}}</td>
-<td >{{User.created_at}}</td>
-<td class="capital">{{User.roles[0]}}</td>
+<td >{{User.id}}</td>
+<td >{{User.place_id}}</td>
+<td >{{User.user_id}}</td>
+<td class="capital">{{User.date}}</td>
 <td>
+    <button class="btn btn-warning mr-3" >Payments</button>
     <button class="btn btn-primary mr-3" @click="editUser(User)">
 
 
@@ -156,6 +158,7 @@ import { storeToRefs } from 'pinia';
         
         let users = ref(store.getAllUsers);
         const editing = ref(false);
+        let bookings = ref([])
         let editId = ref('')
         let form = reactive({
                 name:'',
@@ -233,10 +236,14 @@ import { storeToRefs } from 'pinia';
 
                 })
             }
-
+            function allBooking(id){
+                axios.get('/api/manage/place/'+id+'/booking/all').then(res=>{
+                    bookings.value = res.data.data
+                })
+            }
             onMounted(()=>{
                 store.fetchAllUser();
-
+                allBooking(1)
 
         });
 

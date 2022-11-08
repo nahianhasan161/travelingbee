@@ -86,7 +86,7 @@
         </div>
     </template>
  </Suspense>
-
+<!-- {{places}} -->
 <div class="row" @click="test">
 <div class="col-md-6">
 <!--   <div class="row content mt-1" v-if="places.user">
@@ -179,30 +179,37 @@
         <ul class="list-group list-group-flush">
           <div class="form-group" v-if="currentUser ? currentUser.roles[0] == 'user' : false">
     <label for="InputDate">Date:</label>
-    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date">
-
+    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date"  >
+     
+             <p class="text-danger" v-if="errors" v-for="error in errors" :key="error">
+            <span v-for="err in error" :key="err">{{err}}</span>
+            </p>
   </div>
 
           <li class="list-group-item"><i class="fas fa-male text-success mx-2"></i>No Return</li>
           <li class="list-group-item"><i class="fas fa-venus text-success mx-2"></i>Pay only for what you will Get</li>
           <li class="list-group-item"><i class="fas fa-gavel text-success mx-2"></i> No  hidden fees</li>
         </ul>
-        <div class="card-footer border-top-0 bg-warning" v-if="currentUser.roles[0] == 'user'">
-          <a  class="btn text-uppercase" @click="createBooking(currentUser.user_id,places.id)">Book Now <i class="fas fa-arrow-right"></i></a>
+        <div class="card-footer border-top-0 bg-warning" v-if="currentUser ? currentUser.roles[0] == 'user' : false">
+          <a class="btn text-uppercase" @click="createBooking(currentUser.user_id,places.id)">Book Now <i class="fas fa-arrow-right"></i></a>
         </div>
-      
-          <form method="POST" class="needs-validation" novalidate>
+      <div v-show="form.date">
 
-            <hr class="mb-4">
-            <button @click="sslcommerz()" class="btn btn-primary btn-lg btn-block" id="sslczPayBtn"
+        <form method="POST" class="needs-validation" novalidate >
+          
+          <hr class="mb-4">
+          
+            <button  @click="sslcommerz()" class="btn btn-primary btn-lg btn-block" id="sslczPayBtn"
             token="if you have any token validation"
             postdata="your javascript arrays or objects which requires in backend"
             order="If you already have the transaction generated for current order"
-            endpoint="http://localhost:8000/api/pay-via-ajax"> Pay Now
+            endpoint="http://localhost:8000/api/pay-via-ajax"> Book & Pay Now
           </button>
         </form>
       </div>
-   
+      </div>
+   {{new Date().toLocaleString()}}
+   {{form.date}}
 </div>
 </div>
 </div>
@@ -212,8 +219,9 @@
     </div>
     </template>
     <script setup>
-        import { onMounted,reactive,watchEffect } from 'vue';
-        import {useRouter} from 'vue-router'
+    
+        import { onMounted,reactive,watchEffect,ref } from 'vue';
+        import {useRouter,useRoute} from 'vue-router'
        import {UserStore} from '@/store/UserStore'
        import { PlaceStore } from '../store/place/PlaceStore';
        import { useToastr } from '@/pages/toaster';
@@ -222,18 +230,61 @@
 
             const toastr = useToastr();
             const router = new useRouter();
+            const route = new useRoute();
             const store = new UserStore();
             const {places,placeId,loading} = storeToRefs(PlaceStore())
             const {fetchPlace,getPlaces} = PlaceStore()
             const {currentUser} = UserStore()
             /* let currentUser; */
-            let currentPlaceID;
+            let currentPlaceID = ref('');
            let form = reactive({
             date:'',
             user_id:'',
             place_id:''
            })
+           let errors = ref([]);
+           var today = new Date();
+           var isvalid = reactive(false);
+// Get year, month, and day part from the date
+        var year = today.toLocaleString("default", { year: "numeric" });
+        var month = today.toLocaleString("default", { month: "numeric" });
+        var day = today.toLocaleString("default", { day: "2-digit" });
+        // Generate custom date string
+        var formattedTodayDate = [day, month, year].join("-");
+
+        const compareDates = (d1, d2) => {
+        let date1 = new Date(d1).getTime();
+      let date2 = new Date(d2).getTime();
+
+          if(form.date){
+            if (date1 < date2) {
+              isvalid = false
+            } else if (date1 > date2) {
+              isvalid = true
+            } else {
+              isvalid = true
+            }
+            
+        
+          }
+          else{
+            isvalid = false
+          }
+          console.log(isvalid)
+};
+
+           function formatDate(){
            
+            let convert = form.date.split('-')
+            let year = convert[0];
+            let month = convert[1];
+            let day = convert[2];
+           var formattedDate = [day, month, year].join("-");
+        /*    form.date = formattedDate */
+           
+            console.log(compareDates(formattedDate ,formattedTodayDate))
+           
+           }
 
             function formReset(){
                 form.date = ''
@@ -246,9 +297,11 @@
                 console.log(form)
                 axios.post('/api/booking',form).then(res=>{
                   if(res.data.success){
+                    errors.value = []
                     toastr.success(res.data.message)
                   }else{
-                  toastr.error('Something went wrong')
+                   errors.value = res.data[0].data
+                  toastr.error(res.data[0].message)
                   }
                 })
                 formReset()
@@ -262,7 +315,7 @@
           async  function script(){
               
               ( function (window, document) {
-        var loader =   function () {
+        var loader =  function () {
             var script = document.createElement("script"), tag = document.getElementsByTagName("script")[0];
             // script.src = "https://seamless-epay.sslcommerz.com/embed.min.js?" + Math.random().toString(36).substring(7); // USE THIS FOR LIVE
               script.src = "https://sandbox.sslcommerz.com/embed.min.js?" + Math.random().toString(36).substring(7); // USE THIS FOR SANDBOX
@@ -277,11 +330,17 @@
              /*  console.log(places.value.price) */
             }
            function sslcommerz(){
+           /* if(createBooking(currentUser.user_id,currentPlaceID)){ */
+
+           
               var obj = {};
     obj.cus_name = currentUser.name;
     /* obj.cus_name = $('#customer_name').val(); */
     obj.cus_phone =/*  $('#mobile').val() */ '017132312132';
     /* obj.cus_email = $('#email').val(); */
+    obj.user_id = currentUser.user_id;
+    obj.place_id = currentPlaceID;
+    obj.date = form.date;
     obj.cus_email = currentUser.email;
     obj.cus_addr1 = /* $('#address').val() */ 'Tongi,Gazipur';
     console.log('place')
@@ -292,26 +351,29 @@
     $('#sslczPayBtn').prop('postdata', obj);
 
     
-           
+  
             }
 
             watchEffect(async ()=>{
-             await fetchPlace(currentPlaceID);
+              await fetchPlace(currentPlaceID); 
               /* script()  */
-              console.log(places);
-              
+             /*  console.log(places); */
+            /*  console.log(ref.)   */
               
             })
-           async function setID(){
-            currentPlaceID = router.currentRoute.value? router.currentRoute.value.params.id : '';
+           async function setID(id){
+            currentPlaceID = id ;
             }
             onMounted(async ()=>{
-              await setID()
-             await script()
-            /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
-            /*  this.store.fetchCurrentUser(); */
-           await fetchPlace(currentPlaceID);
-           
+             /*  console.log(formattedDate); */
+              /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
+              script()
+              await router.isReady();
+              setID(route.params.id)
+            
+            
+          fetchPlace(currentPlaceID);
+      
           /*  sslcommerz() */
           /*  console.log(places); */
 

@@ -7,6 +7,7 @@ use App\Http\Requests\PlaceRequest;
 use App\Http\Resources\PlaceResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use PHPUnit\TextUI\Help;
 
@@ -28,8 +29,14 @@ class PlaceController extends Controller
             $places = Place::latest()->get();
         }  */
         $places = Place::latest()->get();
-        
-        return Helper::sendSuccess('succesfully Fetched Place',PlaceResource::collection($places));
+        if($places){
+
+            return Helper::sendSuccess('Succesfully Fetched Place',PlaceResource::collection(Cache::remember('places',60*60*24,function() use ($places) {
+                return $places->all();
+            }) ));
+        }else{
+            return Helper::sendError('Data Not Found');
+        }
     }
     /* $places = Place::latest()->get(); */
 
@@ -86,7 +93,7 @@ class PlaceController extends Controller
     public function show($place)
     {
         if($place){
-           $currentPlace = Place::with('images','owner')->find($place);
+           $currentPlace = Place::with('images','owner','bookings')->find($place);
 
         if($currentPlace){
         /* $place = new PlaceResource($currentPlace); */
@@ -127,13 +134,7 @@ class PlaceController extends Controller
         
        /* return Helper::sendSuccess('success', $request->only('name','description','features','rating','price','category_id','user_id'));   */
         if($thisPlace) {
-          /*   if($request->images){
-
-                return Helper::sendSuccess('success');
-            }else{
-
-                return Helper::sendSuccess('failed', $request->images);
-            } */
+        
             if($request->images){ 
                 foreach($request->file('images') as $image){
                     $imagesName = '';
@@ -170,7 +171,7 @@ class PlaceController extends Controller
             }
              
 
-        }  else{ Helper::sendError('Something Went Wrong');}
+        }  else{ Helper::sendError('Data Not Found!');}
        
 
        return Helper::sendSuccess( $updated,$request->all()); 

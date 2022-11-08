@@ -122,13 +122,13 @@
             }
 
            watchEffect(()=>{
-            fetchPlaces()
+            fetchPlaces() 
            })
        
 
-        onMounted(()=>{
+        onMounted(async ()=>{
           
-            fetchPlaces()
+         await   fetchPlaces()
             fetchCategories()
             console.log(places.value)
            $('.toggle').click(function(){

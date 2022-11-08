@@ -3,18 +3,22 @@ import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import { useToastr } from '../../pages/toaster';
 const toastr = useToastr();
-export const PlaceStore = defineStore({
-    id :'PlaceStoreId',
+export const BookingStore = defineStore({
+    id :'BookingStoreId',
 
     state:()=>({
         /* JSON.parse() */
 
         loading: false,
       
+        bookingId:ref(''),
         roleId:ref(''),
+        userId:ref(''),
+        placeId:ref(''),
         places:ref([]),
+        bookings:ref([]),
         /* place:ref([]), */
-        url : '/api/place',
+        url : '/api/booking',
 
         categories:ref([]),
          categoryUrl : '/api/category',
@@ -23,9 +27,9 @@ export const PlaceStore = defineStore({
     getters:{
 
 
-    getPlaces : function(){
+    getBookings : function(){
 
-        return this.places;
+        return this.bookings;
        },
        getCategories : function(){
         return this.categories;
@@ -35,13 +39,17 @@ export const PlaceStore = defineStore({
     actions:{
 
         setRoleId(id){
-            console.log(id);
+           
         this.roleId = id;
         },
+        setbookingId(id){
+           
+        this.bookingId = id;
+        },
 
+    
 
-
-        async fetchPlaces(){
+        async fetchBookings(){
             this.loading = true
            await axios.get(this.url,this.roleId).then(res=>{
                 if(res.data.success){
@@ -108,14 +116,38 @@ export const PlaceStore = defineStore({
         setPlaceId(id){
             this.placeId = id
         },
+        async getBookingsByUserId(id){
+            await axios.get('/api/booking/user/'+id).then(res=>{
+                if(res.data.success){
+                    this.bookings.value = res.data.data
+    
+                    console.log(res.data.data)
+                }else{
+                    console.log(res)
 
-        deletePlace(placeId){
+                }
+            })
+            },
+
+        async getBooking(id){
+            await axios.get('/api/booking/'+id).then(res=>{
+                if(res.data.success){
+                    this.bookings.value = res.data.data
+    
+                    console.log(res.data.data)
+                }else{
+                    console.log(res)
+
+                }
+            })
+            },
+        deleteBooking(bookingId){
            
                 this.loading = true;
                 /* console.log(placeId); */
-                axios.delete(this.url+'/'+placeId).then(res=>{
-                    let index = this.places.findIndex(places=>places.id == placeId);
-                    this.places.splice(index,1);
+                axios.delete(this.url+'/'+bookingId).then(res=>{
+                    let index = this.bookings.findIndex(bookings=>booking.id == bookingId);
+                    this.bookings.splice(index,1);
                     toastr.error('success')
                     /* console.log(this.places); */
                     toastr.success(res.data.message);

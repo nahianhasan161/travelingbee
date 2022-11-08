@@ -16,6 +16,7 @@ import user_profile from './pages/auth/profile.vue';
 import suadmin_dashboard from './pages/auth/suadmin/dashboard.vue';
 import manage_user from './pages/auth/suadmin/manage_user.vue';
 import manage_roles from './pages/auth/suadmin/manage_roles.vue';
+import manage_place_booking from './pages/auth/suadmin/manage_booking.vue';
 
 /* Admin */
 import admin_dashboard from './pages/auth/admin/dashboard.vue';
@@ -42,7 +43,7 @@ import { storeToRefs } from 'pinia';
 
 const {currentUser} = storeToRefs(UserStore);
 
-
+props : ['id']
 const routes = [
 
 /*  Landing Pages */
@@ -168,6 +169,16 @@ component : register ,
     component : manage_place ,
     meta:{
         requiresAuth: true,
+    }
+},
+{
+    path : '/manage/place/:id/booking',
+    name : 'manage.place.booking',
+    component : manage_place_booking ,
+    
+    meta:{
+        requiresAuth: true,
+        props: true
     }
 },
 

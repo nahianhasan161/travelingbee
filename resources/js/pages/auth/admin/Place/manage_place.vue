@@ -155,6 +155,7 @@
 <td >৳{{place.price}}</td>
 
 <td>
+  <router-link to="/manage/place/1/booking" class="btn btn-warning mr-1">Bookings</router-link>
     <button class="btn btn-primary mr-3" @click="editPlace(place)">
 
 
@@ -377,9 +378,9 @@ import { storeToRefs } from 'pinia';
                 }) 
             }
 
-            onMounted(()=>{
+            onMounted( async ()=>{
            let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
-              let pe =  placeStore.fetchPlaces(); 
+               await placeStore.fetchPlaces(); 
               fetchCategories(); 
               setRoleId(roleId)
             console.log(roleId)

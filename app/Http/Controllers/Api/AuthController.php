@@ -19,7 +19,7 @@ class AuthController extends Controller
     {
 
 
-            $input = $request->all();
+            $input = $request->only('name','email','password');
             $input['password'] = bcrypt($input['password']);
 
         $user = User::create($input);

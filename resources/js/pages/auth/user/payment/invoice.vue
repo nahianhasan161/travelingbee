@@ -10,7 +10,7 @@
           <div class="col-sm-6">
             <h1>Invoice</h1>
           </div>
-         
+         {{bookings}}
         </div>
       </div><!-- /.container-fluid -->
     </section>
@@ -32,7 +32,7 @@
                 <div class="col-12">
                   <h4>
                     <i class="fab fa-forumbee"></i> Traveling Bee
-                    <small class="float-right">Date: {{bookings.date}}</small>
+                   <!--  <small class="float-right">Date: {{bookings.date}}</small> -->
                   </h4>
                 </div>
                 <!-- /.col -->
@@ -46,23 +46,23 @@
                     <!-- 795 Folsom Ave, Suite 600<br>
                     San Francisco, CA 94107<br>
                     Phone: (804) 123-5432<br> -->
-                    Email: {{bookings.User.email}} 
+                  <!--   Email: {{bookings.User.email}}  -->
                   </address>
                 </div>
                 <!-- /.col -->
                <div class="col-sm-4 invoice-col">
                   To
                   <address>
-                    <strong>{{bookings.User.name}}</strong><br>
+                   <!--  <strong>{{bookings.User.name}}</strong><br> -->
                    <!--  795 Folsom Ave, Suite 600<br>
                     San Francisco, CA 94107<br> -->
                    <!--  Phone: (555) 539-1037<br> -->
-                    Email: {{bookings.User.email}}
+                  <!--   Email: {{bookings.User.email}} -->
                   </address>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-4 invoice-col">
-                  <b>BookingID: {{bookings.booking_id}}</b><br>
+                 <b>BookingID: {{bookings.booking_id}}</b><br> 
                   <br>
                 
                   <b>Status:</b> <p class="text-success text-bold" v-if="bookings.status == 1"> Paid </p>
@@ -96,7 +96,7 @@
                       <td>{{bookings.name}}</td>
                       <td>455-981-221</td>
                      
-                      <td>৳{{bookings.price}}</td>
+                      <td>৳{{bookings.price}}</td> 
                     </tr>
                   
                   
@@ -236,9 +236,9 @@ import { storeToRefs } from 'pinia';
             } */
 
             async function bookingapi(){
-        await axios.get('/api/booking/'+currentPlaceID+'/edit').then(res=>{
+        await axios.get('/api/place/',+ currentPlaceID).then(res=>{
             if(res.data.success){
-                bookings.value = res.data.data
+                bookings.value = res.data.data[0]
 
                 console.log(bookings.value)
                 console.log(res.data.data)

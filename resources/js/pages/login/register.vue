@@ -157,8 +157,7 @@ try{
         }
     }
     else{
-      /* console.log(res.data[0].data) */
-       /*  toaster.info('success') */
+     
         if(res.data.message){
           errmsg.value =  res.data.message
           console.log(res.data[0].data)
