@@ -1,35 +1,5 @@
 <template>
- <!--    <div>
-
-        <h1 class="text-danger" v-for="error in errors" :key="error">
-            <span v-for="err in error" :key="err">{{err}}</span>
-        </h1>
-        <div class="container row  justify-content-center mt-5">
-
-            <form class=" container  col-md-8 p-5 bg-light" @submit.prevent="register">
-                <div class="mb-3 ">
-                    <label for="InputName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="InputName" aria-describedby="nameHelp" v-model="form.name">
-                    <div id="NameHelp" class="form-text">Your Full Name</div>
-                </div>
-      <div class="mb-3 ">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" v-model="form.email">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-      </div>
-      <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" v-model="form.password">
-      </div>
-      <div class="mb-3">
-          <label for="ConfirmPassword" class="form-label">Password</label>
-        <input type="password" class="form-control" id="ConfirmPassword" v-model="form.password_confirmation">
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-</div>
-</div> -->
+ 
 
 <div class="vh-100 gradient-custom">
   <div class="container py-5 h-100">

@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^3.0.3",
+        "@vueuse/core": "^9.4.0",
         "admin-lte": "3.2",
         "pinia": "^2.0.0-rc.10",
         "vue": "^3.2.36",

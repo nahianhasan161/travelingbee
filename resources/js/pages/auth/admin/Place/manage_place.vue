@@ -2,7 +2,7 @@
     <div class="wrap">
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary my-3" @click="addUser"> <!-- data-toggle="modal" data-target="#ModalCenter" -->
+<button type="button" class="btn btn-primary my-3" @click="addUser"> 
   Create Place
 </button >
 
@@ -133,7 +133,9 @@
 </tr>
 </thead>
 <tbody>
-  <tr v-for="(place,index) in places" :key="place.id">
+  {{currentUserPlaces.value}}
+  <tr v-for="(place,index) in filterPlaces()" :key="place.id" >
+
     
     <td>{{index+1}}</td>
     <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
@@ -155,7 +157,7 @@
 <td >৳{{place.price}}</td>
 
 <td>
-  <router-link to="/manage/place/1/booking" class="btn btn-warning mr-1">Bookings</router-link>
+  <router-link :to="'/manage/place/'+place.id+'/booking'" class="btn btn-warning mr-1">Bookings</router-link>
     <button class="btn btn-primary mr-3" @click="editPlace(place)">
 
 
@@ -165,7 +167,6 @@
 
 </tr>
 
-{{currentUser.roles[0]}}
 
 
 
@@ -201,9 +202,11 @@ import { storeToRefs } from 'pinia';
 
         const placeStore = new PlaceStore();
         const {places,categories} = storeToRefs(PlaceStore());
+        const {fetchPlaces} = PlaceStore();
         const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
 
         let users = ref(store.getAllUsers);
+        let currentUserPlaces = ref([]);
         const editing = ref(false);
         let editId = ref('')
         let p = ref([]);
@@ -267,7 +270,9 @@ import { storeToRefs } from 'pinia';
                 form_data.append('images',form.images)
                    return form_data;
             }
-
+            function filterPlaces(){
+            return (currentUser.roles[0] == 'suadmin') ? places : currentUserPlaces
+            }
             function editPlace(place){  
                 editing.value = true
                 editId = place.id
@@ -315,7 +320,7 @@ import { storeToRefs } from 'pinia';
 
 
                    
-                   placeStore.fetchPlaces();
+                   fetchPlaces();
 
                     toastr.success('success')
 
@@ -368,7 +373,7 @@ import { storeToRefs } from 'pinia';
                   }
               /* console.log(form_data) */
                  axios.post('/api/place/'+editId,form_data,config).then(res=>{
-                    placeStore.fetchPlaces();
+                   fetchPlaces();
                     toastr.info('success')
                     $('#ModalCenter').modal('hide');
                 }).finally(()=>{
@@ -377,13 +382,17 @@ import { storeToRefs } from 'pinia';
 
                 }) 
             }
+          function  getCurrentUserPlaces(){
+             currentUserPlaces = places.value.filter(place => place.user.id == currentUser.user_id)
+             console.log(currentUserPlaces)
+            }
 
             onMounted( async ()=>{
            let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
-               await placeStore.fetchPlaces(); 
+               await fetchPlaces(); 
               fetchCategories(); 
               setRoleId(roleId)
-            console.log(roleId)
+              getCurrentUserPlaces()
 
 
         });

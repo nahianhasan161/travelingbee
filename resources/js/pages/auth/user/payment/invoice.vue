@@ -1,6 +1,7 @@
 <template>
     <div class="wrap">
         <div class="loader" v-if="loading"></div>
+      
          <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -10,7 +11,7 @@
           <div class="col-sm-6">
             <h1>Invoice</h1>
           </div>
-         {{bookings}}
+         <!-- {{bookings}} -->
         </div>
       </div><!-- /.container-fluid -->
     </section>
@@ -32,7 +33,8 @@
                 <div class="col-12">
                   <h4>
                     <i class="fab fa-forumbee"></i> Traveling Bee
-                   <!--  <small class="float-right">Date: {{bookings.date}}</small> -->
+                    <small class="float-right">Date: {{thisBooking.date}}</small>
+                  
                   </h4>
                 </div>
                 <!-- /.col -->
@@ -41,37 +43,38 @@
               <div class="row invoice-info">
                 <div class="col-sm-4 invoice-col">
                   From
-                  <address>
+                 
                     <strong>{{bookings.name}}</strong><br>
                     <!-- 795 Folsom Ave, Suite 600<br>
                     San Francisco, CA 94107<br>
                     Phone: (804) 123-5432<br> -->
-                  <!--   Email: {{bookings.User.email}}  -->
-                  </address>
+                  Email: {{bookings.user ? bookings.user.email : ''}} 
+                 
                 </div>
                 <!-- /.col -->
                <div class="col-sm-4 invoice-col">
-                  To
-                  <address>
-                   <!--  <strong>{{bookings.User.name}}</strong><br> -->
-                   <!--  795 Folsom Ave, Suite 600<br>
-                    San Francisco, CA 94107<br> -->
-                   <!--  Phone: (555) 539-1037<br> -->
-                  <!--   Email: {{bookings.User.email}} -->
-                  </address>
+                  To,
+                  <br>
+                 
+                  <strong>Name:{{order.name}}</strong><br>
+                   Address:{{order.address}}<br>
+                    
+                    Phone: {{order.phone}}<br>
+                     Email: {{order.email}}
+                 
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-4 invoice-col">
-                 <b>BookingID: {{bookings.booking_id}}</b><br> 
+                 <b>BookingID: {{order.booking_id}}</b><br> 
                   <br>
                 
-                  <b>Status:</b> <p class="text-success text-bold" v-if="bookings.status == 1"> Paid </p>
-                  <p class="text-danger text-bold" v-else> Not Paid </p>
+                  <b>Status:</b> <p class="text-success text-bold" > {{order.status}} </p>
+                  
                   
                   <br>
-                  <b>Order ID:</b> 4F3S8J<br>
-                  <b>Payment Due:</b> 2/22/2014<br>
-                  <b>Account:</b> 968-34567
+                  <b>Transection ID:</b> {{order.transaction_id}}<br>
+<!--                   <b>Payment Due:</b> {{bookings.bookings.filter((filter)=>filter.id == '1')}}<br> -->
+                 
                 </div>
                 <!-- /.col -->
               </div>
@@ -111,17 +114,18 @@
               <div class="row">
                 <!-- accepted payments column -->
                 <div class="col-6">
-                  <p class="lead">Payment Methods:</p>
-                 <!--  <img src="../../dist/img/credit/visa.png" alt="Visa">
-                  <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
-                  <img src="../../dist/img/credit/american-express.png" alt="American Express">
-                  <img src="../../dist/img/credit/paypal2.png" alt="Paypal"> -->
+                  <p class="lead">Terms and Conditions:</p>
+                  <ul>
+                    <li>Payment in Advance</li>
+                    <li>No Refund</li>
 
-                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                    Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
-                    plugg
-                    dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
-                  </p>
+                  </ul>
+
+                <!--   <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    <ol>
+                      <li>No Refund</li>
+                    </ol>
+                  </p> -->
                 </div>
                 <!-- /.col -->
                 <div class="col-6">
@@ -177,13 +181,14 @@
         import axios from 'axios';
 import { storeToRefs } from 'pinia';
         import {onMounted ,ref,reactive} from 'vue';
-        import {useRouter} from 'vue-router'
+        import {useRouter,useRoute} from 'vue-router'
         import {CategoryStore} from '@/store/CategoryStore';
         
        import { useToastr } from '@/pages/toaster';
         const toastr = useToastr();
         const store = new CategoryStore();
         const router = new useRouter();
+        const route = new useRoute();
         
         const {categories,loading,err} = storeToRefs(CategoryStore());
         let Categories = ref(store.getCategories);
@@ -196,7 +201,9 @@ import { storeToRefs } from 'pinia';
 
             let currentPlaceID = ref('');
             let bookings = ref([])
-            
+            let order = ref([])
+            let thisBooking = ref([])
+            /* const data = bookings.bookings.filter.map(item => item.id === '1'); */
            
        
            /*  const register = async()=>{
@@ -234,16 +241,34 @@ import { storeToRefs } from 'pinia';
 
                 })
             } */
-
-            async function bookingapi(){
-        await axios.get('/api/place/',+ currentPlaceID).then(res=>{
+           function getThisBooking(id){
+              thisBooking = bookings;
+              console.log('here')
+            }
+            async function bookingapi(id){
+        await axios.get('/api/place/'+ id).then(res=>{
             if(res.data.success){
-                bookings.value = res.data.data[0]
+                bookings.value = res.data.data
+               thisBooking.value = res.data.data.bookings.find(book => book.id == id)
 
-                console.log(bookings.value)
-                console.log(res.data.data)
+                
             }
         })
+        }
+            async function getOrder(){
+        await axios.get('/api/orders/user/'+ route.params.id).then(res=>{
+            if(res.data.success){
+                order.value = res.data.data
+
+                console.log(bookings.value)
+                  
+                console.log(res.data.data)
+               
+            }
+        })
+
+        bookingapi(order.value.place_id)
+        /* getThisBooking(order.booking_id) */
         }
 
             async function setID(){
@@ -251,9 +276,22 @@ import { storeToRefs } from 'pinia';
             }
 
             onMounted(async ()=>{
-                await setID()
-            await bookingapi()
+              await router.isReady()
+              await setID()
+              await getOrder()
+              /* getThisBooking() */
+              /* const values = Object.values(bookings.value);
+        console.log(values); */
 
+       /*  const resultArray = Object.keys(order.value).map(function(key) {
+  return [Number(key), order[key]];
+
+});
+ */
+/* console.log(resultArray); */
+
+             /*  console.log( Object.bookings) */
+              /* console.log(index) */ 
 
         });
 

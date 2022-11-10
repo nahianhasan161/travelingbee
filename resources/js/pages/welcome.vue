@@ -20,8 +20,8 @@
         </div>
     </div>
 
-    <div class="container d-flex justify-content-center mt-5">
-     <div class="row">
+    <div class="container d-flex justify-content-center mt-5" >
+     <div class="row" >
          
          <div class="col-md-4"  v-for="place in places" @click="setPlaceId(place.id)" :key="place.id" >
              <div class="card">
@@ -29,7 +29,7 @@
  <img class="card-img-top" 
     :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
-                 <p class="rating">9.6</p>
+                 <p class="rating">{{place.rating}}</p>
                  <div class="card-body">
                      <h5 class="card-title">{{place.name}}</h5>
                      <p class="card-text"><i class="fa fa-map-marker marker"></i> {{place.description}}</p>
@@ -48,52 +48,6 @@
 
 
 
-     <!--    <div class="scrollmenu  " >
-
-
-
-      <router-link v-for="category in (categories)" to="/place/1"class="btn btn-outline-warning active scroll-item">{{category.name}}</router-link>
-
-
-
-
-    </div> -->
-  <!--   <div class="row mt-5">
-
-
-  <div class="card col-md-4" v-for="place in places" @click="setPlaceId(place.id)" :key="place.id" >
-    <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
- <img class="card-img-top" 
-    :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  
-
-   
-
-    <div class="card-body d-flex justify-content-between">
-      <h5 class="card-title">{{place.name}}</h5>
-     <p>
-        {{place.rating}} <i class="fas fa-star text-warning"></i>
-     </p>
-    </div>
-    <div class="container">
-
-        <p class="card-text">{{place.description}}</p>
-    </div>
-    <div class="card-footer">
-      <small class="text-muted">Last updated 3 mins ago</small>
-    </div>
-</router-link>
-  </div>
-
-
-
-
-
-
-
-
-
-</div> -->
-
     </div>
     </template>
     <script setup>
@@ -102,16 +56,20 @@
         import { UserStore } from '../store/UserStore';
        import { PlaceStore } from '../store/place/PlaceStore';
        import { storeToRefs } from 'pinia';
+        /* import {useVirtualList} from '@vueuse/core ' */
 
-
-
+        /* const {list,containerProps,wraperProps} = useVirtualList(categories,{
+            itemHeight : 200
+        }) */
 
 
             const router = new useRouter();
             const store = new UserStore();
-            const {places,placeId,categories,getPlaces,loading} = storeToRefs(PlaceStore())
-            const {fetchPlaces,fetchCategories,setPlaceId} = PlaceStore();
-
+            const {places,placeId,categories,loading} = storeToRefs(PlaceStore())
+            const {fetchPlaces,fetchCategories,setPlaceId,getPlaces} = PlaceStore();
+            function filtedplaces(){
+                return places
+            } 
             /* function setId(id){
                 placeId = id
             } */
@@ -130,7 +88,8 @@
           
          await   fetchPlaces()
             fetchCategories()
-            console.log(places.value)
+            
+            
            $('.toggle').click(function(){
     $('.nav-fill').toggleClass("justify-content-end");
     $('.toggle').toggleClass("text-light"); 

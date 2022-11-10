@@ -35,7 +35,7 @@ class BookingController extends Controller
      {
         $currentPlace = Place::find($place);
         if($currentPlace){
-           return Helper::sendSuccess('Success',  $currentPlace->bookings);
+           return Helper::sendSuccess('Success',  BookingResource::collection($currentPlace->bookings));
         }else{
             return Helper::sendError('Place Not Found');
         }
@@ -123,9 +123,11 @@ class BookingController extends Controller
     public function userBookingDetails($user)
     {
         $currentUser = User::find($user);
-       
+        
         if($currentUser){
-            return Helper::sendSuccess('Data Fetch Successfull',BookingResource::collection($currentUser->bookings)); 
+            $places = $currentUser->bookings->unique('place_id')->all();
+            return Helper::sendSuccess('Data Fetch Successfull',BookingResource::collection($places)); 
+            /* return Helper::sendSuccess('Data Fetch Successfull',BookingResource::collection($currentUser->bookings));  */
 
         }else{
             return Helper::sendError('User Not Found');

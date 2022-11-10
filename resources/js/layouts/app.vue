@@ -3,7 +3,7 @@
 
 
  <div class="wrapper">
-
+<!-- Nav Bar -->
  <div >
     <div class="superNav border-bottom py-2 bg-light">
   <div class="container">
@@ -29,7 +29,7 @@
       <i class=" fab fa-forumbee"></i><strong>Traveling Bee </strong>
 </router-link>
 
-  
+  <!-- Mobile nav -->
     <button class="navbar-toggler"
     type="button"
      data-toggle="collapse"
@@ -40,21 +40,21 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="mx-auto my-3 d-lg-none d-sm-block d-xs-block">
+   <!--  <div class="mx-auto my-3 d-lg-none d-sm-block d-xs-block">
       <div class="input-group">
 
         <input type="text" class="form-control border-warning" style="color:#7a7a7a">
         <button class="btn btn-warning text-white"><i class="fas fa-search"></i></button>
       </div>
-    </div>
+    </div> -->
     <div class=" collapse navbar-collapse" id="navbarNavDropdown">
-      <div class="ms-auto d-none d-lg-block">
+      <!-- <div class="ms-auto d-none d-lg-block">
         <div class="input-group">
-          <!-- <span class="border-warning input-group-text bg-warning text-white"><i class="fas fa-search"></i></span> -->
+          
           <input type="text" class="form-control border-warning" style="color:#7a7a7a">
           <button class="btn btn-warning text-white"><i class="fas fa-search"></i></button>
         </div>
-      </div>
+      </div> -->
       <ul class="navbar-nav ms-auto ">
 
         <li class="nav-item">
@@ -64,8 +64,8 @@
  -->
         </li>
         <li class="nav-item">
-            <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" >Posts</router-link>
-         <!--  <a class="nav-link mx-2 text-uppercase" href="#">Posts</a> -->
+            <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" >Group Tour</router-link>
+        
         </li>
         <li class="nav-item">
           <a class="nav-link mx-2 text-uppercase" href="#">Guide</a>

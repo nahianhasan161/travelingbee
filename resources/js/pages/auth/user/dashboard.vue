@@ -1,21 +1,35 @@
 <template>
 
 <div class="container">
-   
+    
 <!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade bd--modal-lg" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
        
       <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Payments</h5>
+          <h5 class="modal-title" id="ModalLongTitle">Booking & Payments</h5>
        <!--  <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5> -->
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
+   
+    
+
+        <div class="form-group">
+    <label for="FormControlSelect"> Select Booking</label>
+    <select class="form-control" id="FormControlSelect" v-model="bookingID">
+        <option selected>Choose...</option>
+      <option class="btn" v-for="book in placeBookings" :value="book.pivot.id" :key="book.pivot.id" >BookingID:{{book.pivot.id +'|' +book.pivot.date}}</option>
+      
+    </select>
+
+    <button class="btn btn-primary mt-1" @click="getOrdersByBooking(bookingID)">Get</button>
+  </div>
   <div class="form">
+    <h1 class="text-center">Payments</h1>
     <div class="card-body table-responsive">
 <table class="table table-bordered table-hover">
 <thead>
@@ -35,7 +49,9 @@
 </tr>
 </thead>
 <tbody>
-<tr v-for="(order,index) in orders" :key="order.id">
+   
+
+<tr v-for="(order,index) in  orders.value" :key="order.id" v-if="orders">
     <td>{{index+1}}</td>
 <td >{{order.name}}</td>
  <td >{{order.email}}</td>
@@ -48,10 +64,14 @@
 
 <td>
     <!-- <router-link :to="'/payment/invoice/'+order.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
-     <button class="btn btn-primary mr-3" @click="invoice(order.id)"> 
- <i class="far fa-edit"></i></button> 
+     <button class="btn btn-warning mr-3" @click="invoice(order.id)"> 
+ <i class="fas fa-print"></i></button> 
    <!--  <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
 </td>
+
+</tr>
+<tr v-else>
+    <h1>No Data Found</h1>
 
 </tr>
 
@@ -68,10 +88,7 @@
 </tbody>
 </table>
 </div>
-    <div v-for="order in orders" :key="order.id">
-
-
-    </div>
+    
    <!--  <div class="form-group ">
       <label for="inputName">Name</label>
       <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
@@ -91,14 +108,14 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save changes</button>
+    
 </div>
 
     </div>
   </div>
 </div>
 
-
+<!-- 
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-xl-3">
@@ -142,16 +159,16 @@
         </div>
 	</div>
 </div>
-
-<div class="btn-group border" role="group " aria-label="Basic example">
+ -->
+<div class="btn-group border" role="group " aria-label="Basic ">
     <button type="button" class="btn btn-outline-danger waves-effect m-2 active"><i class="fas fa-map-marked-alt"></i>Place</button>
-    <button type="button" class="btn btn-outline-danger waves-effect m-2"><i class="fas fa-bus"></i>Bus</button>
-    <button type="button" class="btn btn-outline-danger waves-effect m-2 "><i class="fas fa-building"></i>Hotel</button>
-  <button type="button" class="btn btn-outline-danger waves-effect m-2"><i class="fas fa-car fa-sm pr-2"
+    <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-bus"></i>Bus</button>
+    <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-building"></i>Hotel</button>
+  <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-car fa-sm pr-2"
       aria-hidden="true"></i> Car</button>
-  <button type="button" class="btn btn-outline-danger waves-effect m-2"><i class="fas fa-plane fa-sm pr-2"
+  <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-plane fa-sm pr-2"
       aria-hidden="true"></i>Plane</button>
-  <button type="button" class="btn btn-outline-danger waves-effect m-2"><i class="fas fa-train fa-sm pr-2"
+  <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-train fa-sm pr-2"
       aria-hidden="true"></i>Train</button>
       
 </div>
@@ -183,21 +200,21 @@
  <!-- {{bookings}}  -->
         
      <!--    <div class="card" v-if="bookings.value"> --> <!-- style="width: 680px;height: 290px;" -->
-        <div class="row no-gutters my-1 border" v-for="(booking,index) in bookings.value" :key="index" v-if="bookings">
+        <div class="row no-gutters my-1 border" v-for="(place,index) in bookings.value" :key="index" v-if="bookings">
             
 
                 
                 <div class="col-sm-5" >
                     
                     <img class="card-img" 
-                    :src="booking.feature_image ? '/image/place/feature/'+booking.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" alt="" style="height:290px">
+                    :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" alt="" style="height:290px">
                 </div>
                 <div class="col-sm-7 d-flex justify-content-between">
                     <div>
                     <div class="card-body">
-                        <p class="text-bold text-success ">Date:{{booking.date}}</p>
-                        <h5 class="card-title">{{booking.name}}</h5>
-                        <p class="card-text">{{booking.description}}</p>
+                        <!-- <p class="text-bold text-success ">Date:{{place.date}}</p> -->
+                        <h5 class="card-title">{{place.name}}</h5>
+                        <p class="card-text">{{place.description}}</p>
                     </div>
                    
                         <div class="container "> <!-- card-footer -->
@@ -212,25 +229,26 @@
                                     <i class="fas fa-star fa"></i>
                                    <!--  <p style="position: relative;left: 10px;top:-3px; color:black">28 reviews</p> -->
                                 </div>
-                               <!--  <p>{{booking.features}}</p> -->
-                                <h2>৳{{booking.price}}</h2>
-                                <h4 :class="booking.status == 0?  'text-danger' : 'text-success'" class="text-bold">{{booking.status == 0 ? "COMPLETE" : "PENDING"}} </h4>
+                               <!--  <p>{{place.features}}</p> -->
+                                <h2>৳{{place.price}}</h2>
+                                <h4 :class="place.status == 0?  'text-danger' : 'text-success'" class="text-bold">{{place.status == 0 ? "COMPLETE" : "PENDING"}} </h4>
                             </div>
                             
                            
                         </div>
                     </div>
                     <div>
-                      <p>BookingID:{{booking.booking_id}}</p>  
+                      <!-- <p>placeID:{{place.booking_id}}</p>   -->
                         
                         <div class="d-flex flex-column mt-5">
-                            <router-link :to="'/payment/invoice/'+booking.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link>
+                            <!-- <router-link :to="'/payment/invoice/'+booking.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
                             
-                            <a href="#" class="btn btn-outline-danger mt-1" @click="getOrdersByBooking(booking.booking_id)">Payment</a>
-                            <router-link class="btn btn-lg btn-primary mt-1" :to="'/place/'+booking.id" >
+                            
+                            <a href="#" class="btn btn-outline-danger mt-1" @click="getBookingsByPlace(place.id)">Bookings</a>
+                            <router-link class="btn btn-lg btn-primary mt-1" :to="'/place/'+place.id" >
                                 Details                  
                         </router-link>
-                        <small class="float-right"><a @click="deleteBooking(booking.booking_id)" class="btn btn-danger mt-1 z-index"> Cancle </a></small>
+                        <!-- <small class="float-right"><a @click="deleteBooking(place.booking_id)" class="btn btn-danger mt-1 z-index"> Cancle </a></small> -->
                         </div>
                     </div>
                     
@@ -256,7 +274,7 @@
 </div>
 </template>
 <script setup>
-    import { onMounted,ref,watchEffect } from 'vue';
+    import { onMounted,ref,watchEffect,reactive } from 'vue';
     import { storeToRefs } from 'pinia';
     import {useRouter} from 'vue-router'
    import {UserStore} from '@/store/UserStore'
@@ -265,7 +283,7 @@
 
 
 
-
+    let bookingID = ref('')
        /*  let bookings = ref([]) */
         const router = new useRouter();
         const store = new UserStore();
@@ -276,20 +294,38 @@
 
         const {currentUser} = storeToRefs(UserStore())
         const {getCurrentUser} = UserStore()
-        let orders = ref([])
+        let orders = reactive([])
+        let placeBookings = ref([])
         function showPayments(bookingID){
-            $('#exampleModalCenter').modal('show');
+            $('#ModalCenter').modal('show');
         }
     function invoice(id){
-        $('#exampleModalCenter').modal('hide');
+        $('#ModalCenter').modal('hide');
         router.push('/payment/invoice/'+id)
+    }
+
+    function collapse() {
+        $('.collapse').collapse('hide')
+    }
+
+    function getBookingsByPlace(id){
+        $('#ModalCenter').modal('show');
+        axios.post('/api/place/bookings/by',{place_id: id}).then(res=>{
+            if(res.data.success){
+               placeBookings.value = res.data.data
+            }
+            })
     }
         function getOrdersByBooking(id){
 
-            $('#exampleModalCenter').modal('show');
+           
 
-            axios.get('/api/orders/'+id).then(res=>{
-               orders.value = res.data.data
+            axios.get('/api/booking/'+id).then(res=>{
+                if(res.data.success){
+
+                    orders.value = res.data.data.payment
+                }
+                console.log(res)
             })
         }
         function logout(){
@@ -304,7 +340,13 @@
            })
         onMounted(async ()=>{
             await getBookingsByUserId(getCurrentUser.user_id)
+            /* ON MOdal close */
             
+            $('#ModalCenter').on('hidden.bs.modal', function (e) {
+                orders.value = []
+                bookingID.value = ''
+            })
+            /* End MOdal close */
         /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
         /*  this.store.fetchCurrentUser(); */
         /* axios.get('/api/user').then(res=>{

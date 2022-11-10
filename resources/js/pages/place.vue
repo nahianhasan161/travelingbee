@@ -179,7 +179,7 @@
         <ul class="list-group list-group-flush">
           <div class="form-group" v-if="currentUser ? currentUser.roles[0] == 'user' : false">
     <label for="InputDate">Date:</label>
-    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date"  >
+    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date" @change="validation" >
      
              <p class="text-danger" v-if="errors" v-for="error in errors" :key="error">
             <span v-for="err in error" :key="err">{{err}}</span>
@@ -208,8 +208,8 @@
         </form>
       </div>
       </div>
-   {{new Date().toLocaleString()}}
-   {{form.date}}
+ <!--   {{new Date().toLocaleString()}}
+   {{form.date}} -->
 </div>
 </div>
 </div>
@@ -244,14 +244,14 @@
            })
            let errors = ref([]);
            var today = new Date();
-           var isvalid = reactive(false);
+           var isvalid =  reactive(false);
 // Get year, month, and day part from the date
         var year = today.toLocaleString("default", { year: "numeric" });
         var month = today.toLocaleString("default", { month: "numeric" });
         var day = today.toLocaleString("default", { day: "2-digit" });
         // Generate custom date string
         var formattedTodayDate = [day, month, year].join("-");
-
+          
         const compareDates = (d1, d2) => {
         let date1 = new Date(d1).getTime();
       let date2 = new Date(d2).getTime();
