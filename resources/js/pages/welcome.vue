@@ -1,6 +1,6 @@
 
 <template>
-
+<!-- {{filtedplaces()}} -->
     <div class="container">
         <div class="loader" v-if="loading"></div>
     <div class="d-flex align-items-center">
@@ -10,7 +10,7 @@
         <div class="flex-grow-1  o-hidden">
             <ul class="nav nav-fill text-uppercase small position-relative flex-nowrap">
                 <li class="nav-item" v-for="category in categories">
-                  <router-link  to="/place/1" class="btn btn-outline-danger btn-round mr-md-3 mb-md-0 mb-2" :class="category.id == '1'? 'active' : ''">{{category.name}}</router-link>
+                  <a  @click="setCategoryName(category.name)" class="btn btn-outline-danger btn-round mr-md-3 mb-md-0 mb-2" :class="category.name == categoryName ? 'active' : ''">{{category.name}}</a> 
                 </li>
               
             </ul>
@@ -19,11 +19,11 @@
             <a href="#" class="btn-right btn-link toggle p-2 text-dark"><i class="fa fa-arrow-right"></i></a>
         </div>
     </div>
-
+    <button class="btn btn-sm btn-outline-info btn-rounded " :class="categoryName ? 'active' : ''" @click="categoryName = ''"> <i class="fa fa-times"></i> clear</button>
     <div class="container d-flex justify-content-center mt-5" >
      <div class="row" >
-         
-         <div class="col-md-4"  v-for="place in places" @click="setPlaceId(place.id)" :key="place.id" >
+        
+         <div class="" :class="(filtedplaces().length == 1 ? 'col-md-12' : (filtedplaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filtedplaces()" @click="setPlaceId(place.id)" :key="place.id" >
              <div class="card">
               <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
  <img class="card-img-top" 
@@ -51,7 +51,7 @@
     </div>
     </template>
     <script setup>
-        import { onMounted,watchEffect } from 'vue';
+        import { onMounted,watchEffect,ref } from 'vue';
         import {useRouter} from 'vue-router'
         import { UserStore } from '../store/UserStore';
        import { PlaceStore } from '../store/place/PlaceStore';
@@ -62,38 +62,62 @@
             itemHeight : 200
         }) */
 
-
-            const router = new useRouter();
+        
+        
+        
+        const router = new useRouter();
             const store = new UserStore();
             const {places,placeId,categories,loading} = storeToRefs(PlaceStore())
             const {fetchPlaces,fetchCategories,setPlaceId,getPlaces} = PlaceStore();
-            function filtedplaces(){
-                return places
+            let categoryName = ref('')
+          
+
+
+
+            function setCategoryName(name){
+               categoryName.value = name
+               filtedplaces()
+            
             } 
-            /* function setId(id){
-                placeId = id
-            } */
+            function filtedplaces(){
+                if(categoryName.value){
+                    let alter = places.value.filter(place => place.category.name == categoryName.value)
+                    
+                 
+                    return alter
+                }else{
+                    return places.value
+                }
+              
+            } 
+         
             function logout(){
                 store.removeToken();
                 store.removeUser();
                 router.push({name:'login'})
             }
+            function categorySlider(){
+                $('.toggle').click(function(){
+    $('.nav-fill').toggleClass("justify-content-end");
+    $('.toggle').toggleClass("text-light"); 
+});
+            }
 
            watchEffect(()=>{
-            fetchPlaces() 
+            /* fetchPlaces() */ 
+            filtedplaces()
+          
            })
        
-
+         
         onMounted(async ()=>{
           
          await   fetchPlaces()
             fetchCategories()
-            
-            
-           $('.toggle').click(function(){
-    $('.nav-fill').toggleClass("justify-content-end");
-    $('.toggle').toggleClass("text-light"); 
-});
+            categorySlider()
+             
+      
+     
 }) 
             /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
             /*  this.store.fetchCurrentUser(); */
@@ -186,5 +210,8 @@ body {
 
 .star-rating {
     color: #f7b944
+}
+.btn-rounded{
+    border-radius: 22.5px
 }
 </style>

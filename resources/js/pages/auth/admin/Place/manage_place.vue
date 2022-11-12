@@ -198,10 +198,10 @@ import { storeToRefs } from 'pinia';
 
         const store = new UserStore();
         const {deleteUser,currentUser} = UserStore();
-        const {allUser,loading,getCurrentUser} = storeToRefs(UserStore());
+        const {allUser,getCurrentUser} = storeToRefs(UserStore());
 
         const placeStore = new PlaceStore();
-        const {places,categories} = storeToRefs(PlaceStore());
+        const {places,categories,loading} = storeToRefs(PlaceStore());
         const {fetchPlaces} = PlaceStore();
         const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
 
@@ -271,7 +271,7 @@ import { storeToRefs } from 'pinia';
                    return form_data;
             }
             function filterPlaces(){
-            return (currentUser.roles[0] == 'suadmin') ? places : currentUserPlaces
+            return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
             }
             function editPlace(place){  
                 editing.value = true
