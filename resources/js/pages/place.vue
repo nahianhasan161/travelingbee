@@ -102,14 +102,14 @@
     <hr>
 
 </div> -->
-<div class="row content my-1" v-if="places.user">
+<div class="row content my-5" v-if="places.user">
 <div class=" user-block">
-<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="'/image/profile/'+places.user.image"  alt="User Image">
+<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="places.user.image ?  '/image/profile/'+places.user.image : 'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'"  alt="User Image">
 <span class="username">
-<a >Sarah Ross</a>
+<a >{{places.user? places.user.name : 'Anonymous'}}</a>
 
 </span>
-<span class="description">{{places.user.email}}</span>
+<span class="description">{{places.user ? places.user.email : 'not available'}}</span>
 </div>
 </div>
 
@@ -179,7 +179,8 @@
         <ul class="list-group list-group-flush">
           <div class="form-group" v-if="currentUser ? currentUser.roles[0] == 'user' : false">
     <label for="InputDate">Date:</label>
-    <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date" @change="validation" >
+    <picker v-model="form.date" :minDate="new Date(new Date().setDate(new Date().getDate()-1))" /> <!-- yestarday -->
+    <!-- <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date" @change="validation" > -->
      
              <p class="text-danger" v-if="errors" v-for="error in errors" :key="error">
             <span v-for="err in error" :key="err">{{err}}</span>

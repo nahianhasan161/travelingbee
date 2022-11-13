@@ -11,12 +11,16 @@ import register from './pages/login/register.vue';
 import posts from './pages/auth/posts.vue';
 import user_profile from './pages/auth/profile.vue';
 
-/* Management */
 /* SuAdmin */
+/* Management */
 import suadmin_dashboard from './pages/auth/suadmin/dashboard.vue';
-import manage_user from './pages/auth/suadmin/manage_user.vue';
-import manage_roles from './pages/auth/suadmin/manage_roles.vue';
-import manage_place_booking from './pages/auth/suadmin/manage_booking.vue';
+import manage_user from './pages/auth/suadmin/manage/manage_user.vue';
+import manage_roles from './pages/auth/suadmin/manage/manage_roles.vue';
+import manage_place_booking from './pages/auth/suadmin/manage/manage_booking.vue';
+/* Management Address*/
+import manage_division from '@/pages/auth/suadmin/manage/address/manage_division.vue';
+import manage_district from '@/pages/auth/suadmin/manage/address/manage_district.vue';
+import manage_area from '@/pages/auth/suadmin/manage/address/manage_area.vue';
 
 /* Admin */
 import admin_dashboard from './pages/auth/admin/dashboard.vue';
@@ -25,7 +29,7 @@ import manage_place from './pages/auth/admin/Place/manage_place.vue';
 import invoice from './pages/auth/user/payment/invoice.vue'
 
 
-import category from './pages/auth/suadmin/category.vue';     
+import category from './pages/auth/suadmin/manage/manage_category.vue';     
 
 /* Verify and Reset */
 
@@ -215,6 +219,32 @@ component : register ,
         requiresAuth: true,
     }
 },
+/* Manage */
+{
+    path : '/manage/division',
+    name : 'manage.division',
+    component : manage_division ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/manage/district',
+    name : 'manage.district',
+    component : manage_district,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/manage/area',
+    name : 'manage.area',
+    component : manage_area ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+
 /* Payment */
 {
     path : '/payment/invoice/:id',

@@ -150,32 +150,82 @@
         </router-link>
 
 </li>
-    <li class="nav-item " v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
+<li class="nav-item " v-if="currentUser ? currentUser.email_verified == false : true">
 
 
-        <router-link active-class="active" :to="{name:'suadmin.place.category'}"  class="nav-link " >
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-        <p>Category</p>
-        </router-link>
+<router-link active-class="active" :to="{name:'verify_email'}"  class="nav-link ">
+    <i class="nav-icon fa fa-envelope"></i>
+<p>Verify Mail </p>
+</router-link>
 
 </li>
     <li class="nav-item " v-if="currentUser ? currentUser.roles[0] != 'user' : false">
 
 
         <router-link active-class="active" :to="{name:'manage.place'}"  class="nav-link " >
-            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <i class="nav-icon fa fa-map-marker"></i>
         <p>Add Place</p>
         </router-link>
 
 </li>
-    <li class="nav-item " v-if="currentUser ? currentUser.email_verified == false : true">
+  
 
-
-        <router-link active-class="active" :to="{name:'verify_email'}"  class="nav-link ">
-            <i class="nav-icon fa fa-envelope"></i>
-        <p>Verify Mail </p>
+<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<a href="#" class="nav-link " active-class="active">
+<i class="nav-icon fas fa-tachometer-alt"></i>
+<p >
+More
+<i class="right fas fa-angle-left"></i>
+</p>
+</a>
+<ul class="nav nav-treeview">
+<li class="nav-item">
+  <router-link active-class="active" :to="{name:'suadmin.place.category'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>Category</p>
         </router-link>
 
+
+</li>
+<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<a href="#" class="nav-link " active-class="active">
+<i class="nav-icon fa fa-globe"></i>
+<p >
+Address
+<i class="right fas fa-angle-left"></i>
+</p>
+</a>
+<ul class="nav nav-treeview">
+<li class="nav-item">
+  <router-link active-class="active" :to="{name:'manage.division'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>Division</p>
+        </router-link>
+
+
+</li>
+<li class="nav-item">
+  <router-link active-class="active" :to="{name:'manage.district'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>District</p>
+        </router-link>
+
+
+</li>
+<li class="nav-item">
+  <router-link active-class="active" :to="{name:'manage.area'}"  class="nav-link " >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+        <p>Area</p>
+        </router-link>
+
+
+</li>
+
+
+</ul>
+</li>
+
+</ul>
 </li>
 
 <li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
