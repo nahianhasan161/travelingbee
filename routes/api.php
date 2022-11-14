@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PasswordController;
@@ -10,6 +12,7 @@ use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\UpazilaController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +68,12 @@ Route::post('/place/details/{place}', [BookingController::class, 'BookingDetails
 Route::get('/manage/place/{place}/booking/all', [BookingController::class, 'BookingByUser']); 
 Route::post('/place/payments', [BookingController::class, 'payments']); 
 
+//Address Start
+Route::resource('/address/division', DivisionController::class);
+Route::resource('/address/district', DistrictController::class);
+Route::resource('/address/area', UpazilaController::class);
+
+//Address End
 //SSLCOMMERZ Start
 Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
 Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);

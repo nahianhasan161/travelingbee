@@ -123,12 +123,15 @@
           /*  await filteredPlaces() */
           
            })
-       
+      /*  async function fetches(){
+           await fetchPlaces() 
+           await fetchCategories()
+       } */
          
         onMounted(async ()=>{
           
             await fetchPlaces() 
-            await fetchCategories()
+           await fetchCategories()
               categorySlider()
              
       

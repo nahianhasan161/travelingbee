@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Helper;
 use App\Models\District;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,8 @@ class DistrictController extends Controller
      */
     public function index()
     {
-        //
+        $district = District::all();
+        return Helper::sendSuccess('Success',$district);
     }
 
     /**

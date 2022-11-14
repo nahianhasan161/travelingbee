@@ -9,7 +9,7 @@
 <title>Traveling Bee</title>
 
 
-<link rel="icon" href="{{ url('favicon/favicon.png') }}">
+{{-- <link rel="icon" href="{{ url('favicon/favicon.svg') }}"> --}}
 
 @vite('resources/css/app.css') 
 </head>

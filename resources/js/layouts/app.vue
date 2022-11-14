@@ -170,7 +170,7 @@
 </li>
   
 
-<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >
@@ -187,7 +187,7 @@ More
 
 
 </li>
-<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fa fa-globe"></i>
 <p >
@@ -228,7 +228,7 @@ Address
 </ul>
 </li>
 
-<li class="nav-item menu-open"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >

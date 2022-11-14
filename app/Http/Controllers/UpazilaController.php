@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Helper;
 use App\Models\Upazila;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,8 @@ class UpazilaController extends Controller
      */
     public function index()
     {
-        //
+        $Upazila = Upazila::all();
+        return Helper::sendSuccess('Success',$Upazila);
     }
 
     /**

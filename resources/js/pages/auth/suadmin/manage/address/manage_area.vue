@@ -192,10 +192,10 @@
 <thead>
 <tr>
 <th>#</th>
-<th>Booking ID</th>
-<th>Place </th>
-<th>User</th>
-<th>Date</th>
+<th>Name</th>
+<th>Bangla Name</th>
+<th>Url</th>
+
 <th>Actions</th>
 </tr>
 </thead>
@@ -203,16 +203,16 @@
 <!--   {{bookings}} -->
 <tr v-for="(booking,index) in bookings" :key="booking.id">
     <td>{{index+1}}</td>
-<td >{{booking.booking_id}}</td>
 <td >{{booking.name}}</td>
-<td ><div class="row content my-1"><div class="user-block"><img class="profile-user-img img-fluid img-circle img-bordered-lg" :src="booking.user.image? '/image/profile/'+booking.user.image : 'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'" alt="User Image"><span class="username"><a>{{booking.user?booking.user.name: 'NUll'}}</a></span><span class="description">{{booking.user?booking.user.email: 'NUll'}}</span></div></div></td>
-<td class="capital">{{booking.date}}</td>
+<td >{{booking.bn_name}}</td>
+
+<td class="capital">{{booking.url}}</td>
 <td>
     <button class="btn btn-warning mr-3" @click="getOrdersByBooking(booking.id)">Payments</button>
     <!-- <button class="btn btn-primary mr-3" @click="editUser(booking)"> -->
 
 
- <button><i class="far fa-edit"></i></button>
+ <button class="btn btn-info mr-1"><i class="far fa-edit"></i></button>
     <button class="btn btn-danger" @click="deleteUser(User.user_id)"><i class="fas fa-trash"></i></button>
 </td>
 
@@ -338,8 +338,8 @@ import { storeToRefs } from 'pinia';
 
                 })
             }
-            function allBooking(id){
-                axios.get('/api/manage/place/'+id+'/booking/all').then(res=>{
+            function allBooking(){
+                axios.get('/api/address/area').then(res=>{
                     bookings.value = res.data.data
                 })
             }
@@ -361,7 +361,7 @@ axios.get('/api/orders/'+id).then(res=>{
 
             onMounted(()=>{
                 store.fetchAllUser();
-                allBooking(route.params.id)
+                allBooking()
 
         });
     </script>
