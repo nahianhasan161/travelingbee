@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
@@ -17,6 +18,13 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        Schema::disableForeignKeyConstraints();
+
+        // ... Some Truncate Query
+        User::truncate();
+        
+        Schema::enableForeignKeyConstraints();
+
         $roles = ['user','admin','suadmin'];
         foreach($roles as $key=>$role){
 

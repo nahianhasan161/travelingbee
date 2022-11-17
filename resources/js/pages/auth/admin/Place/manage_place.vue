@@ -1,5 +1,304 @@
+<script setup>
+import axios from 'axios';
+import { storeToRefs } from 'pinia';
+import {onMounted ,ref,reactive} from 'vue';
+import { UserStore } from '@/store/UserStore';
+import { PlaceStore } from '@/store/place/PlaceStore';
+import {AddressStore} from '@/store/address/Address'
+import { useToastr } from '@/pages/toaster';
+/* toaster */
+const toastr = useToastr();
+
+/* user */
+const store = new UserStore();
+const {deleteUser,currentUser} = UserStore();
+const {allUser,getCurrentUser} = storeToRefs(UserStore());
+/* Address */
+const addressStore = new AddressStore();
+const {fetchDivisions,fetchDistricts,fetchAreas} = AddressStore();
+const {divisions,districts,areas} = storeToRefs(AddressStore());
+
+/* place */
+const placeStore = new PlaceStore();
+const {places,categories,loading} = storeToRefs(PlaceStore());
+const {fetchPlaces} = PlaceStore();
+const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
+
+/* user */
+let users = ref(store.getAllUsers);
+let currentUserPlaces = ref([]);
+/* edit */
+const editing = ref(false);
+let editId = ref('')
+  
+
+let form = reactive({
+        name:'',
+        feature_image: '',
+        description:'',
+        features:'',
+        rating:'',
+        price:'',
+        division:'',
+        district:'',
+        area:'',
+
+         category_id : null,
+         user_id :null
+    });
+   
+    let errors = ref([]);
+    const addUser = ()=>{
+      resetForm()
+        editing.value = false
+        $('#ModalCenter').modal('show');
+    }
+    const formAction =()=>{
+       if(editing.value){
+        updateUser()
+       }else{
+        createPlace()
+       }
+      /*  console.log(editing.value); */
+    }
+    /* Setters & Getters*/
+    function getDivision(name){
+      
+    return name ? divisions.value.find(division=>division.name == name) : []
+    }
+    function getDistrict(name){
+    return name ? districts.value.find(district=>district.name == name) : []
+    }
+    function getArea(name){
+    return name ? areas.value.find(area=>area.name == name) : []
+    }
+    function setFeatureImage(event){
+      form.feature_image = event.target.files[0];
+      console.log(event)
+    }
+    function setImages(event){
+      form.images = event.target.files;
+      /* let form_data = new FormData();
+      form_data.append('images',event.target.files[0])
+      console.log(form_data) */
+      console.log(event)
+    }
+    /* defining and reset */
+    const resetForm = ()=>{
+            form.name =''
+            form.description=''
+            form.features=''
+            form.rating=''
+            form.price=''
+            form.images= ''
+            form.feature_image=''
+            form.division = ''
+            form.district = ''
+            form.area = ''
+           /*  this.$refs.fileupload.value=null; */
+           /*  form.category='' */
+    }
+    
+    function setForm_Data(){
+          let form_data = new FormData();
+          form_data.append('user_id',form.user_id)
+        form_data.append('category_id',form.category_id)
+        form_data.append('name',form.name)
+        form_data.append('feature_image',form.feature_image)
+        form_data.append('description',form.description)
+        form_data.append('features',form.features)
+        form_data.append('rating',form.rating)
+        form_data.append('price',form.price)
+        form_data.append('images',form.images)
+
+        form_data.append('division',form.division)
+        form_data.append('district',form.district)
+        form_data.append('area',form.area)
+           return form_data;
+    }
+    /* filters */
+    function filterPlaces(){
+    return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
+    }
+    function filteredDistricts(){
+  
+                if(form.division){
+                  let selected = getDivision(form.division)
+                  let results =  districts.value.filter(district => district.division_id == selected.id)
+                  
+                  
+                  return results
+                }else{
+                  console.log('No filter')
+                    return []
+                }
+              
+            } 
+    function filteredAreas(){
+          
+                if(form.district){
+                  let selected = getDistrict(form.district)
+                  let results =  areas.value.filter(area => area.district_id == selected.id)
+                  
+                  
+            
+            
+                  return results
+                }else{
+                  console.log('No filter')
+                    return []
+                }
+              
+            } 
+
+    function editPlace(place){  
+        editing.value = true
+        editId = place.id
+        
+
+        /* toastr.success('success') */
+        form.name =place.name
+        form.description =place.description
+        form.features =place.features
+        form.price = place.price
+        form.category_id = place.category.id
+        form.user_id = place.id
+        form.rating = place.rating
+      
+        form.division = place.division
+        selectionDivision()
+        form.district = place.district
+        selectionDistrict()
+        form.area = place.area
+        
+        
+        console.log('category') 
+        console.log(form) 
+        console.log(place) 
+        $('#ModalCenter').modal('show');
+}
+    const createPlace = async()=>{
+    
+     form.user_id =  getCurrentUser.value.user_id;
+    /*  console.log('id') */
+    
+     let form_data = setForm_Data()
+
+        form_data.append('_method','post')
+        
+
+        let config = {
+            header : {
+                'Content-Type' : 'image/png'
+            }
+        }
+        /* console.log(form_data) */
+        await axios.post('/api/place',form_data,config).then(res=>{
+           if(res.data.success){
+
+
+           
+           fetchPlaces();
+
+            toastr.success('success')
+
+            $('#ModalCenter').modal('hide');
+            resetForm()
+
+            }else{
+                errors.value = res.data[0].data
+
+            }
+        }).catch(e=>{
+            toastr.error(e.response.data)
+            errors.value = e.response.data
+        })
+
+        console.log('finally');
+    }
+
+    function updateUser(){
+      /* let form_data = new FormData(); */
+    /*  let form_data = setForm_Data(); */
+    console.log(form.category_id) 
+    let form_data = setForm_Data()
+        if(form.images){
+          for(let i = 0;i < form.images.length ;i++){
+            
+            form_data.append('images[]',form.images[i])
+        }
+      }
+      form_data.append('_method','put')
+      
+      let config = {
+        header : {
+          'Content-Type' : 'image/png'
+        }
+      }
+      console.log(form_data) 
+         axios.post('/api/place/'+editId,form_data,config).then(res=>{
+           fetchPlaces();
+            toastr.info('success')
+            $('#ModalCenter').modal('hide');
+        }).catch((err=>{
+                console.log('Error! Can not Fetch All User'+err)
+            })).finally(()=>{
+            resetForm()
+
+
+        }) 
+    
+
+}
+  function  getCurrentUserPlaces(){
+     currentUserPlaces = places.value.filter(place => place.user.id == currentUser.user_id)
+     console.log(currentUserPlaces)
+    }
+
+    //Selection Event
+function selectionDivision(){
+
+  if(form.division){
+   
+    form.area = ''
+    form.district = ''
+ 
+    filteredDistricts()
+    filteredAreas()
+
+  }
+  
+}
+function selectionDistrict(){
+
+  if(form.district){
+    
+   form.area = ''
+    
+    filteredAreas()
+  }
+
+}
+    onMounted( async ()=>{
+   let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
+       await fetchPlaces(); 
+      fetchCategories(); 
+      fetchDivisions(); 
+      fetchDistricts(); 
+      fetchAreas(); 
+      setRoleId(roleId)
+      getCurrentUserPlaces()
+
+
+});
+
+</script>
+
 <template>
     <div class="wrap">
+      <!-- {{districts}}
+      {{divisions}}
+      {{areas}} -->
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary my-3" @click="addUser"> 
@@ -66,17 +365,48 @@
       <label for="inputPrice">Category</label>
       <select class="custom-select" :class="errors.category_id ? 'is-invalid' : '' " id="inputCategory"  v-model="form.category_id">
   <!-- <option selected>Open this select menu</option> -->
+  <option value="" >Choose ...</option>
   <option  v-for="category in categories" :value="category.id">{{category.name}}</option>
 
 </select>
-      <!-- <select class="form-control" >
-      <option>Choose ...</option>
-      </select> -->
-
-
-     
+    
 
     </div>
+    <div class="form-group " >
+      <label for="inputPrice">Division </label>
+      <select class="custom-select" :class="errors.division ? 'is-invalid' : '' " id="inputDivision"  v-model="form.division" @change="selectionDivision()">
+  <!-- <option selected>Open this select menu</option> -->
+  <option value="" selected>Choose ...</option>
+  <option  v-for="division in divisions" :value="division.name">{{division.name}}</option>
+
+</select>
+
+
+    </div>
+    <div class="form-group " v-show="form.division">
+      <label for="inputPrice">District</label>
+      <select class="custom-select" :class="errors.district ? 'is-invalid' : '' " id="inputDistrict"  v-model="form.district" @change="selectionDistrict()">
+  <!-- <option selected>Open this select menu</option> -->
+  <option value="" >Choose ...</option>
+  <option  v-for="district in filteredDistricts()" :value="district.name">{{district.name}}</option>
+
+</select>
+    
+
+    </div>
+    <div class="form-group " v-show="form.district && form.division">
+      <label for="inputPrice">Area</label>
+      <select class="custom-select" :class="errors.area ? 'is-invalid' : '' " id="inputArea"  v-model="form.area">
+  <!-- <option selected>Open this select menu</option> -->
+  <option value="" >Choose ...</option>
+  <option  v-for="area in filteredAreas()" :value="area.name">{{area.name}}</option>
+
+</select>
+    
+
+    </div>
+
+
     <div class="form-group " >
       <label for="inputFeatureImage">Feature Image </label><br>
       <input type="file" class="file-control" :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
@@ -114,7 +444,7 @@
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3 class="card-title">Manage Users</h3>
+<h3 class="card-title">Manage Place</h3>
 </div>
 
 <div class="card-body table-responsive">
@@ -128,6 +458,7 @@
 <th>features</th>
 <th>rating</th>
 <th>Price</th>
+<th>Address</th>
 <!-- <th>Category</th> -->
 <th>Action</th>
 </tr>
@@ -155,6 +486,7 @@
 <td ><textarea  name="features" id="features" class="form-control" cols="30" rows="10" disabled>{{place.features}}</textarea></td>
 <td >{{place.rating}}<i class="fas fa-star text-warning"></i></td>
 <td >৳{{place.price}}</td>
+<td >{{place.area}},{{place.district}},{{place.division}}</td>
 
 <td>
   <router-link :to="'/manage/place/'+place.id+'/booking'" class="btn btn-warning mr-1">Bookings</router-link>
@@ -187,215 +519,5 @@
     </div>
 </template>
 
-    <script setup>
-        import axios from 'axios';
-import { storeToRefs } from 'pinia';
-        import {onMounted ,ref,reactive} from 'vue';
-        import { UserStore } from '@/store/UserStore';
-        import { PlaceStore } from '@/store/place/PlaceStore';
-       import { useToastr } from '@/pages/toaster';
-        const toastr = useToastr();
 
-        const store = new UserStore();
-        const {deleteUser,currentUser} = UserStore();
-        const {allUser,getCurrentUser} = storeToRefs(UserStore());
-
-        const placeStore = new PlaceStore();
-        const {places,categories,loading} = storeToRefs(PlaceStore());
-        const {fetchPlaces} = PlaceStore();
-        const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
-
-        let users = ref(store.getAllUsers);
-        let currentUserPlaces = ref([]);
-        const editing = ref(false);
-        let editId = ref('')
-        let p = ref([]);
-        let form = reactive({
-                name:'',
-                feature_image: '',
-                description:'',
-                features:'',
-                rating:'',
-                price:'',
-                 category_id : null,
-                 user_id :null
-            });
-
-            let errors = ref([]);
-            const addUser = ()=>{
-                editing.value = false
-                $('#ModalCenter').modal('show');
-            }
-            const formAction =()=>{
-               if(editing.value){
-                updateUser()
-               }else{
-                createPlace()
-               }
-              /*  console.log(editing.value); */
-            }
-            function setFeatureImage(event){
-              form.feature_image = event.target.files[0];
-              console.log(event)
-            }
-            function setImages(event){
-              form.images = event.target.files;
-              /* let form_data = new FormData();
-              form_data.append('images',event.target.files[0])
-              console.log(form_data) */
-              console.log(event)
-            }
-            const resetForm = ()=>{
-                    form.name =''
-                    form.description=''
-                    form.features=''
-                    form.rating=''
-                    form.price=''
-                    form.images= ''
-                    form.feature_image=''
-                   /*  this.$refs.fileupload.value=null; */
-                   /*  form.category='' */
-            }
-            
-            function setForm_Data(){
-                  let form_data = new FormData();
-                  form_data.append('user_id',form.user_id)
-                form_data.append('category_id',form.category_id)
-                form_data.append('name',form.name)
-                form_data.append('feature_image',form.feature_image)
-                form_data.append('description',form.description)
-                form_data.append('features',form.features)
-                form_data.append('rating',form.rating)
-                form_data.append('price',form.price)
-                form_data.append('images',form.images)
-                   return form_data;
-            }
-            function filterPlaces(){
-            return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
-            }
-            function editPlace(place){  
-                editing.value = true
-                editId = place.id
-                
-
-                /* toastr.success('success') */
-                form.name =place.name
-                form.description =place.description
-                form.features =place.features
-                form.rating = place.rating
-                form.price = place.price
-                form.category_id = place.category.id
-                form.user_id = place.id
-                console.log('category') 
-                console.log(form.category_id) 
-                console.log(place) 
-                $('#ModalCenter').modal('show');
-        }
-            const createPlace = async()=>{
-            
-             form.user_id =  getCurrentUser.value.user_id;
-            /*  console.log('id') */
-            
-             let form_data = new FormData();
-                form_data.append('user_id',form.user_id)
-                form_data.append('category_id',form.category_id)
-                form_data.append('name',form.name)
-                form_data.append('feature_image',form.feature_image)
-                form_data.append('description',form.description)
-                form_data.append('features',form.features)
-                form_data.append('rating',form.rating)
-                form_data.append('price',form.price)
-                form_data.append('images',form.images)
-                form_data.append('_method','post')
-                
-
-                let config = {
-                    header : {
-                        'Content-Type' : 'image/png'
-                    }
-                }
-                /* console.log(form_data) */
-                await axios.post('/api/place',form_data,config).then(res=>{
-                   if(res.data.success){
-
-
-                   
-                   fetchPlaces();
-
-                    toastr.success('success')
-
-                    $('#ModalCenter').modal('hide');
-                    resetForm()
-
-                    }else{
-                        errors.value = res.data[0].data
-
-                    }
-                }).catch(e=>{
-                    toastr.error(e.response.data)
-                    errors.value = e.response.data
-                })
-
-                console.log('finally');
-            }
-            function updateUser(){
-              /* let form_data = new FormData(); */
-            /*  let form_data = setForm_Data(); */
-            console.log(form.category_id) 
-            let form_data = new FormData();
-                  form_data.append('user_id',form.user_id)
-                form_data.append('category_id',form.category_id)
-                form_data.append('name',form.name)
-                form_data.append('feature_image',form.feature_image)
-                form_data.append('description',form.description)
-                form_data.append('features',form.features)
-                form_data.append('rating',form.rating)
-                form_data.append('price',form.price)
-              /*   form_data.append('images[]',form.images[0]) */
-              if(form.images){
-                for(let i = 0;i < form.images.length ;i++){
-                  
-                form_data.append('images[]',form.images[i])
-                                   /*  console.log(form.images[i]) */
-              }
-                }  
-              /*   console.log(form.feature_image)
-                console.log(form.images[0]) */
-             /*    for (const value of form_data.values()) {
-                console.log(value);
-                  } */
-                form_data.append('_method','put')
-
-                let config = {
-                    header : {
-                        'Content-Type' : 'image/png'
-                    }
-                  }
-              /* console.log(form_data) */
-                 axios.post('/api/place/'+editId,form_data,config).then(res=>{
-                   fetchPlaces();
-                    toastr.info('success')
-                    $('#ModalCenter').modal('hide');
-                }).finally(()=>{
-                    resetForm()
-
-
-                }) 
-            }
-          function  getCurrentUserPlaces(){
-             currentUserPlaces = places.value.filter(place => place.user.id == currentUser.user_id)
-             console.log(currentUserPlaces)
-            }
-
-            onMounted( async ()=>{
-           let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
-               await fetchPlaces(); 
-              fetchCategories(); 
-              setRoleId(roleId)
-              getCurrentUserPlaces()
-
-
-        });
-
-    </script>
 

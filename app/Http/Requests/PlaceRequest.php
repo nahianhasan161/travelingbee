@@ -33,6 +33,9 @@ class PlaceRequest extends FormRequest
 'rating'=> 'required|numeric',
 'price'=> 'required|numeric',
 'category_id'=> 'required',
+'division'=> 'required',
+'district'=> 'required',
+'area'=> 'required',
 'user_id'=> 'required',
         ];
     }

@@ -46,9 +46,15 @@ class DivisionController extends Controller
      * @param  \App\Models\Division  $Division
      * @return \Illuminate\Http\Response
      */
-    public function show(Division $Division)
+    public function show($DivisionID)
     {
-        //
+        $division = Division::find($DivisionID);
+        if($division){
+           return Helper::sendSuccess('success',$division);
+        }
+        else{
+           return Helper::sendError('can not find division');
+        }
     }
 
     /**

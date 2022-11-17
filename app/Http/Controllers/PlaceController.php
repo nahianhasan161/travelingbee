@@ -59,7 +59,7 @@ class PlaceController extends Controller
     public function store(PlaceRequest $request)
     {
        
-        $input = $request->only('name','description','features','rating','price','category_id','user_id');
+        $input = $request->only('name','description','features','rating','price','category_id','user_id','division','district','area');
         $place = Place::create($input); 
          if($request->file('feature_image')){
 
@@ -149,7 +149,7 @@ class PlaceController extends Controller
                 }
                  
              } 
-            $input = $request->only('name','description','features','rating','price','category_id','user_id');
+             $input = $request->only('name','description','features','rating','price','category_id','user_id','division','district','area');
             $updated = $thisPlace->update($input);
             if($request->file('feature_image')){
 

@@ -1,3 +1,142 @@
+
+
+   <script setup>
+    
+   import axios from 'axios';
+   import { storeToRefs } from 'pinia';
+   import {onMounted ,ref,reactive} from 'vue';
+   import { useRouter,useRoute } from 'vue-router';
+   import { UserStore } from '@/store/UserStore';
+   import {AddressStore} from '@/store/address/Address'
+   import { useToastr } from '@/pages/toaster';
+   import table_component from '@/pages/component/manage_table.vue'
+   const toastr = useToastr();
+   
+   const router = new useRouter();
+   const route = new useRoute();
+   /* UserStore */
+   const store = new UserStore();
+   const {deleteUser} = UserStore();
+   const {allUser,loading} = storeToRefs(UserStore());
+   /* AddressStore */
+   
+   const {fetchDivisions} = AddressStore();
+ const {divisions} = storeToRefs(AddressStore()); 
+   
+  
+   let users = ref(store.getAllUsers);
+   const editing = ref(false);
+   /* let divisions = ref([]) */
+   let editId = ref('')
+   let form = reactive({
+           name:'',
+           bn_name:'',
+           url:'',
+         
+       });
+       
+       let errors = ref([]);
+       let orders = ref([]);
+       const addDivision = ()=>{
+           editing.value = false
+         $('#ModalCenter').modal('show');
+       }
+       const formAction =()=>{
+          if(editing.value){
+           updateUser()
+          }else{
+           register()
+          }
+         /*  console.log(editing.value); */
+       }
+       const resetForm = ()=>{
+               form.name =''
+               form.bn_name=''
+               form.url=''
+       }
+
+       function editDivision($division){  
+           editing.value = true
+           editId = $division.id
+           /* form.value = $user; */
+
+           /* toastr.success('success') */
+           form.name =$division.name
+           form.bn_name =$division.bn_name
+           form.url =$division.url
+
+           $('#ModalCenter').modal('show');
+   }
+       const register = async()=>{
+
+           await axios.post('/api/address/division',form).then(res=>{
+              if(res.data.success){
+
+
+              
+
+               toastr.success('success')
+
+               $('#ModalCenter').modal('hide');
+               resetForm()
+
+               }else{
+                   errors.value = res.data[0].data
+
+               }
+           }).catch(e=>{
+               toastr.error(e.response.data)
+               errors.value = e.response.data
+           })
+
+           console.log('finally');
+       }
+       function updateUser(){
+           axios.put('/api/address/division/'+editId,form).then(res=>{
+               store.fetchAllUser();
+               toastr.info('success')
+               $('#ModalCenter').modal('hide');
+           }).finally(()=>{
+               resetForm()
+
+
+           })
+       }
+       function allDivision(){
+           axios.get('/api/address/division').then(res=>{
+               divisions.value = res.data.data
+           })
+       }
+       function getOrdersByBooking(id){
+
+$('#ModalCenter').modal('show');
+
+axios.get('/api/orders/'+id).then(res=>{
+orders.value = res.data.data
+})
+}
+       function showPayments(bookingID){
+       $('#ModalCenter').modal('show');
+   }
+function invoice(id){
+   $('#ModalCenter').modal('hide');
+   router.push('/payment/invoice/'+id)
+}
+
+/*   function edit() {
+ console.log('here')
+} */
+
+       onMounted(()=>{
+           store.fetchAllUser();
+           fetchDivisions()
+           console.log(divisions)
+          /*  allDivision() */
+       /*  console.log(emit.edit) */
+   });
+
+</script>
+
 <template>
     <div class="wrap">
         <!-- {{bookings}} -->
@@ -138,131 +277,15 @@
 
 </div>
 </div>
+<!-- <table_component 
+:data="divisions"
+ :names="['#','Name','Bangla Name ','Url','Actions']"
+ :fields="[{'name' : 'text'},{'bn_name' : 'text'},{'url':'text'},{'edit' : 'google.com' ,'delete' : 'test.com'}]"
+ @edit-prop="test"
+ /> -->
+
     </div>
 </template>
 
-    <script setup>
-        import axios from 'axios';
-import { storeToRefs } from 'pinia';
-        import {onMounted ,ref,reactive} from 'vue';
-        import { useRouter,useRoute } from 'vue-router';
-        import { UserStore } from '@/store/UserStore';
-
-        import { useToastr } from '@/pages/toaster';
-       
-        const toastr = useToastr();
-
-        const store = new UserStore();
-        const router = new useRouter();
-        const route = new useRoute();
-
-        const {deleteUser} = UserStore();
-        const {allUser,loading} = storeToRefs(UserStore());
-        
-        let users = ref(store.getAllUsers);
-        const editing = ref(false);
-        let divisions = ref([])
-        let editId = ref('')
-        let form = reactive({
-                name:'',
-                bn_name:'',
-                url:'',
-              
-            });
-
-            let errors = ref([]);
-            let orders = ref([]);
-            const addDivision = ()=>{
-                editing.value = false
-              $('#ModalCenter').modal('show');
-            }
-            const formAction =()=>{
-               if(editing.value){
-                updateUser()
-               }else{
-                register()
-               }
-              /*  console.log(editing.value); */
-            }
-            const resetForm = ()=>{
-                    form.name =''
-                    form.bn_name=''
-                    form.url=''
-            }
-
-            function editDivision($division){  
-                editing.value = true
-                editId = $division.id
-                /* form.value = $user; */
-
-                /* toastr.success('success') */
-                form.name =$division.name
-                form.bn_name =$division.bn_name
-                form.url =$division.url
-
-                $('#ModalCenter').modal('show');
-        }
-            const register = async()=>{
-
-                await axios.post('/api/address/division',form).then(res=>{
-                   if(res.data.success){
-
-
-                   
-
-                    toastr.success('success')
-
-                    $('#ModalCenter').modal('hide');
-                    resetForm()
-
-                    }else{
-                        errors.value = res.data[0].data
-
-                    }
-                }).catch(e=>{
-                    toastr.error(e.response.data)
-                    errors.value = e.response.data
-                })
-
-                console.log('finally');
-            }
-            function updateUser(){
-                axios.put('/api/address/division/'+editId,form).then(res=>{
-                    store.fetchAllUser();
-                    toastr.info('success')
-                    $('#ModalCenter').modal('hide');
-                }).finally(()=>{
-                    resetForm()
-
-
-                })
-            }
-            function allDivision(){
-                axios.get('/api/address/division').then(res=>{
-                    divisions.value = res.data.data
-                })
-            }
-            function getOrdersByBooking(id){
-
-$('#ModalCenter').modal('show');
-
-axios.get('/api/orders/'+id).then(res=>{
-   orders.value = res.data.data
-})
-}
-            function showPayments(bookingID){
-            $('#ModalCenter').modal('show');
-        }
-    function invoice(id){
-        $('#ModalCenter').modal('hide');
-        router.push('/payment/invoice/'+id)
-    }
-
-            onMounted(()=>{
-                store.fetchAllUser();
-                allDivision()
-
-        });
-
-    </script>
+ 
 

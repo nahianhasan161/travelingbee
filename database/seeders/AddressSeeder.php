@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\District;
 use App\Models\Division;
-use App\Models\Upazila;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Area;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,7 +24,7 @@ class AddressSeeder extends Seeder
         
         Division::truncate();
         District::truncate();
-        Upazila::truncate();
+        Area::truncate();
         Schema::enableForeignKeyConstraints();
        
         $divisions = [
@@ -607,14 +607,14 @@ class AddressSeeder extends Seeder
             ];
             Division::create($data);
         }
-        foreach($upazilas as $index => $upazila){
+        foreach($upazilas as $index => $area){
            $data = [
-                'district_id' => $upazila[1],
-                'name' => $upazila[2],
-                'bn_name' => $upazila[3],
-                'url' => $upazila[4],
+                'district_id' => $area[1],
+                'name' => $area[2],
+                'bn_name' => $area[3],
+                'url' => $area[4],
             ];
-            Upazila::create($data);
+            Area::create($data);
         }
         foreach($districts as $index => $district){
            $data = [

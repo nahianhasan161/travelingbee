@@ -12,7 +12,7 @@ use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SslCommerzPaymentController;
-use App\Http\Controllers\UpazilaController;
+use App\Http\Controllers\AreaController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -71,7 +71,7 @@ Route::post('/place/payments', [BookingController::class, 'payments']);
 //Address Start
 Route::resource('/address/division', DivisionController::class);
 Route::resource('/address/district', DistrictController::class);
-Route::resource('/address/area', UpazilaController::class);
+Route::resource('/address/area', AreaController::class);
 
 //Address End
 //SSLCOMMERZ Start

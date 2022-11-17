@@ -200,7 +200,7 @@
 </thead>
 <tbody>
 <!--   {{bookings}} -->
-<tr v-for="(booking,index) in bookings" :key="booking.id">
+<tr v-for="(booking,index) in districts" :key="booking.id">
     <td>{{index+1}}</td>
 <td >{{booking.name}}</td>
 <td >{{booking.bn_name}}</td>
@@ -244,21 +244,24 @@ import { storeToRefs } from 'pinia';
         import {onMounted ,ref,reactive} from 'vue';
         import { useRouter,useRoute } from 'vue-router';
         import { UserStore } from '@/store/UserStore';
+        import {AddressStore} from '@/store/address/address'
 
        import { useToastr } from '@/pages/toaster';
-
+   
+        const {fetchDistricts} = AddressStore();
+        const {districts} = storeToRefs(AddressStore()); 
         const toastr = useToastr();
 
         const store = new UserStore();
         const router = new useRouter();
         const route = new useRoute();
 
-        const {deleteUser} = UserStore();
+        const {deleteUser,fetchAllUser} = UserStore();
         const {allUser,loading} = storeToRefs(UserStore());
         
         let users = ref(store.getAllUsers);
         const editing = ref(false);
-        let bookings = ref([])
+       
         let editId = ref('')
         let form = reactive({
                 name:'',
@@ -272,7 +275,7 @@ import { storeToRefs } from 'pinia';
             let orders = ref([]);
             const addUser = ()=>{
                 editing.value = false
-              $('#exampleModalCenter').modal('show');
+              $('#ModalCenter').modal('show');
             }
             const formAction =()=>{
                if(editing.value){
@@ -300,7 +303,7 @@ import { storeToRefs } from 'pinia';
                 form.email =$user.email
                 form.role =$user.roles[0]
 
-                $('#exampleModalCenter').modal('show');
+                $('#ModalCenter').modal('show');
         }
             const register = async()=>{
 
@@ -312,7 +315,7 @@ import { storeToRefs } from 'pinia';
 
                     toastr.success('success')
 
-                    $('#exampleModalCenter').modal('hide');
+                    $('#ModalCenter').modal('hide');
                     resetForm()
 
                     }else{
@@ -330,37 +333,33 @@ import { storeToRefs } from 'pinia';
                 axios.put('/api/user/'+editId,form).then(res=>{
                     store.fetchAllUser();
                     toastr.info('success')
-                    $('#exampleModalCenter').modal('hide');
+                    $('#ModalCenter').modal('hide');
                 }).finally(()=>{
                     resetForm()
 
 
                 })
             }
-            function allBooking(){
-                axios.get('/api/address/district').then(res=>{
-                    bookings.value = res.data.data
-                })
-            }
+          
             function getOrdersByBooking(id){
 
-$('#exampleModalCenter').modal('show');
+$('#ModalCenter').modal('show');
 
 axios.get('/api/orders/'+id).then(res=>{
    orders.value = res.data.data
 })
 }
             function showPayments(bookingID){
-            $('#exampleModalCenter').modal('show');
+            $('#ModalCenter').modal('show');
         }
     function invoice(id){
-        $('#exampleModalCenter').modal('hide');
+        $('#ModalCenter').modal('hide');
         router.push('/payment/invoice/'+id)
     }
 
             onMounted(()=>{
-                store.fetchAllUser();
-                allBooking()
+                fetchAllUser();
+                fetchDistricts()
 
         });
     </script>

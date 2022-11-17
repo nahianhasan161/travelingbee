@@ -31,4 +31,9 @@ class Helper{
 
 
     }
+
+    public function profileImageUrl($url)
+    {
+        return '/image/profile/'.$url;
+    }
 }

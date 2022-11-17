@@ -21,7 +21,14 @@ return new class extends Migration
             $table->longText('features');
             $table->float('rating')->default(5);
             $table->float('price');
+
+            $table->string('division');
+            $table->string('district');
+            $table->string('area');
+
             $table->integer('status')->default('1');
+
+
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

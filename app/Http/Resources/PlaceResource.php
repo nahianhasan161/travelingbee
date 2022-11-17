@@ -31,10 +31,13 @@ class PlaceResource extends JsonResource
         'features' => $this->features,
         'rating' => $this->rating,
         'price' => $this->price,
+        'division' => $this->division,
+        'district' => $this->district,
+        'area' => $this->area,
     'category' => $this->category ? $this->category->only('id','name') : [],
        'user' => User::find( $this->user_id) ? User::find( $this->user_id)->only('id','name','email','image') : '', 
         'images' =>   $this->whenLoaded('images') ,
-        'bookings' => $this->bookings 
+    'bookings' => $this->bookings 
         /* 'user_name' =>  $this->owner, */
     ];
     }

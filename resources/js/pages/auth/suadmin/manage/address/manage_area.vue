@@ -1,3 +1,134 @@
+<script setup>
+import axios from 'axios';
+import { storeToRefs } from 'pinia';
+import {onMounted ,ref,reactive} from 'vue';
+import { useRouter,useRoute } from 'vue-router';
+import { UserStore } from '@/store/UserStore';
+import {AddressStore} from '@/store/address/Address'
+
+import { useToastr } from '@/pages/toaster';
+
+const toastr = useToastr();
+
+const store = new UserStore();
+const router = new useRouter();
+const route = new useRoute();
+
+const {fetchAreas} = AddressStore();
+const {areas} = storeToRefs(AddressStore());
+/* UserStore */
+const {deleteUser} = UserStore();
+const {allUser,loading} = storeToRefs(UserStore());
+
+let users = ref(store.getAllUsers);
+const editing = ref(false);
+let bookings = ref([])
+let editId = ref('')
+let form = reactive({
+        name:'',
+        email:'',
+        password:'',
+        password_confirmation:'',
+        role:''
+    });
+
+    let errors = ref([]);
+    let orders = ref([]);
+    const addUser = ()=>{
+        editing.value = false
+      $('#exampleModalCenter').modal('show');
+    }
+    const formAction =()=>{
+       if(editing.value){
+        updateUser()
+       }else{
+        register()
+       }
+      /*  console.log(editing.value); */
+    }
+    const resetForm = ()=>{
+            form.name =''
+            form.email=''
+            form.password=''
+            form.password_confirmation=''
+            form.role=''
+    }
+
+    function editUser($user){  
+        editing.value = true
+        editId = $user.user_id
+        /* form.value = $user; */
+
+        /* toastr.success('success') */
+        form.name =$user.name
+        form.email =$user.email
+        form.role =$user.roles[0]
+
+        $('#exampleModalCenter').modal('show');
+}
+    const register = async()=>{
+
+        await axios.post('/api/register',form).then(res=>{
+           if(res.data.success){
+
+
+            store.fetchAllUser();
+
+            toastr.success('success')
+
+            $('#exampleModalCenter').modal('hide');
+            resetForm()
+
+            }else{
+                errors.value = res.data[0].data
+
+            }
+        }).catch(e=>{
+            toastr.error(e.response.data)
+            errors.value = e.response.data
+        })
+
+        console.log('finally');
+    }
+    function updateUser(){
+        axios.put('/api/user/'+editId,form).then(res=>{
+            store.fetchAllUser();
+            toastr.info('success')
+            $('#exampleModalCenter').modal('hide');
+        }).finally(()=>{
+            resetForm()
+
+
+        })
+    }
+    function allBooking(){
+        axios.get('/api/address/area').then(res=>{
+            bookings.value = res.data.data
+        })
+    }
+    function getOrdersByBooking(id){
+
+$('#exampleModalCenter').modal('show');
+
+axios.get('/api/orders/'+id).then(res=>{
+orders.value = res.data.data
+})
+}
+    function showPayments(bookingID){
+    $('#exampleModalCenter').modal('show');
+}
+function invoice(id){
+$('#exampleModalCenter').modal('hide');
+router.push('/payment/invoice/'+id)
+}
+
+    onMounted(()=>{
+        store.fetchAllUser();
+        fetchAreas()
+
+});
+</script>
+
 <template>
     <div class="wrap">
         <!-- {{bookings}} -->
@@ -184,7 +315,7 @@
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3 class="card-title">Manage Bookings</h3>
+<h3 class="card-title">Manage Areas</h3>
 </div>
 
 <div class="card-body table-responsive">
@@ -201,7 +332,7 @@
 </thead>
 <tbody>
 <!--   {{bookings}} -->
-<tr v-for="(booking,index) in bookings" :key="booking.id">
+<tr v-for="(booking,index) in areas" :key="booking.id">
     <td>{{index+1}}</td>
 <td >{{booking.name}}</td>
 <td >{{booking.bn_name}}</td>
@@ -239,130 +370,5 @@
     </div>
 </template>
 
-    <script setup>
-        import axios from 'axios';
-import { storeToRefs } from 'pinia';
-        import {onMounted ,ref,reactive} from 'vue';
-        import { useRouter,useRoute } from 'vue-router';
-        import { UserStore } from '@/store/UserStore';
 
-       import { useToastr } from '@/pages/toaster';
-
-        const toastr = useToastr();
-
-        const store = new UserStore();
-        const router = new useRouter();
-        const route = new useRoute();
-
-        const {deleteUser} = UserStore();
-        const {allUser,loading} = storeToRefs(UserStore());
-        
-        let users = ref(store.getAllUsers);
-        const editing = ref(false);
-        let bookings = ref([])
-        let editId = ref('')
-        let form = reactive({
-                name:'',
-                email:'',
-                password:'',
-                password_confirmation:'',
-                role:''
-            });
-
-            let errors = ref([]);
-            let orders = ref([]);
-            const addUser = ()=>{
-                editing.value = false
-              $('#exampleModalCenter').modal('show');
-            }
-            const formAction =()=>{
-               if(editing.value){
-                updateUser()
-               }else{
-                register()
-               }
-              /*  console.log(editing.value); */
-            }
-            const resetForm = ()=>{
-                    form.name =''
-                    form.email=''
-                    form.password=''
-                    form.password_confirmation=''
-                    form.role=''
-            }
-
-            function editUser($user){  
-                editing.value = true
-                editId = $user.user_id
-                /* form.value = $user; */
-
-                /* toastr.success('success') */
-                form.name =$user.name
-                form.email =$user.email
-                form.role =$user.roles[0]
-
-                $('#exampleModalCenter').modal('show');
-        }
-            const register = async()=>{
-
-                await axios.post('/api/register',form).then(res=>{
-                   if(res.data.success){
-
-
-                    store.fetchAllUser();
-
-                    toastr.success('success')
-
-                    $('#exampleModalCenter').modal('hide');
-                    resetForm()
-
-                    }else{
-                        errors.value = res.data[0].data
-
-                    }
-                }).catch(e=>{
-                    toastr.error(e.response.data)
-                    errors.value = e.response.data
-                })
-
-                console.log('finally');
-            }
-            function updateUser(){
-                axios.put('/api/user/'+editId,form).then(res=>{
-                    store.fetchAllUser();
-                    toastr.info('success')
-                    $('#exampleModalCenter').modal('hide');
-                }).finally(()=>{
-                    resetForm()
-
-
-                })
-            }
-            function allBooking(){
-                axios.get('/api/address/area').then(res=>{
-                    bookings.value = res.data.data
-                })
-            }
-            function getOrdersByBooking(id){
-
-$('#exampleModalCenter').modal('show');
-
-axios.get('/api/orders/'+id).then(res=>{
-   orders.value = res.data.data
-})
-}
-            function showPayments(bookingID){
-            $('#exampleModalCenter').modal('show');
-        }
-    function invoice(id){
-        $('#exampleModalCenter').modal('hide');
-        router.push('/payment/invoice/'+id)
-    }
-
-            onMounted(()=>{
-                store.fetchAllUser();
-                allBooking()
-
-        });
-    </script>
 
