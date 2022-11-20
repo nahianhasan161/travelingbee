@@ -30,7 +30,7 @@ class PlaceRequest extends FormRequest
 'name' => 'required',
 'description' => 'required',
 'features'=> 'required',
-'rating'=> 'required|numeric',
+'rating'=> 'required|numeric|max:5',
 'price'=> 'required|numeric',
 'category_id'=> 'required',
 'division'=> 'required',

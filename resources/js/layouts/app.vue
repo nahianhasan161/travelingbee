@@ -64,15 +64,15 @@
  -->
         </li>
         <li class="nav-item">
-            <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" >Group Tour</router-link>
-        
+          <router-link class="nav-link mx-2 text-uppercase" :to="{name:'group-tour'}" ><i class="fa fa-users mr-1"></i>Group Tour</router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link mx-2 text-uppercase" href="#">Guide</a>
-        </li>
+            <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" ><i class="fa fa-book mr-1"></i>Guide</router-link>
+          </li>
+        
 
         <li class="nav-item">
-          <a class="nav-link mx-2 text-uppercase" href="#">About</a>
+          <a class="nav-link mx-2 text-uppercase" href="#"><i class="fas fa-circle-info"></i>About</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto " v-if="!token">
@@ -159,15 +159,36 @@
 </router-link>
 
 </li>
-    <li class="nav-item " v-if="currentUser ? currentUser.roles[0] != 'user' : false">
-
-
-        <router-link active-class="active" :to="{name:'manage.place'}"  class="nav-link " >
-            <i class="nav-icon fa fa-map-marker"></i>
+<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<a href="#" class="nav-link " active-class="active">
+<i class="nav-icon  fa fa-map-marker"></i>
+<p >
+Manage Places
+<i class="right fas fa-angle-left"></i>
+</p>
+</a>
+<ul class="nav nav-treeview">
+<li class="nav-item">
+    <router-link active-class="active" :to="{name:'manage.place'}"  class="nav-link " >
+        <i class="nav-icon fa fa-map-marker"></i>
         <p>Add Place</p>
         </router-link>
 
+
 </li>
+<li class="nav-item">
+    <router-link active-class="active" :to="{name:'manage.group_tour'}"  class="nav-link " >
+        <i class="nav-icon fa fa-map-marker"></i>
+        <p>Add Group Tour</p>
+        </router-link>
+
+
+</li>
+
+
+</ul>
+</li>
+ 
   
 
 <li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 

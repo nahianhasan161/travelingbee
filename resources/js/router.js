@@ -1,6 +1,7 @@
 import {createWebHistory,createRouter} from 'vue-router';
 /* landing pages */
 import welcome from './pages/welcome.vue';
+import grouptour from './pages/GroupTour/group-tour.vue';
 import dashboard from './pages/auth/user/dashboard.vue';
 import place from './pages/place.vue';
 import test from './pages/test.vue';
@@ -17,6 +18,7 @@ import suadmin_dashboard from './pages/auth/suadmin/dashboard.vue';
 import manage_user from './pages/auth/suadmin/manage/manage_user.vue';
 import manage_roles from './pages/auth/suadmin/manage/manage_roles.vue';
 import manage_place_booking from './pages/auth/suadmin/manage/manage_booking.vue';
+import manage_group_tour from './pages/auth/suadmin/manage/manage_group_tour.vue';
 /* Management Address*/
 import manage_division from '@/pages/auth/suadmin/manage/address/manage_division.vue';
 import manage_district from '@/pages/auth/suadmin/manage/address/manage_district.vue';
@@ -65,6 +67,14 @@ const routes = [
    
     
 },
+    {
+    path : '/group-tour',
+    name : 'group-tour',
+    component : grouptour ,
+   
+    
+},
+
     {
     path : '/place/:id',
     name : 'place',
@@ -171,6 +181,14 @@ component : register ,
     path : '/manage/place',
     name : 'manage.place',
     component : manage_place ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/manage/group_tour',
+    name : 'manage.group_tour',
+    component : manage_group_tour ,
     meta:{
         requiresAuth: true,
     }

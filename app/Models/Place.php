@@ -32,4 +32,8 @@ class Place extends Model
     {
     return $this->belongsToMany(User::class,'bookings','place_id','user_id')->withPivot('date','id');
     }
+    public function reviews()
+    {
+    return $this->belongsToMany(Review::class);
+    }
 }

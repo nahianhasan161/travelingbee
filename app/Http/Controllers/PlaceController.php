@@ -135,7 +135,7 @@ class PlaceController extends Controller
        /* return Helper::sendSuccess('success', $request->only('name','description','features','rating','price','category_id','user_id'));   */
         if($thisPlace) {
         
-            if($request->images){ 
+            if($request->file('images')){ 
                 foreach($request->file('images') as $image){
                     $imagesName = '';
                     /* Help::sendSuccess($request->file($image)) */

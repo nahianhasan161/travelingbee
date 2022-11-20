@@ -2,7 +2,8 @@
  
          
        
-    <div class="container text-monospace" :class="loading? 'text-muted' : ''">
+    <div class="wrap" :class="loading? 'text-muted' : ''">
+    <div class="container text-monospace" >
       <div class="loader" v-if="loading"></div>
         <div class="text-monospace">
 
@@ -123,7 +124,7 @@
 <hr>
 
 </div>
-<div class="">
+<!-- <div class="">
     <h1>What this place offers</h1>
     <div class="row">
 
@@ -152,7 +153,7 @@
     </div>
 <hr>
 
-</div>
+</div> -->
 
 <div class="">
 <h1>Description</h1>
@@ -211,11 +212,208 @@
       </div>
  <!--   {{new Date().toLocaleString()}}
    {{form.date}} -->
-</div>
-</div>
-</div>
-<!-- <div>User {{ $route.params.id }}</div> -->
 
+  </div>
+</div>
+</div>
+
+ <div class="container-fluid-review px-0 py-5 mx-auto">
+<div class="row justify-content-center mx-0 mx-md-auto">
+ <div class="col-lg-10 col-md-11 px-1 px-sm-2">
+   <div class="card border-0 px-3">
+     <!-- top row -->
+     <div class="d-flex row py-5 px-5 bg-light">
+       <div class="green-tab p-2 px-3 mx-2">
+         <p class="sm-text mb-0">OVERALL RATING</p>
+         <h4 >{{places.rating}}</h4>
+       </div>
+       <div class="white-tab p-2 mx-2 text-muted">
+         <p class="sm-text mb-0">ALL REVIEWS</p>
+         <h4>124</h4>
+       </div>
+       <div class="white-tab p-2 mx-2">
+         <p class="sm-text mb-0 text-muted">POSITIVE REVIEWS</p>
+         <h4 class="green-text">93%</h4>
+       </div>
+       <div class="ml-md-auto p-2 mx-md-2 pt-4 pt-md-3">
+         <button class="btn btn-red px-4" @click="addReview()">WRITE A REVIEW</button>
+       </div>
+     </div>
+     <!-- middle row -->
+    <!--  <div class="row bg-light">
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/8lJt6UN.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle green-dot"></div>
+         <div class="fa fa-circle green-dot"></div>
+         <div class="fa fa-circle green-dot"></div>
+         <div class="fa fa-circle green-dot"></div>
+         <div class="fa fa-circle green-dot"></div>
+       </div>
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/Grjnbah.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle red-dot"></div>
+         <div class="fa fa-circle red-dot"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+       </div>
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/q2v8mqu.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle yellow-dot"></div>
+         <div class="fa fa-circle yellow-dot"></div>
+         <div class="fa fa-circle yellow-dot"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+       </div>
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/EkmVVM1.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+       </div>
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/ZbZzavI.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+       </div>
+       <div class="col-md-2 col-4 text-center block py-5">
+         <div class="round-icon">
+           <img src="https://i.imgur.com/S6SGKFQ.png" width="50px" height="50px">
+         </div>
+         <p class="sm-text-1 grey-text mb-0">100</p>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+         <div class="fa fa-circle"></div>
+       </div>
+     </div> -->
+     <!-- Review by user -->
+     <div class="review p-5">
+       <div class="row d-flex">
+         <div class="profile-pic"><img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="60px" height="60px"></div>
+         <div class="d-flex flex-column pl-3">
+           <h4>Emily</h4>
+           <p class="grey-text">30 min ago</p>
+         </div>
+       </div>
+       <div class="row pb-3">
+       
+         <i class="fa fa-star star-rating"></i>
+         <i class="fa fa-star star-rating"></i>
+         <i class="fa fa-star star-rating"></i>
+         <i class="fa fa-star star-rating"></i>
+         <i class="fa fa-star star-rating"></i>
+         <div class="green-text">
+           <h5 class="mb-0 pl-3">Excellent</h5>
+         </div>
+       </div>
+       <div class="row pb-3">
+         <p>This dive center is incredibly well organized and is at the top of its game.</p>
+       </div>
+       <div class="row ml-1">
+         <div class="row bg-light via">
+           <div class="px-2"><img src="https://i.imgur.com/8lJt6UN.png" width="18px" height="18px"></div>
+           <!-- <p class="grey-text mb-0 px-3">via Google</p> -->
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+</div>
+</div>
+
+<!-- <div>User {{ $route.params.id }}</div> -->
+<!-- Model -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form @submit.prevent="formAction">
+      <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle" v-if="editing">Edit User</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+  <div class="form" v-if='currentUser'>
+    <div class="form-group ">
+      <label for="FormControlSelect">Rating <i class=" fa fa-star star-rating"></i></label>
+      <select v-model="review.rating" class="form-control" :class="reviewErrors.rating ? 'is-invalid' : '' " id="FormControlSelect">
+      <option default>Choose...</option>
+      <option value="1">
+        1<i class=" fa fa-star star-rating"></i>
+      </option>
+      <option value="2">
+       2 <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star star-rating"></i>
+      </option>
+      <option value="3">
+        3<i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i>
+      </option>
+      <option value="4">
+       4 <i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i>
+      </option>
+      <option value="5">
+       5<i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i>
+      </option>
+
+    </select>
+    <div class="text-danger" v-if="reviewErrors.description">
+               <p v-for="error in reviewErrors.description">
+                {{error}}
+               </p>
+             </div>
+    </div>
+    <div class="form-group ">
+      <label for="inputReview">Review</label>
+      <textarea type="text" class="form-control" :class="reviewErrors.description ? 'is-invalid' : '' " id="inputReview" placeholder="Review" v-model="review.description" col="10" rows="5"></textarea>
+      <div class="text-danger" v-if="reviewErrors.description">
+               <p v-for="error in reviewErrors.description">
+                {{error}}
+               </p>
+             </div>
+    </div>
+  
+  
+ 
+   
+  </div>
+
+
+
+
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">{{editing? ' Save changes' : 'Create User'}}</button>
+</div>
+</form>
+    </div>
+  </div>
+</div>
 
     </div>
     </template>
@@ -243,6 +441,12 @@
             user_id:'',
             place_id:''
            })
+           let review = reactive({
+            date:'',
+            user_id:'',
+            place_id:''
+           })
+           let reviewErrors = ref([]);
            let errors = ref([]);
            var today = new Date();
            var isvalid =  reactive(false);
@@ -252,7 +456,7 @@
         var day = today.toLocaleString("default", { day: "2-digit" });
         // Generate custom date string
         var formattedTodayDate = [day, month, year].join("-");
-          
+          let editing = ref(false)
         const compareDates = (d1, d2) => {
         let date1 = new Date(d1).getTime();
       let date2 = new Date(d2).getTime();
@@ -273,7 +477,24 @@
           }
           console.log(isvalid)
 };
+          function formAction(){
+            if(editing.value){
+                updateReview()
+               }else{
+                createReview()
+               }
+          }
+          function createReview(){
+            review.user_id = currentUser.user_id
+            axios.post('/api/review/place/'+places.id,review).then(res=>{
+              if(res.success){
+                console.log(res)
+              }else{
+                console.log(res)
 
+              }
+            })
+          }
            function formatDate(){
            
             let convert = form.date.split('-')
@@ -312,7 +533,10 @@
                 store.removeUser();
                 router.push({name:'login'})
             }
-
+            const addReview = ()=>{
+              
+              $('#exampleModalCenter').modal('show');
+            }
           async  function script(){
               
               ( function (window, document) {
@@ -392,4 +616,99 @@
         width: 100px;
         height: 70vh;
     }
+
+    /* review */
+    body {
+	overflow-x: hidden;
+}
+
+.container-fluid-review {
+	background-image: linear-gradient(to right, #7B1FA2, #E91E63);
+}
+
+.sm-text {
+	font-size: 10px;
+	letter-spacing: 1px;
+}
+
+.sm-text-1 {
+	font-size: 14px;
+}
+
+.green-tab {
+	background-color: #00C853;
+	color: #fff;
+	border-radius: 5px;
+	padding: 5px 3px 5px 3px;
+}
+
+.btn-red {
+	background-color: #E64A19;
+	color: #fff;
+	border-radius: 20px;
+	border: none;
+	outline: none;
+}
+
+.btn-red:hover {
+	background-color: #BF360C;
+}
+
+.btn-red:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    outline-width: 0
+}
+
+.round-icon {
+	font-size: 40px;
+	padding-bottom: 10px;
+}
+
+/*Styling for dots*/
+.fa-circle {
+	font-size: 10px;
+	color: #EEEEEF;
+}
+
+.green-dot {
+	color: #4CAF50;
+}
+
+.red-dot {
+	color: #E64A19;
+}
+
+.yellow-dot {
+	color: #FFD54F;
+}
+
+.grey-text {
+	color: #BDBDBD;
+}
+
+.green-text {
+	color: #4CAF50;
+}
+
+/*border for block*/
+.block {
+	border-right: 1px solid #F5EEEE;
+	border-top: 1px solid #F5EEEE;
+	border-bottom: 1px solid #F5EEEE;
+}
+
+.profile-pic img {
+	border-radius: 50%;
+}
+
+.rating-dot {
+	letter-spacing: 5px;
+}
+
+.via {
+	border-radius: 20px;
+	height: 28px;
+}
 </style>

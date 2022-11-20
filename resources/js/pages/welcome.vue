@@ -24,7 +24,8 @@
     </div>
     <button class="btn btn-sm btn-outline-info btn-rounded "  @click="categoryName = ''" v-if="categoryName"> <i class="fa fa-times"></i> {{categoryName}}</button>
     <div class="container d-flex justify-content-center mt-5" >
-        <div class="row" >
+        <h1 class="text-danger text-center" v-if="!filteredPlaces().length">No Record Found</h1>
+        <div class="row" v-if="filteredPlaces().length">
            <!--  <Suspense>
                 <template #default>
                
@@ -33,23 +34,25 @@
                 Product is loading...
             </template>
         </Suspense> -->
-            <div  :class="(filteredPlaces().length == 1 ? 'col-md-12' : (filteredPlaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredPlaces()" @click="setPlaceId(place.id)" :key="place.id" v-if="filteredPlaces">
+            <div  :class="(filteredPlaces().length == 1 ? 'col-md-12' : (filteredPlaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredPlaces()" @click="setPlaceId(place.id)" :key="place.id" >
          <div class="card">
           <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
-<img class="card-img-top" 
+<img class="card-img-top" loading="lazy"
 :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
              <p class="rating">{{place.rating}}</p>
              <div class="card-body">
                  <h5 class="card-title">{{place.name}}</h5>
-                 <p class="card-text"><i class="fa fa-map-marker marker"></i> {{place.description}}</p>
+                 <p class="card-text text-success"><i class="fa fa-map-marker marker"></i>{{place.area}},{{place.district}},{{place.division}}</p>
+                 <p class="card-text text-primary"> <strong>Category:</strong> {{place.category.name}}</p>
+                 <p class="card-text">{{place.description}}</p>
                  <p class="card-text"><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i></p>
                  <p class="card-text">৳{{place.price}}</p>
              </div>
              </router-link>
-             <div class="card-footer">
+           <!--   <div class="card-footer">
       <small class="text-muted">Last updated 3 mins ago</small>
-    </div>
+    </div> -->
          </div>
      </div>
 
@@ -90,16 +93,18 @@
 
 
             function setCategoryName(name){
-               categoryName.value = name
+
+             categoryName.value == name ?  categoryName.value = '' :  categoryName.value = name
                filteredPlaces()
             
             } 
            function filteredPlaces(){
-                if(categoryName.value){
-                    let alter =  places.value.filter(place => place.category.name == categoryName.value)
-                    
-                 
-                    return alter
+               if(categoryName.value){
+                   let alter =  places.value.filter(place => place.category.name == categoryName.value)
+                   
+                   
+                   /* console.log(alter.length? alter : 'no') */
+                   return alter
                 }else{
                     return places.value
                 }
