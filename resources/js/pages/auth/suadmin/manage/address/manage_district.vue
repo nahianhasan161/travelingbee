@@ -7,7 +7,7 @@
 <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
-       
+
       <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">Payments</h5>
        <!--  <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5> -->
@@ -49,8 +49,8 @@
 
 <td>
     <!-- <router-link :to="'/payment/invoice/'+order.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
-     <button class="btn btn-warning mr-3" @click="invoice(order.id)"> 
- <i class="fas fa-print"></i></button> 
+     <button class="btn btn-warning mr-3" @click="invoice(order.id)">
+ <i class="fas fa-print"></i></button>
    <!--  <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
 </td>
 
@@ -82,7 +82,7 @@
                </p>
              </div>
     </div> -->
-  
+
   </div>
 
 
@@ -101,7 +101,7 @@
 
 
         <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary my-3" @click="addUser"> 
+<!-- <button type="button" class="btn btn-primary my-3" @click="addUser">
   Create User
 </button > -->
 
@@ -112,7 +112,7 @@
         <form @submit.prevent="formAction">
       <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle" >Booking </h5>
-        
+
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -247,9 +247,9 @@ import { storeToRefs } from 'pinia';
         import {AddressStore} from '@/store/address/address'
 
        import { useToastr } from '@/pages/toaster';
-   
+
         const {fetchDistricts} = AddressStore();
-        const {districts} = storeToRefs(AddressStore()); 
+        const {districts} = storeToRefs(AddressStore());
         const toastr = useToastr();
 
         const store = new UserStore();
@@ -258,10 +258,10 @@ import { storeToRefs } from 'pinia';
 
         const {deleteUser,fetchAllUser} = UserStore();
         const {allUser,loading} = storeToRefs(UserStore());
-        
+
         let users = ref(store.getAllUsers);
         const editing = ref(false);
-       
+
         let editId = ref('')
         let form = reactive({
                 name:'',
@@ -293,7 +293,7 @@ import { storeToRefs } from 'pinia';
                     form.role=''
             }
 
-            function editUser($user){  
+            function editUser($user){
                 editing.value = true
                 editId = $user.user_id
                 /* form.value = $user; */
@@ -340,7 +340,7 @@ import { storeToRefs } from 'pinia';
 
                 })
             }
-          
+
             function getOrdersByBooking(id){
 
 $('#ModalCenter').modal('show');
@@ -356,10 +356,16 @@ axios.get('/api/orders/'+id).then(res=>{
         $('#ModalCenter').modal('hide');
         router.push('/payment/invoice/'+id)
     }
+          let divisionID = (id)=>{
+                return id
+            }
+            onMounted(async ()=>{
+                await router.isReady();
+                divisionID(route.params.id)
 
-            onMounted(()=>{
                 fetchAllUser();
-                fetchDistricts()
+
+                 fetchDistricts(divisionID)
 
         });
     </script>

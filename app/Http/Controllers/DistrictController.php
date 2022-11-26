@@ -13,9 +13,9 @@ class DistrictController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( $id)
     {
-        $district = District::all();
+        $district = District::where('division_id',$id)->get();
         return Helper::sendSuccess('Success',$district);
     }
 

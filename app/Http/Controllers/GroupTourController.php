@@ -6,6 +6,9 @@ use App\Http\Helpers\Helper;
 use App\Http\Requests\GroupTourRequest;
 use App\Models\GroupTour;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
 
 class GroupTourController extends Controller
 {
@@ -25,7 +28,8 @@ class GroupTourController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(GroupTourRequest $request){
-        return Helper::sendSuccess('plans' , $request);
+
+        return Helper::sendSuccess('plans' , $plans);
     }
 
     /**
@@ -36,7 +40,29 @@ class GroupTourController extends Controller
      */
     public function store(GroupTourRequest $request)
     {
-        return Helper::sendSuccess('plans' , $request->all());
+        /*  $plans = explode('""',$request->plans); */
+        $plans = $request->plans;
+      /*   foreach($request->plans as $index=>$plan){
+            return Helper::sendSuccess('Success' ,$plan);
+        } */
+
+
+        $groupTour = $request->except('plans','images');
+        DB::transaction(function () use ($groupTour,$plans,$request) {
+            $tour = GroupTour::create($groupTour);
+            foreach($request->plans as $index=>$plan){
+
+                $tour->plans()->create(
+                    [
+                        'place'=>$plan['place'],
+                        'description'=>$plan['description'],
+                        'category'=>$plan['category'],
+                        'day'=>$plan['day'],
+
+                    ]);
+            }
+        });
+         return Helper::sendSuccess('Success' ,$request->all());
     }
 
     /**

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Place extends Model
 {
     use HasFactory;
-    
+
     protected $guarded = [];
-  
+
     public function owner()
     {
         return $this->belongsTo(User::class);

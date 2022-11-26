@@ -6,6 +6,7 @@ use App\Http\Helpers\Helper;
 use App\Models\Place;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use App\Http\Resources\ReviewResource;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
@@ -31,7 +32,7 @@ class ReviewController extends Controller
         $place = Place::find($placeID);
         if($place){
             $review = Review::create($request->all());
-            $review->places()->sync($placeID);
+            $review->places()->attach($placeID);
             return Helper::sendSuccess('success',$request->all());
         }else{
             return Helper::sendError('Can not find Place');
@@ -76,9 +77,27 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function show(Review $review)
+    public function show($placeID,Request $request)
     {
-        //
+        $place = Place::find($placeID) ? Place::find($placeID) : [];
+        if($place){
+            if($request){
+
+                 $reviews = $place->reviews->sortByDesc('rating');
+                $reviews =  $place->reviews->sortBy([
+                    fn($a, $b) => (1 === $b->user->id) ? 1 : ($a->created_at <=> $b->created_at)
+                ]);
+                /* ->groupBy('user_id') */
+            }else{
+                $reviews = $place->reviews; /* ->groupBy('created_at','desc') */
+            }
+            /* ReviewResource::collection($reviews) */
+        return Helper::sendSuccess('successfully fetch reviews',ReviewResource::collection($reviews));
+        }else{
+
+            return Helper::sendError('place not found');
+        }
+
     }
 
     /**
@@ -110,8 +129,15 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Review $review)
+    public function destroy($review)
     {
-        //
+        $rev = Review::find($review);
+        if($rev){
+            $rev->delete();
+            return Helper::sendSuccess('Successfully Deleted');
+        }else{
+        return Helper::sendError(' Deleteing Review Failed');
+
+        }
     }
 }

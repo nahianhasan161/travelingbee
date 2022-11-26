@@ -14,6 +14,7 @@ export const UserStore = defineStore({
         allUser:[],
          url : 'api/user',
 
+
     }),
     getters:{
 
@@ -40,7 +41,35 @@ export const UserStore = defineStore({
             this.token = 0;
             localStorage.removeItem('token');
         },
+        resetForm : ()=>{
+            form.name =''
+            form.bn_name=''
+            form.url=''
+    },
+     register : async ()=>{
 
+        await axios.post('/api/address/division',form).then(res=>{
+           if(res.data.success){
+
+             fetchDivisions()
+
+
+            toastr.success('success')
+
+            $('#ModalCenter').modal('hide');
+            resetForm()
+
+            }else{
+                errors.value = res.data[0].data
+
+            }
+        }).catch(e=>{
+            toastr.error(e.response.data)
+            errors.value = e.response.data
+        })
+
+        console.log('finally');
+    },
         fetchCurrentUser:function(){
 
             axios.post('/api/auth/user').then(res=>{
@@ -60,7 +89,7 @@ export const UserStore = defineStore({
         setCurrentUser:function($data){
             localStorage.setItem('currentUser',JSON.stringify($data));
             this.currentUser = $data
-            
+
         },
         removeUser:function(){
             this.currentUser = []

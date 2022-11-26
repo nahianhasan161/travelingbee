@@ -20,7 +20,8 @@ class PlaceSeeder extends Seeder
 
         // ... Some Truncate Query
         Place::truncate();
-        
+        Category::truncate();
+
         Schema::enableForeignKeyConstraints();
         Place::create([
             'name' => "Fantasy Kingdom",
@@ -33,5 +34,6 @@ class PlaceSeeder extends Seeder
             'district' => 'Dhaka',
             'area' => 'Dhaka'
         ]);
+        Category::create(['name' => 'All']);
     }
 }

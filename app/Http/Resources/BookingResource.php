@@ -29,7 +29,7 @@ class BookingResource extends JsonResource
             'user' => $this->user,
              'date' =>  $this->date ,
             'booking_id' =>  $this->id,
-            'payment' => $this->orders,
+            'payment' => $this->orders->where('status','Completed'),
 
             /* 'booking' => $this->bookings ? $this->bookings->where('user_id',auth()->user()->id)->all() : '' */
         ];

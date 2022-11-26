@@ -1,9 +1,9 @@
 
 <template>
-    
+
     <div class="container">
         <!-- {{filteredPlaces()}} -->
-<!-- <modal/> -->        
+<!-- <modal/> -->
 
         <div class="loader" v-if="loading"></div>
     <div class="d-flex align-items-center">
@@ -15,7 +15,7 @@
                 <li class="nav-item" v-for="category in categories">
                   <a  @click="setCategoryName(category.name)" class="btn btn-outline-danger btn-rounded  " :class="category.name == categoryName ? 'active' : ''">{{category.name}}</a><!--  mr-md-3 mb-md-0 -->
                 </li>
-              
+
             </ul>
         </div>
         <div class="flex-shrink-0">
@@ -28,7 +28,7 @@
         <div class="row" v-if="filteredPlaces().length">
            <!--  <Suspense>
                 <template #default>
-               
+
             </template>
             <template #fallback>
                 Product is loading...
@@ -36,7 +36,7 @@
         </Suspense> -->
             <div  :class="(filteredPlaces().length == 1 ? 'col-md-12' : (filteredPlaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredPlaces()" @click="setPlaceId(place.id)" :key="place.id" >
          <div class="card">
-          <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
+          <a :href="/place/+ place.id" class="text-dark text-decoration-none">
 <img class="card-img-top" loading="lazy"
 :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
@@ -49,16 +49,16 @@
                  <p class="card-text"><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i></p>
                  <p class="card-text">৳{{place.price}}</p>
              </div>
-             </router-link>
+            </a>
            <!--   <div class="card-footer">
       <small class="text-muted">Last updated 3 mins ago</small>
     </div> -->
          </div>
      </div>
 
-    
+
 </div>
-       
+
  </div>
 <!-- <picker v-model="date"/> -->
 
@@ -71,7 +71,7 @@
         import { UserStore } from '../store/UserStore';
        import { PlaceStore } from '../store/place/PlaceStore';
        import { storeToRefs } from 'pinia';
-       
+
        import { useToastr } from '../pages/toaster';
         /* import {useVirtualList} from '@vueuse/core ' */
 
@@ -79,8 +79,8 @@
             itemHeight : 200
         }) */
 
-        
-        
+
+
    /*      const picker = useHotelDatePicker(); */
         const router = new useRouter();
      /*    let date = ref('') */
@@ -88,7 +88,7 @@
             const {places,placeId,categories,loading} = storeToRefs(PlaceStore())
             const {fetchPlaces,fetchCategories,setPlaceId,getPlaces} = PlaceStore();
             let categoryName = ref('')
-          
+
 
 
 
@@ -96,21 +96,21 @@
 
              categoryName.value == name ?  categoryName.value = '' :  categoryName.value = name
                filteredPlaces()
-            
-            } 
+
+            }
            function filteredPlaces(){
                if(categoryName.value){
                    let alter =  places.value.filter(place => place.category.name == categoryName.value)
-                   
-                   
+
+
                    /* console.log(alter.length? alter : 'no') */
                    return alter
                 }else{
                     return places.value
                 }
-              
-            } 
-         
+
+            }
+
             function logout(){
                 store.removeToken();
                 store.removeUser();
@@ -119,39 +119,39 @@
             function categorySlider(){
                 $('.toggle').click(function(){
     $('.nav-fill').toggleClass("justify-content-end");
-    $('.toggle').toggleClass("text-light"); 
+    $('.toggle').toggleClass("text-light");
 });
             }
 
            watchEffect(async ()=>{
-            /* fetchPlaces() */ 
+            /* fetchPlaces() */
           /*  await filteredPlaces() */
-          
+
            })
       /*  async function fetches(){
-           await fetchPlaces() 
+           await fetchPlaces()
            await fetchCategories()
        } */
-         
+
         onMounted(async ()=>{
-          
-            await fetchPlaces() 
+
+            await fetchPlaces()
            await fetchCategories()
               categorySlider()
-             
-      
-     
-}) 
+
+
+
+})
             /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
             /*  this.store.fetchCurrentUser(); */
           /*   axios.get('/api/user').then(res=>{
 
             }).catch((err)=>{
                 console.log(err);
-            
+
       /*   }) */
 
-   
+
     </script>
 <style>
 .o-hidden {
@@ -177,7 +177,7 @@ body {
 }
 
 /* .container {
-   margin-top: 100px 
+   margin-top: 100px
 } */
 
 .rating {

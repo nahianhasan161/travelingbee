@@ -31,7 +31,7 @@ import manage_place from './pages/auth/admin/Place/manage_place.vue';
 import invoice from './pages/auth/user/payment/invoice.vue'
 
 
-import category from './pages/auth/suadmin/manage/manage_category.vue';     
+import category from './pages/auth/suadmin/manage/manage_category.vue';
 
 /* Verify and Reset */
 
@@ -64,15 +64,15 @@ const routes = [
     path : '/',
     name : 'welcome',
     component : welcome ,
-   
-    
+
+
 },
     {
     path : '/group-tour',
     name : 'group-tour',
     component : grouptour ,
-   
-    
+
+
 },
 
     {
@@ -109,7 +109,7 @@ component : register ,
     name : 'reset_password',
     component : reset_password ,
     meta:{
-        
+
     }
 },
 
@@ -127,7 +127,7 @@ component : register ,
     name : 'email_verified',
     component : email_verified ,
     meta:{
-        
+
     }
 },
 {
@@ -135,7 +135,7 @@ component : register ,
     name : 'verify_email_success',
     component : verify_email ,
     meta:{
-        
+
     }
 },
 {
@@ -143,7 +143,7 @@ component : register ,
     name : 'verify_email',
     component : verify_email ,
     meta:{
-        
+
     }
 },
 
@@ -197,7 +197,7 @@ component : register ,
     path : '/manage/place/:id/booking',
     name : 'manage.place.booking',
     component : manage_place_booking ,
-    
+
     meta:{
         requiresAuth: true,
         props: true
@@ -238,6 +238,14 @@ component : register ,
     }
 },
 /* Manage */
+{
+    path : '/manage/district/:id',
+    name : 'manage.district.id',
+    component : manage_district,
+    meta:{
+        requiresAuth: true,
+    }
+},
 {
     path : '/manage/division',
     name : 'manage.division',
@@ -298,30 +306,30 @@ const router = createRouter({
         var currentUser = store.getCurrentUser;
 
          console.log(currentUser);
-         
+
         if(to.meta.requiresAuth && store.getToken == 0){
-            
+
             return {name:'login'}
 
         }
         /* if(to.meta.requiresAuth  && store.getToken != 0 && currentUser.email_verified == false){
             return {name:'verify_email'}
-        } 
+        }
         else{ */
 
             if(to.meta.requiresAuth == false && store.getToken != 0 ){
                 return {name:'posts'}
             }
             if(to.meta.requiresAuth == false && store.getToken != 0 ){
-                
+
                 /*   if(store.getCurrentUser.roles[0] =='user'){
                     return {name:'posts'}
             }else{ */
             /*  console.log(store.getCurrentUser) */
             return {name:'dashboard'}
             /* } */
-            
-            
+
+
         }
    /*  } */
 

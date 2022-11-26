@@ -32,14 +32,14 @@ class GroupTourRequest extends FormRequest
             'district' => 'required',
             'area' => 'required',
             'place' => 'required',
-            
+
             'feature_image'=> '',
 
             'person' => 'required|numeric|max:10000',
             'price' => 'required|numeric|max:100000',
-            'rating' => 'required|numeric|max:5', 
+            'rating' => 'required|numeric|max:5',
+            'plans' => 'required'
 
-            
             /* 'place'=> 'required',
             'description'=> 'required',
             'category'=> 'required',
@@ -48,9 +48,9 @@ class GroupTourRequest extends FormRequest
             'area'=> 'required',
             'time' => '',
             'day' => 'required|numeric|min:1|max:100', */
-           
+
         ];
-        
+
     }
     public function failedValidation(Validator $validation)
     {

@@ -50,7 +50,7 @@
     <div class=" collapse navbar-collapse" id="navbarNavDropdown">
       <!-- <div class="ms-auto d-none d-lg-block">
         <div class="input-group">
-          
+
           <input type="text" class="form-control border-warning" style="color:#7a7a7a">
           <button class="btn btn-warning text-white"><i class="fas fa-search"></i></button>
         </div>
@@ -59,6 +59,7 @@
 
         <li class="nav-item">
           <router-link active-class="active" :to="{name:'dashboard'}"  class="nav-link mx-2 text-uppercase " >Home</router-link><!--  v-if="currentUser.roles[0] == 'User'" -->
+         <!--  v-if="currentUser.roles[0] == 'User'" -->
           <!-- <router-link active-class="active" :to="{name:'admin_dashboard'}"  class="nav-link mx-2 text-uppercase " v-if="currentUser.roles[0] == 'Admin'">Home</router-link>
           <router-link active-class="active" :to="{name:'suadmin_dashboard'}"  class="nav-link mx-2 text-uppercase " v-if="currentUser.roles[0] == 'SuAdmin'">Home</router-link>
  -->
@@ -69,7 +70,7 @@
         <li class="nav-item">
             <router-link active-class="active" to="/posts" class="nav-link mx-2 text-uppercase" ><i class="fa fa-book mr-1"></i>Guide</router-link>
           </li>
-        
+
 
         <li class="nav-item">
           <a class="nav-link mx-2 text-uppercase" href="#"><i class="fas fa-circle-info"></i>About</a>
@@ -91,15 +92,15 @@
         <li class="nav-item dropdown ">
 
         <a class="nav-link dropdown-toggle group-input" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img :src="'/image/profile/'+currentUser.image" width="40" height="40" class="rounded-circle" alt="profile_img" v-if="currentUser.image"> 
+          <img :src="'/image/profile/'+currentUser.image" width="40" height="40" class="rounded-circle" alt="profile_img" v-if="currentUser.image">
 
           <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else>
-     <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong> 
+     <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <router-link active-class="active" :to="{name:'dashboard'}" class="dropdown-item" ><i class="nav-icon fas fa-tachometer-alt mr-1"  ></i> Dashboard</router-link>
           <router-link active-class="active" :to="{name:'user_profile'}" class="dropdown-item" ><i class="fas fa-users mr-1"  ></i> Profile</router-link>
-         
+
           <a class=" dropdown-item text-danger" @click="logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
         </div>
     </li>
@@ -125,13 +126,13 @@
 
 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 <div class="image">
-  <img :src="'/image/profile/'+currentUser.image" class="img-circle elevation-2" alt="User Image" v-if="currentUser.image"> 
+  <img :src="'/image/profile/'+currentUser.image" class="img-circle elevation-2" alt="User Image" v-if="currentUser.image">
 
 <!-- <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else> -->
 <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" v-else>
 </div>
 <div class="info">
-<a href="#" class="d-block">{{currentUser ? currentUser.name : 'Anonymous'}}</a> 
+<a href="#" class="d-block">{{currentUser ? currentUser.name : 'Anonymous'}}</a>
 
 <!-- {{JSON.parse(currentUser)}} -->
 </div>
@@ -159,7 +160,7 @@
 </router-link>
 
 </li>
-<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon  fa fa-map-marker"></i>
 <p >
@@ -188,10 +189,10 @@ Manage Places
 
 </ul>
 </li>
- 
-  
 
-<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+
+
+<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >
@@ -208,7 +209,7 @@ More
 
 
 </li>
-<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fa fa-globe"></i>
 <p >
@@ -249,7 +250,7 @@ Address
 </ul>
 </li>
 
-<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false"> 
+<li class="nav-item"  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
 <a href="#" class="nav-link " active-class="active">
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p >
@@ -285,7 +286,7 @@ Manage Users
 
 <i class="nav-icon fas fa-sign-out-alt text-danger"></i>
 <p   class="text-danger">
-  
+
     Logout
 </p>
 </a>
@@ -341,7 +342,7 @@ Manage Users
 <footer class="main-footer">
 
     <div class="float-right d-none d-sm-inline">
-  
+
         Anything you want
     </div>
 

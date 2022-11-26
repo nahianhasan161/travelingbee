@@ -1,7 +1,7 @@
 
 
    <script setup>
-    
+
    import axios from 'axios';
    import { storeToRefs } from 'pinia';
    import {onMounted ,ref,reactive} from 'vue';
@@ -9,21 +9,26 @@
    import { UserStore } from '@/store/UserStore';
    import {AddressStore} from '@/store/address/Address'
    import { useToastr } from '@/pages/toaster';
-   import table_component from '@/pages/component/manage_table.vue'
+   import division_table from '@/pages/component/manage_table.vue'
+   import {useSweetAlert} from '@/pages/sweetalert'
+
+    /* import 'sweetalert2/src/sweetalert2.scss' */
+
    const toastr = useToastr();
-   
+   const sweetAlert = useSweetAlert();
+
    const router = new useRouter();
    const route = new useRoute();
    /* UserStore */
    const store = new UserStore();
-   const {deleteUser} = UserStore();
-   const {allUser,loading} = storeToRefs(UserStore());
+   const {} = UserStore();
+   const {loading} = storeToRefs(UserStore());
    /* AddressStore */
-   
-   const {fetchDivisions} = AddressStore();
- const {divisions} = storeToRefs(AddressStore()); 
-   
-  
+
+   const {fetchDivisions,deleteDivision} = AddressStore();
+ const {divisions} = storeToRefs(AddressStore());
+
+
    let users = ref(store.getAllUsers);
    const editing = ref(false);
    /* let divisions = ref([]) */
@@ -32,48 +37,54 @@
            name:'',
            bn_name:'',
            url:'',
-         
+
        });
-       
        let errors = ref([]);
-       let orders = ref([]);
+
+
        const addDivision = ()=>{
+        resetForm()
            editing.value = false
          $('#ModalCenter').modal('show');
        }
+       const resetForm = ()=>{
+        form.name = '',
+        form.bn_name = '',
+        form.url = ''
+       }
        const formAction =()=>{
           if(editing.value){
-           updateUser()
+           updateDivision(editId,form)
           }else{
-           register()
+           createDivision(form)
           }
          /*  console.log(editing.value); */
        }
-       const resetForm = ()=>{
-               form.name =''
-               form.bn_name=''
-               form.url=''
-       }
 
-       function editDivision($division){  
+
+      function test(id){
+        console.log(id)
+       }
+       function editDivision(division){
            editing.value = true
-           editId = $division.id
+           editId = division.id
+           console.log(division)
            /* form.value = $user; */
 
            /* toastr.success('success') */
-           form.name =$division.name
-           form.bn_name =$division.bn_name
-           form.url =$division.url
+           form.name =division.name
+           form.bn_name =division.bn_name
+           form.url =division.url
 
            $('#ModalCenter').modal('show');
    }
-       const register = async()=>{
+    async  function createDivision(data){
 
-           await axios.post('/api/address/division',form).then(res=>{
+           await axios.post('/api/address/division',data).then(res=>{
               if(res.data.success){
 
+                fetchDivisions()
 
-              
 
                toastr.success('success')
 
@@ -84,44 +95,70 @@
                    errors.value = res.data[0].data
 
                }
-           }).catch(e=>{
-               toastr.error(e.response.data)
-               errors.value = e.response.data
            })
+        /* .catch(e=>{
+                toastr.error(e.response.data)
+               errors.value = e.response.data
+               console.log(e)
+           }) */
+
 
            console.log('finally');
        }
-       function updateUser(){
-           axios.put('/api/address/division/'+editId,form).then(res=>{
-               store.fetchAllUser();
-               toastr.info('success')
-               $('#ModalCenter').modal('hide');
-           }).finally(()=>{
-               resetForm()
 
 
-           })
-       }
        function allDivision(){
            axios.get('/api/address/division').then(res=>{
                divisions.value = res.data.data
            })
        }
-       function getOrdersByBooking(id){
+      function updateDivision(id,data){
+            axios.put('/api/address/division/'+id,data).then(res=>{
+                fetchDivisions()
+                toastr.info('success')
+                $('#ModalCenter').modal('hide');
+            }).finally(()=>{
+                resetForm()
 
-$('#ModalCenter').modal('show');
 
-axios.get('/api/orders/'+id).then(res=>{
-orders.value = res.data.data
+            })
+        }
+
+        function deleteConfirmed(id){
+            deleteDivision(id)
+            sweetAlert.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+    )
+        }
+        function alert(id){
+
+
+sweetAlert.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel!',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    deleteConfirmed(id)
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === sweetAlert.DismissReason.cancel
+  ) {
+    sweetAlert.fire(
+      'Cancelled',
+      'Your imaginary file is safe :)',
+      'error'
+    )
+  }
 })
-}
-       function showPayments(bookingID){
-       $('#ModalCenter').modal('show');
-   }
-function invoice(id){
-   $('#ModalCenter').modal('hide');
-   router.push('/payment/invoice/'+id)
-}
+        }
+
 
 /*   function edit() {
  console.log('here')
@@ -131,6 +168,7 @@ function invoice(id){
            store.fetchAllUser();
            fetchDivisions()
            console.log(divisions)
+
           /*  allDivision() */
        /*  console.log(emit.edit) */
    });
@@ -142,13 +180,13 @@ function invoice(id){
         <!-- {{bookings}} -->
         <div class="loader" v-if="loading"></div>
 
-        
+
 
 
         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary my-3" @click="addDivision"> 
+<button type="button" class="btn btn-primary my-3" @click="addDivision">
   Create Division
-</button > 
+</button >
 
 <!-- Modal -->
 <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
@@ -191,8 +229,8 @@ function invoice(id){
                </p>
              </div>
     </div>
- 
-  
+
+
    <!--  <div class="form-group ">
       <label for="FormControlSelect">Role</label>
       <select v-model="form.role" class="form-control" id="FormControlSelect">
@@ -227,65 +265,22 @@ function invoice(id){
 <h3 class="card-title">Manage Division</h3>
 </div>
 
-<div class="card-body table-responsive">
-<table class="table table-bordered table-hover">
-<thead>
-<tr>
-<th>#</th>
-<th>Name</th>
-<th>Bangla Name </th>
-<th>Url</th>
 
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-
-<tr v-for="(division,index) in divisions" :key="division.id">
-    <td>{{index+1}}</td>
-<td >{{division.name}}</td>
-<td >{{division.bn_name}}</td>
-
-<td class="capital">{{division.url}}</td>
-<td>
-    
-
-
-
- <button class="btn btn-info mr-1" @click="editDivision(division)"><i class="far fa-edit"></i></button>
-    <button class="btn btn-danger" @click="deleteUser(User.user_id)"><i class="fas fa-trash"></i></button>
-</td>
-
-</tr>
-
-
-
-
-
-
-
-
-
-
-
-</tbody>
-</table>
-
-</div>
-
-</div>
-
-</div>
-</div>
-<!-- <table_component 
+<division_table
 :data="divisions"
  :names="['#','Name','Bangla Name ','Url','Actions']"
  :fields="[{'name' : 'text'},{'bn_name' : 'text'},{'url':'text'},{'edit' : 'google.com' ,'delete' : 'test.com'}]"
- @edit-prop="test"
- /> -->
+ @edit-prop="editDivision"
+ @delete-prop="alert"
+ />
+
+</div>
+
+</div>
+</div>
 
     </div>
 </template>
 
- 
+
 

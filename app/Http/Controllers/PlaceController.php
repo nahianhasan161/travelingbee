@@ -20,7 +20,7 @@ class PlaceController extends Controller
      */
     public function index(Request $userID)
     {
-        
+
        /*  if($userID){
             $places = Place::latest()
         ->where('user_id',3)->get();
@@ -47,7 +47,7 @@ class PlaceController extends Controller
      */
     public function create(PlaceRequest $request)
     {
-        
+
     }
 
     /**
@@ -58,12 +58,13 @@ class PlaceController extends Controller
      */
     public function store(PlaceRequest $request)
     {
-       
+
+
         $input = $request->only('name','description','features','rating','price','category_id','user_id','division','district','area');
-        $place = Place::create($input); 
+        $place = Place::create($input);
          if($request->file('feature_image')){
 
-            $imageName = ''; 
+            $imageName = '';
             /*  if($request->feature_image){
 
                 $imagePath = public_path('/image/place/feature/'.$request->feature_image);
@@ -73,14 +74,14 @@ class PlaceController extends Controller
             }  */
             $file = $request->file('feature_image');
             $imageName = $file->getClientOriginalName();
-            
+
             $file->move(public_path('image/place/feature/'),$imageName);
            $place->update([
-                'feature_image' => $imageName   
-            ]); 
-        } 
+                'feature_image' => $imageName
+            ]);
+        }
 
-        
+
        return Helper::sendSuccess('Place Successfully Created',$input);
     }
 
@@ -102,12 +103,12 @@ class PlaceController extends Controller
            else
            {
             Helper::sendError('Error! Can not find Place',$currentPlace);
-           }  
+           }
         }else{
             Helper::sendError('Error!');
         }
-       
-        
+
+
     }
 
     /**
@@ -130,51 +131,52 @@ class PlaceController extends Controller
      */
     public function update( $place,PlaceRequest $request)
     {
+
         $thisPlace = Place::find($place);
-        
+
        /* return Helper::sendSuccess('success', $request->only('name','description','features','rating','price','category_id','user_id'));   */
         if($thisPlace) {
-        
-            if($request->file('images')){ 
+
+            if($request->file('images')){
                 foreach($request->file('images') as $image){
                     $imagesName = '';
                     /* Help::sendSuccess($request->file($image)) */
                     $file = $image;
-        
+
                     $imagesName = $file->getClientOriginalName();
                     $file->move(public_path('image/place/more/'),$imagesName);
                 $thisPlace->images()->create([
-                    'name' => $imagesName   
-                ]); 
+                    'name' => $imagesName
+                ]);
                 }
-                 
-             } 
+
+             }
              $input = $request->only('name','description','features','rating','price','category_id','user_id','division','district','area');
             $updated = $thisPlace->update($input);
             if($request->file('feature_image')){
 
-                $imageName = ''; 
+                $imageName = '';
                  if($request->feature_image){
-    
+
                     $imagePath = public_path('/image/place/feature/'.$request->feature_image);
                     if(File::exists($imagePath)){
                         unlink($imagePath);
                     }
-                }  
+                }
                 $file = $request->file('feature_image');
                 $imageName = $file->getClientOriginalName();
-                
+
                 $file->move(public_path('image/place/feature/'),$imageName);
                 $thisPlace->update([
-                    'feature_image' => $imageName   
-                ]); 
+                    'feature_image' => $imageName
+                ]);
             }
-             
+
 
         }  else{ Helper::sendError('Data Not Found!');}
-       
 
-       return Helper::sendSuccess( $updated,$request->all()); 
+
+       return Helper::sendSuccess( $updated,$request->all());
     }
 
     /**
@@ -186,12 +188,12 @@ class PlaceController extends Controller
     public function destroy($place)
     {
        $thisPlace = Place::find($place);
-      
+
        if($thisPlace) {
         $thisPlace->delete();
         return Helper::sendSuccess($thisPlace->name .' Succesfully Deleted');
        }  else{ Helper::sendError('Something Went Wrong');}
-        
-     
+
+
     }
 }

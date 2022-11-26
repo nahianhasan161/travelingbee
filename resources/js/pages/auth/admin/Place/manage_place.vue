@@ -30,7 +30,7 @@ let currentUserPlaces = ref([]);
 /* edit */
 const editing = ref(false);
 let editId = ref('')
-  
+
 
 let form = reactive({
         name:'',
@@ -42,13 +42,15 @@ let form = reactive({
         division:'',
         district:'',
         area:'',
-
+        images:[],
          category_id : null,
          user_id :null
     });
-   
+
     let errors = ref([]);
     const addUser = ()=>{
+        /* imgInput.value.target.value = null */
+
       resetForm()
         editing.value = false
         $('#ModalCenter').modal('show');
@@ -63,7 +65,7 @@ let form = reactive({
     }
     /* Setters & Getters*/
     function getDivision(name){
-      
+
     return name ? divisions.value.find(division=>division.name == name) : []
     }
     function getDistrict(name){
@@ -73,15 +75,16 @@ let form = reactive({
     return name ? areas.value.find(area=>area.name == name) : []
     }
     function setFeatureImage(event){
+
       form.feature_image = event.target.files[0];
-      console.log(event)
+      console.log(form.feature_image)
     }
     function setImages(event){
       form.images = event.target.files;
       /* let form_data = new FormData();
       form_data.append('images',event.target.files[0])
       console.log(form_data) */
-      console.log(event)
+      console.log(form.images)
     }
     /* defining and reset */
     const resetForm = ()=>{
@@ -90,15 +93,16 @@ let form = reactive({
             form.features=''
             form.rating=''
             form.price=''
-            form.images= ''
+            form.images= []
             form.feature_image=''
             form.division = ''
             form.district = ''
             form.area = ''
+
            /*  this.$refs.fileupload.value=null; */
            /*  form.category='' */
     }
-    
+
     function setForm_Data(){
           let form_data = new FormData();
           form_data.append('user_id',form.user_id)
@@ -121,40 +125,40 @@ let form = reactive({
     return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
     }
     function filteredDistricts(){
-  
+
                 if(form.division){
                   let selected = getDivision(form.division)
                   let results =  districts.value.filter(district => district.division_id == selected.id)
-                  
-                  
+
+
                   return results
                 }else{
                   console.log('No filter')
                     return []
                 }
-              
-            } 
+
+            }
     function filteredAreas(){
-          
+
                 if(form.district){
                   let selected = getDistrict(form.district)
                   let results =  areas.value.filter(area => area.district_id == selected.id)
-                  
-                  
-            
-            
+
+
+
+
                   return results
                 }else{
                   console.log('No filter')
                     return []
                 }
-              
-            } 
 
-    function editPlace(place){  
+            }
+
+    function editPlace(place){
         editing.value = true
         editId = place.id
-        
+
 
         /* toastr.success('success') */
         form.name =place.name
@@ -164,28 +168,28 @@ let form = reactive({
         form.category_id = place.category.id
         form.user_id = place.id
         form.rating = place.rating
-      
+
         form.division = place.division
         selectionDivision()
         form.district = place.district
         selectionDistrict()
         form.area = place.area
-        
-        
-        console.log('category') 
-        console.log(form) 
-        console.log(place) 
+
+
+        console.log('category')
+        console.log(form)
+        console.log(place)
         $('#ModalCenter').modal('show');
 }
     const createPlace = async()=>{
-    
+
      form.user_id =  getCurrentUser.value.user_id;
     /*  console.log('id') */
-    
+
      let form_data = setForm_Data()
 
         form_data.append('_method','post')
-        
+
 
         let config = {
             header : {
@@ -197,13 +201,14 @@ let form = reactive({
            if(res.data.success){
 
 
-           
+
            fetchPlaces();
 
             toastr.success('success')
 
             $('#ModalCenter').modal('hide');
             resetForm()
+
 
             }else{
                 errors.value = res.data[0].data
@@ -220,22 +225,22 @@ let form = reactive({
     function updateUser(){
       /* let form_data = new FormData(); */
     /*  let form_data = setForm_Data(); */
-    console.log(form.category_id) 
+    console.log(form.category_id)
     let form_data = setForm_Data()
         if(form.images){
           for(let i = 0;i < form.images.length ;i++){
-            
+
             form_data.append('images[]',form.images[i])
         }
       }
       form_data.append('_method','put')
-      
+
       let config = {
         header : {
           'Content-Type' : 'image/png'
         }
       }
-      console.log(form_data) 
+      console.log(form_data)
          axios.post('/api/place/'+editId,form_data,config).then(res=>{
            fetchPlaces();
             toastr.info('success')
@@ -246,8 +251,8 @@ let form = reactive({
             resetForm()
 
 
-        }) 
-    
+        })
+
 
 }
   function  getCurrentUserPlaces(){
@@ -259,33 +264,33 @@ let form = reactive({
 function selectionDivision(){
 
   if(form.division){
-   
+
     form.area = ''
     form.district = ''
- 
+
     filteredDistricts()
     filteredAreas()
 
   }
-  
+
 }
 function selectionDistrict(){
 
   if(form.district){
-    
+
    form.area = ''
-    
+
     filteredAreas()
   }
 
 }
     onMounted( async ()=>{
-   let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
-       await fetchPlaces(); 
-      fetchCategories(); 
-      fetchDivisions(); 
-      fetchDistricts(); 
-      fetchAreas(); 
+   let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null
+       await fetchPlaces();
+      fetchCategories();
+      fetchDivisions();
+      fetchDistricts();
+      fetchAreas();
       setRoleId(roleId)
       getCurrentUserPlaces()
 
@@ -301,7 +306,7 @@ function selectionDistrict(){
       {{areas}} -->
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary my-3" @click="addUser"> 
+<button type="button" class="btn btn-primary my-3" @click="addUser">
   Create Place
 </button >
 
@@ -350,17 +355,17 @@ function selectionDistrict(){
     <div class="form-group " >
       <label for="inputRating">Rating</label>
       <input type="number" class="form-control" :class="errors.rating ? 'is-invalid' : '' " id="inputRating" placeholder="Rating" v-model="form.rating">
-      
-      
+
+
     </div>
     <div class="form-group ">
       <label for="inputPrice">Price</label>
       <input type="number" class="form-control" :class="errors.price ? 'is-invalid' : '' " id="inputPrice" placeholder="Price" v-model="form.price">
 
-     
+
 
     </div>
-    
+
     <div class="form-group " >
       <label for="inputPrice">Category</label>
       <select class="custom-select" :class="errors.category_id ? 'is-invalid' : '' " id="inputCategory"  v-model="form.category_id">
@@ -369,7 +374,7 @@ function selectionDistrict(){
   <option  v-for="category in categories" :value="category.id">{{category.name}}</option>
 
 </select>
-    
+
 
     </div>
     <div class="form-group " >
@@ -391,7 +396,7 @@ function selectionDistrict(){
   <option  v-for="district in filteredDistricts()" :value="district.name">{{district.name}}</option>
 
 </select>
-    
+
 
     </div>
     <div class="form-group " v-show="form.district && form.division">
@@ -402,26 +407,26 @@ function selectionDistrict(){
   <option  v-for="area in filteredAreas()" :value="area.name">{{area.name}}</option>
 
 </select>
-    
+
 
     </div>
 
 
     <div class="form-group " >
       <label for="inputFeatureImage">Feature Image </label><br>
-      <input type="file" class="file-control" :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
-      
+      <input type="file" class="file-control"  :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
 
-     
+
+
 
     </div>
     <div class="form-group " >
       <label for="inputImages">More Image </label><br>
       <input type="file" class="file-control" multiple
        :class="errors.images ? 'is-invalid' : '' " id="inputImages" @change="setImages($event)">
-      
-      
-     
+
+
+
 
     </div>
   </div>
@@ -465,21 +470,21 @@ function selectionDistrict(){
 </thead>
 <tbody>
   {{currentUserPlaces.value}}
-  <tr v-for="(place,index) in filterPlaces()" :key="place.id" >
+  <tr v-for="(place,index) in filterPlaces()" :key="place.id" v-if="filterPlaces().length">
 
-    
+
     <td>{{index+1}}</td>
     <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
 <td v-else> <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class=" img-fluid" ></td>
 <td ><strong>{{place.name}}</strong></td>
-<td > 
+<td >
   <textarea name="description" id="description" class="form-control" cols="30" rows="10" disabled>{{place.description}}</textarea>
-  
+
 <!--   <div class="form-group">
 
   <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{place.description}}</textarea>
 </div> -->
- 
+
 
 
 </td>

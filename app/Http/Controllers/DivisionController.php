@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Helper;
+use App\Http\Resources\DivisionResource;
 use Illuminate\Http\Request;
 use App\Models\Division;
 
@@ -15,8 +16,8 @@ class DivisionController extends Controller
      */
     public function index()
     {
-        $division = Division::all();
-        return Helper::sendSuccess('Success',$division);
+        $division = Division::with('districts')->get();
+        return Helper::sendSuccess('Success',DivisionResource::collection($division));
     }
 
     /**
@@ -37,7 +38,13 @@ class DivisionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+       $division = Division::create($request->all());
+        if($division){
+            return Helper::sendSuccess('Successfully Created');
+        }else{
+            return Helper::sendError('Something went Wrong');
+        }
     }
 
     /**
@@ -65,7 +72,7 @@ class DivisionController extends Controller
      */
     public function edit(Division $Division)
     {
-        //
+
     }
 
     /**
@@ -75,9 +82,15 @@ class DivisionController extends Controller
      * @param  \App\Models\Division  $Division
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Division $Division)
+    public function update($Division,Request $request)
     {
-        //
+        $division = Division::find($Division);
+        if($division){
+            $division->update($request->all());
+            return Helper::sendSuccess('Successfully Updated');
+        }else{
+            return Helper::sendError('Division Not Found');
+        }
     }
 
     /**
@@ -86,8 +99,14 @@ class DivisionController extends Controller
      * @param  \App\Models\Division  $Division
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Division $Division)
+    public function destroy( $Division)
     {
-        //
+        $division = Division::find($Division);
+        if($division){
+            $division->delete();
+            return Helper::sendSuccess('Successfully Deleted');
+        }else{
+            return Helper::sendError('Division Not Found');
+        }
     }
 }

@@ -1,12 +1,12 @@
 <template>
 
 <div class="container">
-    
+
 <!-- Modal -->
 <div class="modal fade bd--modal-lg" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
-       
+
       <div class="modal-header">
           <h5 class="modal-title" id="ModalLongTitle">Booking & Payments</h5>
        <!--  <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5> -->
@@ -15,15 +15,15 @@
         </button>
       </div>
       <div class="modal-body">
-   
-    
+
+
 
         <div class="form-group">
     <label for="FormControlSelect"> Select Booking</label>
     <select class="form-control" id="FormControlSelect" v-model="bookingID">
         <option selected>Choose...</option>
       <option class="btn" v-for="book in placeBookings" :value="book.pivot.id" :key="book.pivot.id" >BookingID:{{book.pivot.id +'|' +book.pivot.date}}</option>
-      
+
     </select>
 
     <button class="btn btn-primary mt-1" @click="getOrdersByBooking(bookingID)">Get</button>
@@ -49,9 +49,9 @@
 </tr>
 </thead>
 <tbody>
-   
 
-<tr v-for="(order,index) in  orders.value" :key="order.id" v-if="orders">
+
+<tr v-for="(order,index) in  orders.value" :key="order.id" v-if="orders.value ? orders.value.length : false" :class="(order.status == 'Completed') ? 'bg-success' : 'bg-danger'">
     <td>{{index+1}}</td>
 <td >{{order.name}}</td>
  <td >{{order.email}}</td>
@@ -64,14 +64,23 @@
 
 <td>
     <!-- <router-link :to="'/payment/invoice/'+order.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
-     <button class="btn btn-warning mr-3" @click="invoice(order.id)"> 
- <i class="fas fa-print"></i></button> 
+     <button class="btn btn-warning mr-3" @click="invoice(order.id)">
+ <i class="fas fa-print"></i></button>
    <!--  <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
 </td>
 
 </tr>
-<tr v-else>
-    <h1>No Data Found</h1>
+<tr v-else >
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td class="text-center">No Data Found</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
 
 </tr>
 
@@ -88,7 +97,7 @@
 </tbody>
 </table>
 </div>
-    
+
    <!--  <div class="form-group ">
       <label for="inputName">Name</label>
       <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
@@ -98,7 +107,7 @@
                </p>
              </div>
     </div> -->
-  
+
   </div>
 
 
@@ -108,14 +117,14 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    
+
 </div>
 
     </div>
   </div>
 </div>
 
-<!-- 
+<!--
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-xl-3">
@@ -127,7 +136,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-green order-card">
                 <div class="card-block">
@@ -137,7 +146,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-yellow order-card">
                 <div class="card-block">
@@ -147,7 +156,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-pink order-card">
                 <div class="card-block">
@@ -170,7 +179,7 @@
       aria-hidden="true"></i>Plane</button>
   <button type="button" class="btn btn-outline-danger waves-effect m-2 disabled"><i class="fas fa-train fa-sm pr-2"
       aria-hidden="true"></i>Train</button>
-      
+
 </div>
 <!-- old card -->
 <!-- <div class="container border">
@@ -198,15 +207,15 @@
 
 <!-- new -->
  <!-- {{bookings}}  -->
-        
+
      <!--    <div class="card" v-if="bookings.value"> --> <!-- style="width: 680px;height: 290px;" -->
         <div class="row no-gutters my-1 border" v-for="(place,index) in bookings.value" :key="index" v-if="bookings">
-            
 
-                
+
+
                 <div class="col-sm-5" >
-                    
-                    <img class="card-img" 
+
+                    <img class="card-img"
                     :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" alt="" style="height:290px">
                 </div>
                 <div class="col-sm-7 d-flex justify-content-between">
@@ -216,7 +225,7 @@
                         <h5 class="card-title">{{place.name}}</h5>
                         <p class="card-text">{{place.description}}</p>
                     </div>
-                   
+
                         <div class="container "> <!-- card-footer -->
                             <div>
 
@@ -233,41 +242,41 @@
                                 <h2>৳{{place.price}}</h2>
                                 <h4 :class="place.status == 0?  'text-danger' : 'text-success'" class="text-bold">{{place.status == 0 ? "COMPLETE" : "PENDING"}} </h4>
                             </div>
-                            
-                           
+
+
                         </div>
                     </div>
                     <div>
                       <!-- <p>placeID:{{place.booking_id}}</p>   -->
-                        
+
                         <div class="d-flex flex-column mt-5">
                             <!-- <router-link :to="'/payment/invoice/'+booking.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
-                            
-                            
+
+
                             <a href="#" class="btn btn-outline-danger mt-1" @click="getBookingsByPlace(place.id)">Bookings</a>
                             <router-link class="btn btn-lg btn-primary mt-1" :to="'/place/'+place.id" >
-                                Details                  
+                                Details
                         </router-link>
                         <!-- <small class="float-right"><a @click="deleteBooking(place.booking_id)" class="btn btn-danger mt-1 z-index"> Cancle </a></small> -->
                         </div>
                     </div>
-                    
+
                 </div>
            <!--      <div class="card-footer">
                     <div class="float-right">
 
-                   
+
                 </div>
     </div> -->
         </div>
-            
+
     <!--     </div> -->
        <!--  <div v-else>
             <h2 class="text-center mt-5">No Recorde Found</h2>
         </div>
  -->
 
- 
+
 
 <!-- {{bookings.value.booking_id}} -->
 <!-- <button class="btn btn-danger" @click="logout">Logout</button> -->
@@ -318,7 +327,7 @@
     }
         function getOrdersByBooking(id){
 
-           
+
 
             axios.get('/api/booking/'+id).then(res=>{
                 if(res.data.success){
@@ -341,7 +350,7 @@
         onMounted(async ()=>{
             await getBookingsByUserId(getCurrentUser.user_id)
             /* ON MOdal close */
-            
+
             $('#ModalCenter').on('hidden.bs.modal', function (e) {
                 orders.value = []
                 bookingID.value = ''
@@ -383,15 +392,15 @@
        .footer{
            background-color:#f2f2f2;
            position: relative;
-           
+
        }
        .card{
            box-shadow: 0 2px 2px 2px black;
            position: relative;
-           
+
 
        }
-       
+
       .pic{
           color:green;
           font-size: 1em;

@@ -3,7 +3,7 @@
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary my-3" @click="addRole"> <!-- data-toggle="modal" data-target="#exampleModalCenter" -->
-  Create User
+  Create Role
 </button >
 
 <!-- Modal -->
@@ -110,7 +110,7 @@ import { storeToRefs } from 'pinia';
         import {onMounted ,ref,reactive} from 'vue';
 
         import {RoleStore} from '@/store/RoleStore';
-        
+
        import { useToastr } from '@/pages/toaster';
         const toastr = useToastr();
         const store = new RoleStore();

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('day');
             $table->integer('order')->nullable();
 
-            $table->unsignedBigInteger('grouptour_id');
+            $table->unsignedBigInteger('group_tour_id');
 
             $table->timestamps();
         });

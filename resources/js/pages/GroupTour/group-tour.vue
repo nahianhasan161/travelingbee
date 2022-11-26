@@ -7,7 +7,7 @@
     import { UserStore } from '@/store/UserStore';
    import { PlaceStore } from '@/store/place/PlaceStore';
    import { storeToRefs } from 'pinia';
-   
+
    import { useToastr } from '@/pages/toaster';
 import axios from 'axios';
     /* import {useVirtualList} from '@vueuse/core ' */
@@ -16,8 +16,8 @@ import axios from 'axios';
         itemHeight : 200
     }) */
 
-    
-    
+
+
 /*      const picker = useHotelDatePicker(); */
     const router = new useRouter();
  /*    let date = ref('') */
@@ -26,7 +26,7 @@ import axios from 'axios';
         const {places,placeId,categories,loading} = storeToRefs(PlaceStore())
         const {fetchPlaces,fetchCategories,setPlaceId,getPlaces} = PlaceStore();
         let categoryName = ref('')
-      
+
 
 
 
@@ -34,21 +34,21 @@ import axios from 'axios';
 
          categoryName.value == name ?  categoryName.value = '' :  categoryName.value = name
            filteredPlaces()
-        
-        } 
+
+        }
        function filteredPlaces(){
            if(categoryName.value){
                let alter =  places.value.filter(place => place.category.name == categoryName.value)
-               
-               
+
+
                /* console.log(alter.length? alter : 'no') */
                return alter
             }else{
                 return places.value
             }
-          
-        } 
-     
+
+        }
+
         function logout(){
             store.removeToken();
             store.removeUser();
@@ -57,17 +57,17 @@ import axios from 'axios';
         function categorySlider(){
             $('.toggle').click(function(){
 $('.nav-fill').toggleClass("justify-content-end");
-$('.toggle').toggleClass("text-light"); 
+$('.toggle').toggleClass("text-light");
 });
         }
 
        watchEffect(async ()=>{
-        /* fetchPlaces() */ 
+        /* fetchPlaces() */
       /*  await filteredPlaces() */
-      
+
        })
   /*  async function fetches(){
-       await fetchPlaces() 
+       await fetchPlaces()
        await fetchCategories()
    } */
      /* function createTour(){
@@ -76,31 +76,31 @@ $('.toggle').toggleClass("text-light");
         })
      } */
     onMounted(async ()=>{
-      
-        await fetchPlaces() 
+
+        await fetchPlaces()
        await fetchCategories()
           categorySlider()
-         createTour()
-  
- 
-}) 
+       /*   createTour() */
+
+
+})
         /* window.axios.default.headers.common['Authorization'] = `Bearer ${store.getToken}` */
         /*  this.store.fetchCurrentUser(); */
       /*   axios.get('/api/user').then(res=>{
 
         }).catch((err)=>{
             console.log(err);
-        
+
   /*   }) */
 
 
 </script>
 
 <template>
-    
+
     <div class="container">
         <!-- {{filteredPlaces()}} -->
-<!-- <modal/> -->        
+<!-- <modal/> -->
 <div class="loader" v-if="loading"></div>
 <!-- <button class="btn btn-primary" @click="createTour()">Click here</button> -->
     <div class="d-flex align-items-center">
@@ -112,7 +112,7 @@ $('.toggle').toggleClass("text-light");
                 <li class="nav-item" v-for="category in categories">
                   <a  @click="setCategoryName(category.name)" class="btn btn-outline-danger btn-rounded  " :class="category.name == categoryName ? 'active' : ''">{{category.name}}</a><!--  mr-md-3 mb-md-0 -->
                 </li>
-              
+
             </ul>
         </div>
         <div class="flex-shrink-0">
@@ -125,7 +125,7 @@ $('.toggle').toggleClass("text-light");
         <div class="row" v-if="filteredPlaces().length">
            <!--  <Suspense>
                 <template #default>
-               
+
             </template>
             <template #fallback>
                 Product is loading...
@@ -134,7 +134,7 @@ $('.toggle').toggleClass("text-light");
             <div  :class="(filteredPlaces().length == 1 ? 'col-md-12' : (filteredPlaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredPlaces()" @click="setPlaceId(place.id)" :key="place.id" >
          <div class="card">
           <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
-<img class="card-img-top" 
+<img class="card-img-top"
 :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
              <p class="rating">{{place.rating}}</p>
@@ -153,9 +153,9 @@ $('.toggle').toggleClass("text-light");
          </div>
      </div>
 
-    
+
 </div>
-       
+
  </div>
 <!-- <picker v-model="date"/> -->
 
@@ -186,7 +186,7 @@ body {
 }
 
 /* .container {
-   margin-top: 100px 
+   margin-top: 100px
 } */
 
 .rating {

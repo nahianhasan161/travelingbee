@@ -6,6 +6,8 @@ import { UserStore } from '@/store/UserStore';
 import { PlaceStore } from '@/store/place/PlaceStore';
 import {AddressStore} from '@/store/address/Address'
 import { useToastr } from '@/pages/toaster';
+
+import inputRating from '@/pages/component/input/inputRating.vue'
 /* toaster */
 const toastr = useToastr();
 
@@ -30,18 +32,18 @@ let currentUserPlaces = ref([]);
 /* edit */
 const editing = ref(false);
 let editId = ref('')
-  
 
-           
+
+
 let form = reactive({
         title:'',
         description: '',
-        
+
         person:'',
         rating:'',
         price:'',
         day : '',
-        
+
         place: '',
         division:'',
         district:'',
@@ -57,13 +59,13 @@ let form = reactive({
             time:'',
             day:'',
 
-           
+
         }]
-        
-        
-      
+
+
+
     });
-   
+
     let errors = ref([]);
     function addPlan(){
       form.plans.push([{
@@ -73,7 +75,7 @@ let form = reactive({
             time:'',
             day:'',
 
-           
+
         }])
     }
     function removePlan(){
@@ -94,7 +96,7 @@ let form = reactive({
     }
     /* Setters & Getters*/
     function getDivision(name){
-      
+
     return name ? divisions.value.find(division=>division.name == name) : []
     }
     function getDistrict(name){
@@ -118,12 +120,12 @@ let form = reactive({
     const resetForm = ()=>{
         form.title ='',
         form.description = '',
-        
-        form.people ='',
+
+        form.person ='',
         form.rating ='',
         form.price ='',
         form.day  = '',
-        
+
         form.place = '',
         form.division ='',
         form.district ='',
@@ -139,32 +141,41 @@ let form = reactive({
             time:'',
             day:'',
 
-           
-        }] 
-            
+
+        }]
+
            /*  this.$refs.fileupload.value=null; */
            /*  form.category='' */
     }
-    
+
     function setForm_Data(){
           let form_data = new FormData();
-          
+
         form_data.append('title',form.title)
         form_data.append('feature_image',form.feature_image)
         form_data.append('description',form.description)
         form_data.append('rating',form.rating)
         form_data.append('price',form.price)
         form_data.append('images',form.images)
-        
+
         form_data.append('day',form.day)
-        form_data.append('people',form.people)
-        
+        form_data.append('person',form.person)
+
         form_data.append('place',form.place)
         form_data.append('division',form.division)
         form_data.append('district',form.district)
         form_data.append('area',form.area)
 
-        form_data.append('plans',form.plans)
+
+     form.plans.forEach((element,index) => {
+    form_data.append('plans['+index+'][place]', element.place);
+    form_data.append('plans['+index+'][description]', element.description);
+    form_data.append('plans['+index+'][category]', element.category);
+    form_data.append('plans['+index+'][time]', element.time);
+    form_data.append('plans['+index+'][day]', element.day);
+})
+
+        /* form_data.append('plans', form.plans) */
            return form_data;
     }
     /* filters */
@@ -172,40 +183,40 @@ let form = reactive({
     return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
     }
     function filteredDistricts(){
-  
+
                 if(form.division){
                   let selected = getDivision(form.division)
                   let results =  districts.value.filter(district => district.division_id == selected.id)
-                  
-                  
+
+
                   return results
                 }else{
                   console.log('No filter')
                     return []
                 }
-              
-            } 
+
+            }
     function filteredAreas(){
-          
+
                 if(form.district){
                   let selected = getDistrict(form.district)
                   let results =  areas.value.filter(area => area.district_id == selected.id)
-                  
-                  
-            
-            
+
+
+
+
                   return results
                 }else{
                   console.log('No filter')
                     return []
                 }
-              
-            } 
 
-    function editPlace(place){  
+            }
+
+    function editPlace(place){
         editing.value = true
         editId = place.id
-        
+
 
         /* toastr.success('success') */
         form.name =place.name
@@ -215,28 +226,28 @@ let form = reactive({
         form.category_id = place.category.id
         form.user_id = place.id
         form.rating = place.rating
-      
+
         form.division = place.division
         selectionDivision()
         form.district = place.district
         selectionDistrict()
         form.area = place.area
-        
-        
-        console.log('category') 
-        console.log(form) 
-        console.log(place) 
+
+
+        console.log('category')
+        console.log(form)
+        console.log(place)
         $('#ModalCenter').modal('show');
 }
     const createPlace = async()=>{
-    
+
      form.user_id =  getCurrentUser.value.user_id;
     /*  console.log('id') */
-    
+
      let form_data = setForm_Data()
 
         form_data.append('_method','post')
-        
+
 
         let config = {
             header : {
@@ -248,7 +259,7 @@ let form = reactive({
            if(res.data.success){
 
 
-           
+
            fetchPlaces();
 
             toastr.success('success')
@@ -271,22 +282,22 @@ let form = reactive({
     function updateUser(){
       /* let form_data = new FormData(); */
     /*  let form_data = setForm_Data(); */
-    console.log(form.category_id) 
+    console.log(form.category_id)
     let form_data = setForm_Data()
         if(form.images){
           for(let i = 0;i < form.images.length ;i++){
-            
+
             form_data.append('images[]',form.images[i])
         }
       }
       form_data.append('_method','put')
-      
+
       let config = {
         header : {
           'Content-Type' : 'image/png'
         }
       }
-      console.log(form_data) 
+      console.log(form_data)
          axios.post('/api/place/'+editId,form_data,config).then(res=>{
            fetchPlaces();
             toastr.info('success')
@@ -297,8 +308,8 @@ let form = reactive({
             resetForm()
 
 
-        }) 
-    
+        })
+
 
 }
   function  getCurrentUserPlaces(){
@@ -310,33 +321,33 @@ let form = reactive({
 function selectionDivision(){
 
   if(form.division){
-   
+
     form.area = ''
     form.district = ''
- 
+
     filteredDistricts()
     filteredAreas()
 
   }
-  
+
 }
 function selectionDistrict(){
 
   if(form.district){
-    
+
    form.area = ''
-    
+
     filteredAreas()
   }
 
 }
     onMounted( async ()=>{
-   let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null 
-       await fetchPlaces(); 
-      fetchCategories(); 
-      fetchDivisions(); 
-      fetchDistricts(); 
-      fetchAreas(); 
+   let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null
+       await fetchPlaces();
+      fetchCategories();
+      fetchDivisions();
+      fetchDistricts();
+      fetchAreas();
       setRoleId(roleId)
       getCurrentUserPlaces()
 
@@ -353,7 +364,7 @@ function selectionDistrict(){
       {{areas}} -->
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary my-3" @click="addUser"> 
+<button type="button" class="btn btn-primary my-3" @click="addUser">
   Create Place
 </button >
 
@@ -389,8 +400,12 @@ function selectionDistrict(){
                </p>
              </div>
     </div>
-  
-    <div class="form-group " >
+<inputRating
+v-model:rating="form.rating"
+v-model:errors="errors.rating"
+ />
+
+    <!-- <div class="form-group " >
       <label for="inputRating">Rating</label>
       <input type="number" class="form-control" :class="errors.rating ? 'is-invalid' : '' " id="inputRating" placeholder="Rating" v-model="form.rating">
       <div class="text-danger" v-if="errors.rating">
@@ -398,8 +413,8 @@ function selectionDistrict(){
                 {{error}}
                </p>
              </div>
-      
-    </div>
+
+    </div> -->
     <div class="form-group " >
       <label for="inputDay">Day</label>
       <input type="number" class="form-control" :class="errors.day ? 'is-invalid' : '' " id="inputDay" placeholder="Day" v-model="form.day">
@@ -408,17 +423,17 @@ function selectionDistrict(){
                 {{error}}
                </p>
              </div>
-      
+
     </div>
     <div class="form-group " >
-      <label for="inputPeople">Person</label>
-      <input type="number" class="form-control" :class="errors.person ? 'is-invalid' : '' " id="inputPeople" placeholder="Person" v-model="form.person">
+      <label for="inputPerson">Person</label>
+      <input type="number" class="form-control" :class="errors.person ? 'is-invalid' : '' " id="inputPerson" placeholder="Person" v-model="form.person">
       <div class="text-danger" v-if="errors.person">
                <p v-for="error in errors.person">
                 {{error}}
                </p>
              </div>
-      
+
     </div>
     <div class="form-group ">
       <label for="inputPrice">Price</label>
@@ -428,19 +443,19 @@ function selectionDistrict(){
                 {{error}}
                </p>
              </div>
-     
+
 
     </div>
-    
+
    <!--  <div class="form-group " >
       <label for="inputPrice">Category</label>
       <select class="custom-select" :class="errors.category_id ? 'is-invalid' : '' " id="inputCategory"  v-model="form.category_id">
-  
+
   <option value="" >Choose ...</option>
   <option  v-for="category in categories" :value="category.id">{{category.name}}</option>
 
 </select>
-    
+
 
     </div> -->
     <div class="form-group " >
@@ -473,7 +488,7 @@ function selectionDistrict(){
   <option  v-for="district in filteredDistricts()" :value="district.name">{{district.name}}</option>
 
 </select>
-    
+
 
     </div>
     <div class="form-group " v-show="form.district && form.division">
@@ -484,7 +499,7 @@ function selectionDistrict(){
   <option  v-for="area in filteredAreas()" :value="area.name">{{area.name}}</option>
 
 </select>
-    
+
 
     </div>
 
@@ -492,82 +507,85 @@ function selectionDistrict(){
     <div class="form-group " >
       <label for="inputFeatureImage">Feature Image </label><br>
       <input type="file" class="file-control" :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
-      
 
-     
+
+
 
     </div>
     <div class="form-group " >
       <label for="inputImages">More Image </label><br>
       <input type="file" class="file-control" multiple
        :class="errors.images ? 'is-invalid' : '' " id="inputImages" @change="setImages($event)">
-      
-      
-     
+
+
+
 
     </div>
-    <div class="card border p-3" v-if="form.plans.length">
-        <div class="form-group " v-for="(plan,index) in form.plans" :key="index">
+
+    <div class="card border p-3" v-if="form.plans.length" v-for="(plan,index) in form.plans" :key="index">
+        <div class="form-group " >
           <label for="inputDay">Day</label>
-          <input type="number" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputDay" placeholder="Day" v-model="form.plans[0].day">
-        <!--   <div class="text-danger" v-if="errors.plans[0].day">
-                   <p v-for="error in errors.plans[0].day">
+          <input type="number" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputDay" placeholder="Day" v-model="form.plans[index].day">
+        <!--   <div class="text-danger" v-if="errors.plans[index].day">
+                   <p v-for="error in errors.plans[index].day">
                     {{error}}
                    </p>
                  </div> -->
-          
+
         </div>
 
         <div class="form-group " >
           <label for="inputDay">Time</label>
-          <picker v-model="form.plans[0].time" timePicker />
-        <!--   <div class="text-danger" v-if="errors.plans[0].day">
-                   <p v-for="error in errors.plans[0].day">
+          <picker v-model="form.plans[index].time" timePicker />
+        <!--   <div class="text-danger" v-if="errors.plans[index].day">
+                   <p v-for="error in errors.plans[index].day">
                     {{error}}
                    </p>
                  </div> -->
-          
+
         </div>
         <div class="form-group " >
       <label for="inputCategory">Category</label>
-      <select class="custom-select" :class="errors.plans ? 'is-invalid' : '' " id="inputCategory"  v-model="form.plans[0].category">
+      <select class="custom-select" :class="errors.plans ? 'is-invalid' : '' " id="inputCategory"  v-model="form.plans[index].category">
   <!-- <option selected>Open this select menu</option> -->
   <option value="" selected>Choose ...</option>
   <option value="eat" >Eating</option>
   <option value="stay" >Stay</option>
   <option value="roaming" >Roaming</option>
   <option value="traveling" >Traveling</option>
- 
+
 
 </select>
-    
+
 
     </div>
         <div class="form-group ">
       <label for="inputPlace">Place</label>
-      <input type="text" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputPlace" placeholder="description" v-model="form.plans[0].place">
-      <!-- <div class="text-danger" v-if="errors.plans[0].place">
-               <p v-for="error in errors.plans[0].place">
+      <input type="text" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputPlace" placeholder="description" v-model="form.plans[index].place">
+      <!-- <div class="text-danger" v-if="errors.plans[index].place">
+               <p v-for="error in errors.plans[index].place">
                 {{error}}
                </p>
              </div> -->
     </div>
         <div class="form-group ">
       <label for="inputDescription">Description</label>
-      <textarea type="text" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputDescription" placeholder="description" v-model="form.plans[0].description" cols='10' rows='5'></textarea>
-  <!--     <div class="text-danger" v-if="errors.plans[0].description">
-               <p v-for="error in errors.plans[0].description">
+      <textarea type="text" class="form-control" :class="errors.plans ? 'is-invalid' : '' " id="inputDescription" placeholder="description" v-model="form.plans[index].description" cols='10' rows='5'></textarea>
+  <!--     <div class="text-danger" v-if="errors.plans[index].description">
+               <p v-for="error in errors.plans[index].description">
                 {{error}}
                </p>
              </div> -->
     </div>
+</div>
     <a class="btn btn-sm btn-danger m-1" @click="removePlan()" v-if="form.plans.length > 1 "><i class="fa fa-times"></i> Remove Plan</a>
     <a class="btn btn-success" @click="addPlan()"> <i class="fa fa-plus"></i> Add Plan</a>
-    </div>
+
   </div>
 
 
 
+<!-- <h4 class="text-center text-danger" v-if="!errors && !errors.length  ">Validation Error...</h4> -->
 
 
 </div>
@@ -605,21 +623,22 @@ function selectionDistrict(){
 </thead>
 <tbody>
   {{currentUserPlaces.value}}
-  <tr v-for="(place,index) in filterPlaces()" :key="place.id" >
 
-    
+  <tr v-for="(place,index) in filterPlaces()" :key="place.id" v-if="filterPlaces().length">
+
+
     <td>{{index+1}}</td>
     <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
 <td v-else> <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class=" img-fluid" ></td>
 <td ><strong>{{place.name}}</strong></td>
-<td > 
+<td >
   <textarea name="description" id="description" class="form-control" cols="30" rows="10" disabled>{{place.description}}</textarea>
-  
+
 <!--   <div class="form-group">
 
   <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{place.description}}</textarea>
 </div> -->
- 
+
 
 
 </td>

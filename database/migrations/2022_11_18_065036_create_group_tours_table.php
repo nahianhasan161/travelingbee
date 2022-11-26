@@ -21,12 +21,13 @@ return new class extends Migration
             $table->string('district');
             $table->string('area');
             $table->string('place');
-            $table->string('image')->nullable();
+            $table->string('feature_image')->nullable();
+            $table->integer('day');
             $table->integer('person');
             $table->integer('price');
             $table->integer('rating');
             $table->integer('status')->default(1);
-            
+
             $table->timestamps();
         });
     }

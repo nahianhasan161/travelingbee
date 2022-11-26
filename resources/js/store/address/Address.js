@@ -10,18 +10,18 @@ export const AddressStore = defineStore({
         /* JSON.parse() */
 
         loading: false,
-      
+
         divisionId:ref(''),
-        
+
         userId:ref(''),
         placeId:ref(''),
         divisions:ref([]),
         districts:ref([]),
         areas:ref([]),
-      
+
         url : '/api/address',
 
-      
+
          divisionUrl : '/api/address/division',
          districtUrl : '/api/address/district',
          areaUrl : '/api/address/area',
@@ -42,15 +42,15 @@ export const AddressStore = defineStore({
     actions:{
 
         setRoleId(id){
-           
+
         this.roleId = id;
         },
         setDivisionId(id){
-           
+
         this.bookingId = id;
         },
 
-    
+
         /* Division */
         async fetchDivisions(){
             this.loading = true
@@ -59,7 +59,7 @@ export const AddressStore = defineStore({
 
                     this.divisions = res.data.data
 
-                 
+
 
                 }else{
                     toastr.error('Can not get Divisions')
@@ -76,7 +76,7 @@ export const AddressStore = defineStore({
         },
        async  fetchDivision(divisionID){
             this.loading = true
-           
+
            await  axios.get(this.DivisionUrl+'/'+divisionID).then(res=>{
                 if(res.data.success){
 
@@ -96,11 +96,13 @@ export const AddressStore = defineStore({
 
         },
 
+
+
         async getDivision(id){
             await axios.get(this.divisionUrl+'/'+id).then(res=>{
                 if(res.data.success){
                     this.bookings.value = res.data.data
-    
+
                     console.log(res.data.data)
                 }else{
                     console.log(res)
@@ -108,33 +110,34 @@ export const AddressStore = defineStore({
                 }
             })
             },
-        deleteDivision(bookingId){
-           
+
+        deleteDivision(divisionID){
+
                 this.loading = true;
                 /* console.log(placeId); */
-                axios.delete(this.url+'/'+bookingId).then(res=>{
-                    let index = this.divisions.findIndex(division=>division.id == bookingId);
-                    this.bookings.splice(index,1);
-                    toastr.error('success')
+                axios.delete(this.divisionUrl+'/'+divisionID).then(res=>{
+                    let index = this.divisions.findIndex(division=>division.id == divisionID);
+                    this.divisions.splice(index,1);
+
                     /* console.log(this.places); */
-                    toastr.success(res.data.message);
+                    toastr.error(res.data.message);
                     console.log(res.data);
                 }).finally(()=>{
                     this.loading = false
-        
+
                 })
         },
         /* end Division */
 
         /*  District */
-        async fetchDistricts(){
+        async fetchDistricts(id){
             this.loading = true
-           await axios.get(this.districtUrl).then(res=>{
+           await axios.get(this.districtUrl+'/?id='+id).then(res=>{
                 if(res.data.success){
 
                     this.districts = res.data.data
 
-                 
+
 
                 }else{
                     toastr.error('Can not get Districts')
@@ -150,9 +153,9 @@ export const AddressStore = defineStore({
 
         },
         /* end  District */
-        
-        
-        
+
+
+
         /*end  Area*/
         async fetchAreas(){
             this.loading = true
@@ -161,7 +164,7 @@ export const AddressStore = defineStore({
 
                     this.areas = res.data.data
 
-                 
+
 
                 }else{
                     toastr.error('Can not get Areas')
@@ -176,11 +179,10 @@ export const AddressStore = defineStore({
             });
 
         },
-        
+
         /* end Area*/
 
-      
-    
+
+
     }
 })
-    

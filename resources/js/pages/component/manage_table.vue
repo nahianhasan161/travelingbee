@@ -23,12 +23,16 @@
 
 <td class="capital">{{datum.url}}</td>
 <td>
-    
 
 
 
- <button class="btn btn-info mr-1" @click="emit('editProp', 1)"><i class="far fa-edit"></i></button>
-    <button class="btn btn-danger" @click="deleteData(datum.id)"><i class="fas fa-trash"></i></button>
+
+ <router-link class="btn btn-app bg-secondary mr-1" :to="'/manage/district/'+datum.id"><i class="far fa-eye"></i>Districts
+    <span class="badge bg-info">{{datum.hasDistrict}}</span>
+ </router-link>
+ <button class="btn btn-app bg-warning mr-1" @click="emit('editProp', datum)"><i class="far fa-edit"></i>
+</button>
+    <button class="btn btn-app bg-danger" v-show="!datum.hasDistrict" @click="emit('deleteProp', datum.id)"><i class="fas fa-trash"></i></button>
 </td>
 
 </tr>
@@ -47,7 +51,7 @@
 </table>
 
 </div>
-       
+
     </div>
 
 </template>
@@ -56,15 +60,15 @@
 import {onMounted,defineProps,defineEmits} from 'vue'
 const props = defineProps(['names','fields','data','edit']
     )
-const emit = defineEmits(['editProp'])
-    function editData(id) {
-       /*  emit('edit',id); */
-       
-    emit('editProp',{name:'hi'})
+const emit = defineEmits(['editProp','deleteProp'])
+    /* function editData(id) {
+
+
+emit('editProp',{name:'hi'})
        console.log('emited')
-    }
+    } */
    /*  const newName = computed(() =>  props.name) */
  onMounted(()=>{
     console.log(props.name);
-}) 
+})
 </script>
