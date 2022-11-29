@@ -22,10 +22,12 @@ return new class extends Migration
             $table->string('area');
             $table->string('place');
             $table->string('feature_image')->nullable();
+            $table->timestamp('date');
             $table->integer('day');
             $table->integer('person');
             $table->integer('price');
             $table->integer('rating');
+            $table->unsignedBigInteger('user_id');
             $table->integer('status')->default(1);
 
             $table->timestamps();

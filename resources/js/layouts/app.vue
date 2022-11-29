@@ -94,9 +94,9 @@
         <li class="nav-item dropdown ">
 
         <a class="nav-link dropdown-toggle group-input" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img :src="'/image/profile/'+currentUser.image" width="40" height="40" class="rounded-circle" alt="profile_img" v-if="currentUser.image">
+          <img :src="currentUser.image ? '/image/profile/'+currentUser.image : '/image/demo/demo_profile.png'" width="40" height="40" class="rounded-circle" alt="profile_img" >
 
-          <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else>
+
      <strong class="p-1 h3 text-dark text-bold">{{currentUser ? currentUser.name : 'Anonymous'}}</strong>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -131,7 +131,7 @@
   <img :src="'/image/profile/'+currentUser.image" class="img-circle elevation-2" alt="User Image" v-if="currentUser.image">
 
 <!-- <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="40" height="40" class="rounded-circle" alt="profile_img" v-else> -->
-<img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" v-else>
+<img src="/image/demo/demo_profile.png" class="img-circle elevation-2" alt="User Image" v-else>
 </div>
 <div class="info">
 <a href="#" class="d-block">{{currentUser ? currentUser.name : 'Anonymous'}}</a>

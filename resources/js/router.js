@@ -2,8 +2,10 @@ import {createWebHistory,createRouter} from 'vue-router';
 /* landing pages */
 import welcome from './pages/welcome.vue';
 import about from './pages/about.vue';
+/* GroupTOur */
 import grouptour from './pages/GroupTour/group-tour.vue';
 import groutourDetails from './pages/GroupTour/group-tour-details.vue';
+/* GroupTOur */
 import dashboard from './pages/auth/user/dashboard.vue';
 import place from './pages/place.vue';
 import test from './pages/test.vue';
@@ -88,7 +90,7 @@ const routes = [
 
     {
     path : '/grouptour/:id',
-    name : 'place',
+    name : 'group-tour-detials',
     component : groutourDetails ,
     props: true
 

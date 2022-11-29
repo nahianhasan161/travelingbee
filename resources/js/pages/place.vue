@@ -3,9 +3,9 @@
 
 
     <div class="wrap" :class="loading? 'text-muted' : ''">
-    <div class="container text-monospace" >
+    <div class="container " >
       <div class="loader" v-if="loading"></div>
-        <div class="text-monospace">
+        <div class="">
 
             <h1>
             <!--  {{places.images}} -->
@@ -75,7 +75,7 @@
 
 <div class="row content my-5" v-if="places.user">
 <div class=" user-block">
-<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="places.user.image ?  '/image/profile/'+places.user.image : 'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'"  alt="User Image">
+<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="places.user.image ?  '/image/profile/'+places.user.image : '/image/demo/demo_profile.png'"  alt="User Image">
 <span class="username">
 <a >{{places.user? places.user.name : 'Anonymous'}}</a>
 
@@ -294,7 +294,7 @@
      <div class="review p-5"   v-if="currentUserReview ? (currentUserReview.length == null ? true : currentUserReview.length) : false">
        <div class="row d-flex">
          <div class="profile-pic">
-            <img name="profile-pic"  class="profile-user-img img-fluid img-circle img-bordered-lg" :src="currentUserReview.user.image ? '/image/profile/'+ currentUserReview.user.image :  'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'" alt="profile_img">
+            <img name="profile-pic"  class="profile-user-img img-fluid img-circle img-bordered-lg" :src="currentUserReview.user.image ? '/image/profile/'+ currentUserReview.user.image :  '/image/demo/demo_profile.png'" alt="profile_img">
 
         </div>
 
@@ -326,7 +326,7 @@
        </div>
        <div class="row ml-1">
          <div class="row bg-light via">
-           <div class="px-2"><img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="18px" height="18px"></div>
+           <div class="px-2"><img src="/image/demo/demo_profile.png" width="18px" height="18px"></div>
 
            <!-- <p class="grey-text mb-0 px-3">via Google</p> -->
          </div>
@@ -339,7 +339,7 @@
      <div class="review p-5" v-for="(rev,index) in reviews" :key="rev" v-if="reviews.length">
        <div class="row d-flex">
          <div class="profile-pic">
-            <img name="profile-pic"  class="profile-user-img img-fluid img-circle img-bordered-lg" :src="rev.user.image? '/image/profile/'+ rev.user.image :  'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'" alt="profile_img">
+            <img name="profile-pic"  class="profile-user-img img-fluid img-circle img-bordered-lg" :src="rev.user.image? '/image/profile/'+ rev.user.image :  '/image/demo/demo_profile.png'" alt="profile_img">
         </div>
          <div class="d-flex flex-column pl-3">
            <h4>{{rev.user.name}}</h4>
@@ -362,7 +362,7 @@
        </div>
        <div class="row ml-1">
          <div class="row bg-light via">
-           <div class="px-2"><img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="18px" height="18px"></div>
+           <div class="px-2"><img src="/image/demo/demo_profile.png" width="18px" height="18px"></div>
            <!-- <p class="grey-text mb-0 px-3">via Google</p> -->
          </div>
        </div>

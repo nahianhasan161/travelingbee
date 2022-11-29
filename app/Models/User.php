@@ -47,7 +47,10 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    public function grouptour()
+    {
+        return $this->hasOne(GroupTour::class);
+    }
     public function reviews()
     {
     return $this->hasMany(Review::class);
@@ -60,9 +63,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Booking::class);
     }
+    public function bookingGroupTours()
+    {
+        return $this->hasMany(BookingGroupTour::class);
+    }
     public function bookingToPlace()
     {
-       
+
         return $this->belongsToMany(Place::class,'bookings','user_id','place_id')->withPivot('id','date');
     }
     public function sendPasswordResetNotification($token)

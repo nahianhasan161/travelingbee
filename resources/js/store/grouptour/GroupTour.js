@@ -13,6 +13,7 @@ export const GroupTourStore = defineStore({
 
         roleId:ref(''),
         grouptours:ref([]),
+        grouptour:ref([]),
         /* place:ref([]), */
         url : '/api/grouptour',
 
@@ -67,7 +68,7 @@ export const GroupTourStore = defineStore({
            await  axios.get(this.url+'/'+grouptourID).then(res=>{
                 if(res.data.success){
 
-                    this.places = res.data.data
+                    this.grouptour = res.data.data
 
 
                 }else{
@@ -105,9 +106,9 @@ export const GroupTourStore = defineStore({
             });
 
         },
-        setPlaceId(id){
+        /* setPlaceId(id){
             this.placeId = id
-        },
+        }, */
 
         deletePlace(placeId){
 

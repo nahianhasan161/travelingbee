@@ -8,42 +8,46 @@
     <div class="row">
         <div class="col-md-12">
          <h1 class="lg-text">About Us</h1>
-         <p class="image-aboutus-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+         <p class="image-aboutus-para"> A Traveling Website </p>
        </div>
     </div>
 </div>
 </div>
 
 <div class="aboutus-secktion paddingTB60">
-    <div class="container">
+    <div class="mx-5">
         <div class="row">
                 	<div class="col-md-6">
                     	<h1 class="strong">Who we are and<br>what we do</h1>
-                        <p class="lead">This is the world's leading portal for<br>easy and quick </p>
+                        <p class="lead">This is the world's leading Website for<br>easy and quick Travel Plans</p>
                     </div>
                     <div class="col-md-6">
-                    	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam. Lorem ipsum dolor sit amet. Nulla convallis egestas rhoncus.</p>
+                    	<p>Travel is the main thing you purchase that makes you more extravagant”. We, at Traveling Bee, swear by this and put stock in satisfying travel dreams that make you perpetually rich constantly.</p>
+                        <p>We have been moving excellent encounters for a considerable length of time through our cutting-edge planned occasion bundles and other fundamental travel administrations. We rouse our clients to carry on with a rich life, brimming with extraordinary travel encounters.</p>
+                        <p>Through our exceptionally curated occasion bundles, we need to take you on an adventure where you personally enjoy the stunning magnificence of America and far-off terrains. We need you to observe sensational scenes that are a long way past your creative ability.</p>
+                        <!-- <p>The powerful inclination of Bangladeshi voyagers to travel more nowadays is something that keeps us inspired to satisfy our vacation necessities. Our vision to give you a consistent occasion encounter makes us one of the main visit administrators in the regularly extending travel industry.</p> -->
+                        <!-- <p>To guarantee that you have a satisfying occasion and healthy encounters, all our vacation administrations are available to your no matter what. On your universal occasion, we guarantee that you are very much outfitted with outside trade (Forex Cards, Currency Notes), visa, and travel protection.</p> -->
+
                     </div>
 </div>
     </div>
 </div>
-<div class="container team-sektion paddingTB60 ">
+<div class=" team-sektion paddingTB60 ">
 	<div class="row card">
 		<div class="site-heading text-center ">
 						<h3>Our Team</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt <br> ut labore et dolore magna aliqua. Ut enim ad minim </p>
+						<p >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt <br> ut labore et dolore magna aliqua. Ut enim ad minim </p>
 						<div class="aboutusborder"></div>
 					</div>
 	</div>
 	<div class="row">
-		<div class="col-md-4 team-box">
+		<div class="col-lg-4 team-box card">
 		    <div class="team-img thumbnail">
-		        <img width="300px" height="300px" src="https://scontent.fdac24-1.fna.fbcdn.net/v/t39.30808-6/307753750_10217578449852608_2549154983201084553_n.jpg?stp=dst-jpg_p526x296&_nc_cat=100&ccb=1-7&_nc_sid=8bfeb9&_nc_eui2=AeHR8TrlTygI2Ps9smEi27FyoO2zXEYSbhmg7bNcRhJuGdPGjjSmY3eB492ESo2YlHySqGhzNtVBDzGJFzjKNp7v&_nc_ohc=6JgL3wqwSD4AX_DBafI&_nc_ht=scontent.fdac24-1.fna&oh=00_AfAodnyhWPfy4HgKoXK_FU3y4_ni163Sst-s38vdRNy_Qg&oe=638B2915">
-		    <div class="team-content">
+		        <img class="img-fluid images"  src="https://scontent.fdac24-1.fna.fbcdn.net/v/t39.30808-6/307753750_10217578449852608_2549154983201084553_n.jpg?stp=dst-jpg_p526x296&_nc_cat=100&ccb=1-7&_nc_sid=8bfeb9&_nc_eui2=AeHR8TrlTygI2Ps9smEi27FyoO2zXEYSbhmg7bNcRhJuGdPGjjSmY3eB492ESo2YlHySqGhzNtVBDzGJFzjKNp7v&_nc_ohc=6JgL3wqwSD4AX_DBafI&_nc_ht=scontent.fdac24-1.fna&oh=00_AfAodnyhWPfy4HgKoXK_FU3y4_ni163Sst-s38vdRNy_Qg&oe=638B2915">
+		    <div class="team-content ">
 		        <h3>Anikul Islam</h3>
 		        <div class="border-team"></div>
-		        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
+		        <p >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
 		        <div class="social-icons">
 
 
@@ -56,13 +60,13 @@
 		    </div>
 		</div>
 	</div>
-	    <div class="col-md-4 team-box">
+	    <div class="col-lg-4 team-box card">
 		    <div class="team-img thumbnail">
 
-                <img width="300px" height="300px" src="https://pps.whatsapp.net/v/t61.24694-24/301007463_128528706581696_3717127161703765408_n.jpg?ccb=11-4&oh=01_AdTP9gSgGYynfEPU9519HjGlCYuTxR4n-LfzXVsGT5iuDw&oe=6392BE31">
+                <img class="img-fluid images" src="https://pps.whatsapp.net/v/t61.24694-24/301007463_128528706581696_3717127161703765408_n.jpg?ccb=11-4&oh=01_AdTP9gSgGYynfEPU9519HjGlCYuTxR4n-LfzXVsGT5iuDw&oe=6392BE31">
 
 		    <div class="team-content">
-		        <h3>Mahzabin Ahmend</h3>
+		        <h3>Mahzabin Ahmed</h3>
 		        <div class="border-team"></div>
 		        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
 		        <div class="social-icons">
@@ -74,14 +78,14 @@
 		    </div>
 		</div>
 	</div>
-	    <div class="col-md-4 team-box">
+	    <div class="col-lg-4 team-box card">
 		    <div class="team-img thumbnail">
-		        <img width="300px" height="300px" src="https://scontent.fdac24-2.fna.fbcdn.net/v/t1.6435-9/81267438_1259927624195809_7770105225880272896_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_eui2=AeFmGtgGR2qCjaYv78gn4xzD2EaYF7S6eJ_YRpgXtLp4n5mhaw5PTEeouEi0nTvgEMGl5Fo88yI17esd1qNYfY_U&_nc_ohc=mf09TbAfBnUAX9oENsq&_nc_ht=scontent.fdac24-2.fna&oh=00_AfAE7FsN2T6QZaMjdi7wQctjVT2PqL1kRhgpxwcAQDfsHA&oe=63AD19B8">
+		        <img class="img-fluid images" src="https://scontent.fdac24-2.fna.fbcdn.net/v/t1.6435-9/81267438_1259927624195809_7770105225880272896_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_eui2=AeFmGtgGR2qCjaYv78gn4xzD2EaYF7S6eJ_YRpgXtLp4n5mhaw5PTEeouEi0nTvgEMGl5Fo88yI17esd1qNYfY_U&_nc_ohc=mf09TbAfBnUAX9oENsq&_nc_ht=scontent.fdac24-2.fna&oh=00_AfAE7FsN2T6QZaMjdi7wQctjVT2PqL1kRhgpxwcAQDfsHA&oe=63AD19B8">
 
-		    <div class="team-content">
+		    <div class="team-content ">
 		        <h3>Al-Nahian Hasan</h3>
 		        <div class="border-team"></div>
-		        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
+		        <p class="">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus. Donec facilisis fermentum sem, ac viverra ante luctus vel. Donec vel mauris quam.</p>
 		        <div class="social-icons">
                     <a href="https://www.facebook.com/"><i id="social-fb" class="fab fa-facebook-square fa-3x social"></i></a>
                <a href="https://twitter.com/"><i id="social-tw" class="fab fa-twitter-square fa-3x social"></i></a>
@@ -362,7 +366,12 @@
     font-style: normal;
     color: #494949;
 }
-
+.images{
+    min-height: 300px;
+    min-width: 300px;
+    max-height: 300px;
+    max-width: 620px;
+}
 
 /* a {
     color: #494949;

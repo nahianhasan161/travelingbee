@@ -618,6 +618,9 @@ v-model:errors="errors.rating"
 <th>Total Person</th>
 <th>Tour Day</th>
 <th>Address</th>
+<th>Start Date</th>
+<th>Owner | user_id</th>
+<th>has Many Bookings</th>
 <!-- <th>Category</th> -->
 <th>Action</th>
 </tr>

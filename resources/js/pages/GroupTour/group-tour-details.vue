@@ -3,18 +3,19 @@
 
 
     <div class="wrap" :class="loading? 'text-muted' : ''">
-    <div class="container text-monospace" >
+        {{grouptour}}
+    <div class="container " >
       <div class="loader" v-if="loading"></div>
-        <div class="text-monospace">
+        <div class="">
 
             <h1>
             <!--  {{places.images}} -->
-               {{places.name}}
+               {{grouptour.title}}
                <!-- {{places.user}} -->
             </h1>
 
           <div class="row">
-            <p class="card-text"><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i> </p>
+            <p class="card-text"><i class="fa fa-star star-rating" v-for="i in grouptour.rating"></i> </p>
 
 
                 <!-- <br><p class="ml-3 "><i class="fas fa-star text-warning"></i>{{places.rating}}</p> -->
@@ -23,7 +24,11 @@
 
 
             </div>
-            <a class="link">Chittagong,Bandorban</a>
+            <a class="link">{{grouptour.place}},{{grouptour.area}},{{grouptour.district}},{{grouptour.division}}</a>
+
+            <h4 class=" text-bold"><i class="fa fa-clock fa-1x text-info"></i>Tour Starting Date :10-10-2022</h4>
+                 <h4 class=" text-bold"><i class="fa fa-user fa-1x text-danger"></i>Highest People :{{grouptour.person}}</h4>
+                 <h4 class=" text-bold"><i class="fa fa-sun fa-1x text-warning"></i>Total Tour Day :{{grouptour.day}}</h4>
         </div>
 
         <Suspense>
@@ -40,7 +45,7 @@
   <div class="carousel-inner">
 
 
-    <div  class="carousel-item " v-for="(image,count) in places.images" :key="image.id"  :class="count == 0 ? 'active' : '' ">
+    <div  class="carousel-item " v-for="(image,count) in grouptour.images" :key="image.id"  :class="count == 0 ? 'active' : '' ">
 
       <!--   {{image}} -->
 
@@ -69,31 +74,23 @@
         </div>
     </template>
  </Suspense>
-<!-- {{places}} -->
+<!-- {{grouptour}} -->
 <div class="row" @click="test">
 <div class="col-md-6">
 
-<div class="row content my-5" v-if="places.user">
+<div class="row content my-5" v-if="grouptour.user">
 <div class=" user-block">
-<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="places.user.image ?  '/image/profile/'+places.user.image : 'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'"  alt="User Image">
+<img class="profile-user-img img-fluid img-circle  img-bordered-lg" :src="grouptour.user.image ?  '/image/profile/'+grouptour.user.image : 'https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'"  alt="User Image">
 <span class="username">
-<a >{{places.user? places.user.name : 'Anonymous'}}</a>
+<a >{{grouptour.user? grouptour.user.name : 'Anonymous'}}</a>
 
 </span>
-<span class="description">{{places.user ? places.user.email : 'not available'}}</span>
+<span class="description">{{grouptour.user ? grouptour.user.email : 'not available'}}</span>
 </div>
 </div>
 
 
-<div class="">
-<h1>Features</h1>
-<ul>
-    {{places.features}}
 
-</ul>
-<hr>
-
-</div>
 <!-- <div class="">
     <h1>What this place offers</h1>
     <div class="row">
@@ -128,7 +125,17 @@
 <div class="">
 <h1>Description</h1>
 <ul>
-    {{places.description}}
+    {{grouptour.description}}
+
+</ul>
+<hr>
+
+</div>
+
+<div class="">
+<h1>Plans</h1>
+<ul>
+    {{grouptour.plans}}
 
 </ul>
 <hr>
@@ -145,7 +152,7 @@
           <h5>Payment</h5>
         </div>
         <div class="card-body">
-          <h1> ৳{{places.price}}</h1>
+          <h1> ৳{{grouptour.price}}</h1>
           <h5 class="text-muted"><small> per Day</small></h5>
         </div>
         <ul class="list-group list-group-flush">
@@ -171,7 +178,7 @@
           <li class="list-group-item"><i class="fas fa-gavel text-success mx-2"></i> No  hidden fees</li>
         </ul>
         <div class="card-footer border-top-0 bg-warning" v-if="currentUser  ? currentUser.roles[0] == 'user' : false">
-          <a class="btn text-uppercase" @click="createBooking(currentUser.user_id,places.id)">Book Now <i class="fas fa-arrow-right"></i></a>
+          <a class="btn text-uppercase" @click="createBooking(currentUser.user_id,grouptour.id)">Book Now <i class="fas fa-arrow-right"></i></a>
         </div>
       <div v-show="form.date">
 
@@ -203,7 +210,7 @@
      <div class="d-flex row py-5 px-5 bg-light">
        <div class="green-tab p-2 px-3 mx-2">
          <p class="sm-text mb-0">OVERALL RATING</p>
-         <h4 >{{places.rating}}</h4>
+        <h4 >{{grouptour.rating}}</h4>
        </div>
        <div class="white-tab p-2 mx-2 text-muted">
          <p class="sm-text mb-0">ALL REVIEWS</p>
@@ -464,6 +471,7 @@ v-model:errors="reviewErrors.rating"
             const {places,placeId,loading} = storeToRefs(PlaceStore())
             const {fetchPlace,getPlaces} = PlaceStore()
             const {fetchGroupTour,getGroupTour} = GroupTourStore()
+            const {grouptour} = storeToRefs(GroupTourStore())
             const {currentUser} = UserStore()
             /* let currentUser; */
             let currentPlaceID = ref('');
@@ -733,7 +741,7 @@ v-model:errors="reviewErrors.rating"
                 setID(route.params.id)
 
 
-                fetchPlace(currentPlaceID);
+                fetchGroupTour(currentPlaceID);
                 getReviews(currentPlaceID);
                 getBookedDates()
           /*  sslcommerz() */

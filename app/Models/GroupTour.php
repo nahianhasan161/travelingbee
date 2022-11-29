@@ -16,7 +16,10 @@ class GroupTour extends Model
     {
         $this->attributes['plans'] = json_decode($value);
     } */
-
+    public function user()
+    {
+        return $this->belongsTo(User::class)
+    }
     public function images()
     {
         return $this->hasMany(GroupTourImages::class);
@@ -24,5 +27,9 @@ class GroupTour extends Model
     public function plans()
     {
         return $this->hasMany(Plan::class);
+    }
+    public function bookingsGroupTour()
+    {
+        return $this->hasMany(BookingGroupTour::class);
     }
 }

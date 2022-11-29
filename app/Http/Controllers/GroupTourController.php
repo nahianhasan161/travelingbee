@@ -71,11 +71,11 @@ class GroupTourController extends Controller
      * @param  \App\Models\GroupTour  $groupTour
      * @return \Illuminate\Http\Response
      */
-    public function show($groupTour)
+    public function show($ID)
     {
-        $grouptour = GroupTour::find($groupTour);
+        $grouptour = GroupTour::with('images','plans')->find($ID);
         if($grouptour){
-           return  Helper::sendSuccess('Successfully Fetched GroupTour',$groupTour);
+           return  Helper::sendSuccess('Successfully Fetched GroupTour',$grouptour);
         }
         return Helper::sendError('Failed to Find GroupTour');
     }
