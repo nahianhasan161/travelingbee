@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('division_id');
             $table->string('name');
             $table->string('bn_name');
-            $table->float('lat');
-            $table->float('lon');
+            $table->float('lat')->nullable();
+            $table->float('lon')->nullable();
             $table->string('url');
             $table->timestamps();
     });

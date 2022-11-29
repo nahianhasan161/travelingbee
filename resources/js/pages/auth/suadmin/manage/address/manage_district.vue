@@ -1,159 +1,253 @@
+
+
+   <script setup>
+
+   import axios from 'axios';
+   import { storeToRefs } from 'pinia';
+   import {onMounted ,ref,reactive} from 'vue';
+   import { useRouter,useRoute } from 'vue-router';
+   import { UserStore } from '@/store/UserStore';
+   import {AddressStore} from '@/store/address/Address'
+   import { useToastr } from '@/pages/toaster';
+   import district_table from '@/pages/component/manage_table.vue'
+   import {useSweetAlert} from '@/pages/sweetalert'
+
+    /* import 'sweetalert2/src/sweetalert2.scss' */
+
+   const toastr = useToastr();
+   const sweetAlert = useSweetAlert();
+
+   const router = new useRouter();
+   const route = new useRoute();
+   /* UserStore */
+   const store = new UserStore();
+   const {} = UserStore();
+   const {loading} = storeToRefs(UserStore());
+   /* AddressStore */
+
+   const {fetchDistrictsByDivision,deleteDistrict} = AddressStore();
+ const {districts} = storeToRefs(AddressStore());
+
+    const districtUrl = '/api/address/district/'
+   let users = ref(store.getAllUsers);
+   const editing = ref(false);
+    let currentDivisionID = '';
+   let editId = ref('')
+   let form = reactive({
+           name:'',
+           bn_name:'',
+           url:'',
+           division_id:''
+
+       });
+       let errors = ref([]);
+
+
+       const addDistrict = ()=>{
+        resetForm()
+           editing.value = false
+         $('#ModalCenter').modal('show');
+       }
+       const resetForm = ()=>{
+        form.name = '',
+        form.bn_name = '',
+        form.url = ''
+       }
+       const formAction =()=>{
+        form.division_id = currentDivisionID
+          if(editing.value){
+           updateDistrict(editId,form)
+          }else{
+           createDistrict(form)
+          }
+         /*  console.log(editing.value); */
+       }
+
+
+      function test(id){
+        console.log(id)
+       }
+       function editDistrict(district){
+           editing.value = true
+           editId = district.id
+           console.log(district)
+           /* form.value = $user; */
+
+           /* toastr.success('success') */
+           form.name =district.name
+           form.bn_name =district.bn_name
+           form.url =district.url
+
+           $('#ModalCenter').modal('show');
+   }
+    async  function createDistrict(data){
+
+           await axios.post(districtUrl,data).then(res=>{
+              if(res.data.success){
+
+                fetchDistrictsByDivision(currentDivisionID)
+
+
+               toastr.success('success')
+
+               $('#ModalCenter').modal('hide');
+               resetForm()
+
+               }else{
+                   errors.value = res.data[0].data
+
+               }
+           })
+
+
+
+           console.log('finally');
+       }
+
+
+       /* function allDivision(){
+           axios.get('/api/address/division').then(res=>{
+               divisions.value = res.data.data
+           })
+       } */
+      function updateDistrict(id,data){
+            axios.put(districtUrl+id,data).then(res=>{
+                fetchDistrictsByDivision(currentDivisionID)
+                toastr.info('success')
+                $('#ModalCenter').modal('hide');
+            }).finally(()=>{
+                resetForm()
+
+
+            })
+        }
+
+        function deleteConfirmed(id){
+            deleteDistrict(id)
+            sweetAlert.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+    )
+        }
+        function alert(id){
+
+
+sweetAlert.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel!',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    deleteConfirmed(id)
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === sweetAlert.DismissReason.cancel
+  ) {
+    sweetAlert.fire(
+      'Cancelled',
+      'Your imaginary file is safe :)',
+      'error'
+    )
+  }
+})
+        }
+
+
+/*   function edit() {
+ console.log('here')
+} */
+
+       onMounted(()=>{
+           store.fetchAllUser();
+           currentDivisionID = route.params.id
+           fetchDistrictsByDivision(currentDivisionID)
+
+           console.log(districts)
+
+          /*  allDivision() */
+       /*  console.log(emit.edit) */
+   });
+
+</script>
+
 <template>
     <div class="wrap">
         <!-- {{bookings}} -->
+
         <div class="loader" v-if="loading"></div>
 
-        <!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
 
+
+
+        <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary my-3" @click="addDistrict">
+  Create District
+</button >
+
+<!-- Modal -->
+<div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form @submit.prevent="formAction">
       <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Payments</h5>
-       <!--  <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create User</h5> -->
+          <h5 class="modal-title" id="exampleModalLongTitle" v-if="editing">Edit Division</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create District</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
   <div class="form">
-    <div class="card-body table-responsive">
-<table class="table table-bordered table-hover">
-<thead>
-<tr>
-<th>#</th>
-<th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Amount</th>
-<th>Address</th>
-<th>Status</th>
-<th>Transection ID</th>
-<th>Booking ID</th>
-
-
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-<tr v-for="(order,index) in orders" :key="order.id">
-    <td>{{index+1}}</td>
-<td >{{order.name}}</td>
- <td >{{order.email}}</td>
-<td >{{order.phone}}</td>
-<td >{{order.amount}}</td>
-<td >{{order.address}}</td>
-<td >{{order.status}}</td>
-<td >{{order.transaction_id}}</td>
-<td >{{order.booking_id}}</td>
-
-<td>
-    <!-- <router-link :to="'/payment/invoice/'+order.booking_id" class="btn btn-warning mt-1"><i class="fas fa-print"></i> Invoice</router-link> -->
-     <button class="btn btn-warning mr-3" @click="invoice(order.id)">
- <i class="fas fa-print"></i></button>
-   <!--  <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
-</td>
-
-</tr>
-
-
-
-
-
-
-
-
-
-
-
-</tbody>
-</table>
-</div>
-    <div v-for="order in orders" :key="order.id">
-
-
-    </div>
-   <!--  <div class="form-group ">
+    <div class="form-group ">
       <label for="inputName">Name</label>
       <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
       <div class="text-danger" v-if="errors.name">
                <p v-for="error in errors.name">
+                {{error}}
+               </p>
+             </div>
+    </div>
+    <div class="form-group ">
+      <label for="inputEmail4">Bangla Name</label>
+      <input type="text" class="form-control" :class="errors.bn_name ? 'is-invalid' : '' " id="inputbn_name4" placeholder="Bangla Name" v-model="form.bn_name">
+      <div class="text-danger" v-if="errors.bn_name">
+               <p v-for="error in errors.bn_name">
+                {{error}}
+               </p>
+             </div>
+    </div>
+    <div class="form-group ">
+      <label for="inputEmail4">URL</label>
+      <input type="text" class="form-control" :class="errors.url ? 'is-invalid' : '' " id="inputurl" placeholder="URL" v-model="form.url">
+      <div class="text-danger" v-if="errors.url">
+               <p v-for="error in errors.url">
+                {{error}}
+               </p>
+             </div>
+    </div>
+  <!--   <div class="form-group ">
+      <label for="inputDistrict">District</label>
+      <select class="form-control" id="inputDistrict"
+       v-model="form.division_id" :class="errors.division_id ? 'is-invalid' : '' ">
+
+        <option value="">Choose..</option>
+        <option v-if="divisions.length" v-for="(division,index) in divisions" :key="index" :value="division.id">{{division.name}}</option>
+      </select>
+
+      <div class="text-danger" v-if="errors.division_id">
+               <p v-for="error in errors.division_id">
                 {{error}}
                </p>
              </div>
     </div> -->
 
-  </div>
 
-
-
-
-
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save changes</button>
-</div>
-
-    </div>
-  </div>
-</div>
-
-
-        <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary my-3" @click="addUser">
-  Create User
-</button > -->
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <form @submit.prevent="formAction">
-      <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle" >Booking </h5>
-
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-  <div class="form">
-    <div class="form-group ">
-      <label for="inputName">Name</label>
-      <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
-      <div class="text-danger" v-if="errors.name">
-               <p v-for="error in errors.name">
-                {{error}}
-               </p>
-             </div>
-    </div>
-    <div class="form-group ">
-      <label for="inputEmail4">Email</label>
-      <input type="email" class="form-control" :class="errors.email ? 'is-invalid' : '' " id="inputEmail4" placeholder="Email" v-model="form.email">
-      <div class="text-danger" v-if="errors.email">
-               <p v-for="error in errors.email">
-                {{error}}
-               </p>
-             </div>
-    </div>
-    <div class="form-group " v-if="!editing">
-      <label for="inputPassword">Password</label>
-      <input type="password" class="form-control" :class="errors.password ? 'is-invalid' : '' " id="inputPassword" placeholder="Password" v-model="form.password">
-      <div class="text-danger" v-if="errors.password">
-               <p v-for="error in errors.password">
-                {{error}}
-               </p>
-             </div>
-
-    </div>
-    <div class="form-group " v-if="!editing">
-      <label for="inputPassword4">Confirm Password</label>
-      <input type="password" class="form-control" :class="errors.password ? 'is-invalid' : '' " id="inputPassword4" placeholder="Password" v-model="form.password_confirmation">
-
-
-    </div>
-    <div class="form-group ">
+   <!--  <div class="form-group ">
       <label for="FormControlSelect">Role</label>
       <select v-model="form.role" class="form-control" id="FormControlSelect">
       <option default>Choose...</option>
@@ -163,7 +257,7 @@
 
     </select>
 
-    </div>
+    </div> -->
   </div>
 
 
@@ -173,7 +267,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">{{editing? ' Save changes' : 'Create Booking'}}</button>
+    <button type="submit" class="btn btn-primary">{{editing? ' Save changes' : 'Create District'}}</button>
 </div>
 </form>
     </div>
@@ -184,189 +278,27 @@
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3 class="card-title">Manage Bookings</h3>
+<h3 class="card-title">Manage District</h3>
 </div>
 
-<div class="card-body table-responsive">
-<table class="table table-bordered table-hover">
-<thead>
-<tr>
-<th>#</th>
-<th>Name</th>
-<th>Bangla Name </th>
-<th>URL</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-<!--   {{bookings}} -->
-<tr v-for="(booking,index) in districts" :key="booking.id">
-    <td>{{index+1}}</td>
-<td >{{booking.name}}</td>
-<td >{{booking.bn_name}}</td>
 
-<td class="capital">{{booking.url}}</td>
-<td>
-    <button class="btn btn-warning mr-3" @click="getOrdersByBooking(booking.id)">Payments</button>
-    <!-- <button class="btn btn-primary mr-3" @click="editUser(booking)"> -->
-
-
- <button class="btn btn-info mr-1"><i class="far fa-edit"></i></button>
-    <button class="btn btn-danger" @click="deleteUser(User.user_id)"><i class="fas fa-trash"></i></button>
-</td>
-
-</tr>
-
-
-
-
-
-
-
-
-
-
-
-</tbody>
-</table>
-</div>
+<district_table
+:data="districts"
+ :names="['#','Name','Bangla Name ','Url','Actions']"
+ :fields="[{'name' : 'text'},{'bn_name' : 'text'},{'url':'text'},{'edit' : 'google.com' ,'delete' : 'test.com'}]"
+ :buttons="['Areas']"
+ :buttonLinks="['/manage/area/']"
+ @edit-prop="editDistrict"
+ @delete-prop="alert"
+ />
 
 </div>
 
 </div>
 </div>
+
     </div>
 </template>
 
-    <script setup>
-        import axios from 'axios';
-import { storeToRefs } from 'pinia';
-        import {onMounted ,ref,reactive} from 'vue';
-        import { useRouter,useRoute } from 'vue-router';
-        import { UserStore } from '@/store/UserStore';
-        import {AddressStore} from '@/store/address/address'
 
-       import { useToastr } from '@/pages/toaster';
-
-        const {fetchDistricts} = AddressStore();
-        const {districts} = storeToRefs(AddressStore());
-        const toastr = useToastr();
-
-        const store = new UserStore();
-        const router = new useRouter();
-        const route = new useRoute();
-
-        const {deleteUser,fetchAllUser} = UserStore();
-        const {allUser,loading} = storeToRefs(UserStore());
-
-        let users = ref(store.getAllUsers);
-        const editing = ref(false);
-
-        let editId = ref('')
-        let form = reactive({
-                name:'',
-                email:'',
-                password:'',
-                password_confirmation:'',
-                role:''
-            });
-
-            let errors = ref([]);
-            let orders = ref([]);
-            const addUser = ()=>{
-                editing.value = false
-              $('#ModalCenter').modal('show');
-            }
-            const formAction =()=>{
-               if(editing.value){
-                updateUser()
-               }else{
-                register()
-               }
-              /*  console.log(editing.value); */
-            }
-            const resetForm = ()=>{
-                    form.name =''
-                    form.email=''
-                    form.password=''
-                    form.password_confirmation=''
-                    form.role=''
-            }
-
-            function editUser($user){
-                editing.value = true
-                editId = $user.user_id
-                /* form.value = $user; */
-
-                /* toastr.success('success') */
-                form.name =$user.name
-                form.email =$user.email
-                form.role =$user.roles[0]
-
-                $('#ModalCenter').modal('show');
-        }
-            const register = async()=>{
-
-                await axios.post('/api/register',form).then(res=>{
-                   if(res.data.success){
-
-
-                    store.fetchAllUser();
-
-                    toastr.success('success')
-
-                    $('#ModalCenter').modal('hide');
-                    resetForm()
-
-                    }else{
-                        errors.value = res.data[0].data
-
-                    }
-                }).catch(e=>{
-                    toastr.error(e.response.data)
-                    errors.value = e.response.data
-                })
-
-                console.log('finally');
-            }
-            function updateUser(){
-                axios.put('/api/user/'+editId,form).then(res=>{
-                    store.fetchAllUser();
-                    toastr.info('success')
-                    $('#ModalCenter').modal('hide');
-                }).finally(()=>{
-                    resetForm()
-
-
-                })
-            }
-
-            function getOrdersByBooking(id){
-
-$('#ModalCenter').modal('show');
-
-axios.get('/api/orders/'+id).then(res=>{
-   orders.value = res.data.data
-})
-}
-            function showPayments(bookingID){
-            $('#ModalCenter').modal('show');
-        }
-    function invoice(id){
-        $('#ModalCenter').modal('hide');
-        router.push('/payment/invoice/'+id)
-    }
-          let divisionID = (id)=>{
-                return id
-            }
-            onMounted(async ()=>{
-                await router.isReady();
-                divisionID(route.params.id)
-
-                fetchAllUser();
-
-                 fetchDistricts(divisionID)
-
-        });
-    </script>
 

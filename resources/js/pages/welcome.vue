@@ -40,14 +40,15 @@
 <img class="card-img-top" loading="lazy"
 :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
-             <p class="rating">{{place.rating}}</p>
+             <p class="rating">{{place.rating}} </p>
              <div class="card-body">
                  <h5 class="card-title">{{place.name}}</h5>
                  <p class="card-text text-success"><i class="fa fa-map-marker marker"></i>{{place.area}},{{place.district}},{{place.division}}</p>
                  <p class="card-text text-primary"> <strong>Category:</strong> {{place.category.name}}</p>
                  <p class="card-text">{{place.description}}</p>
-                 <p class="card-text"><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i></p>
-                 <p class="card-text">৳{{place.price}}</p>
+                 <p class="card-text"><i  class="fa fa-star star-rating" v-for="rate in place.rating"></i></p>
+
+                 <p class="card-text">৳{{place.price}}   Per Night</p>
              </div>
             </a>
            <!--   <div class="card-footer">

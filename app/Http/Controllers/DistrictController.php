@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Helper;
+use App\Http\Requests\DistrictRequest;
+use App\Http\Resources\DistrictResource;
 use App\Models\District;
 use Illuminate\Http\Request;
 
@@ -13,12 +15,17 @@ class DistrictController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index( $id)
+    public function index()
     {
-        $district = District::where('division_id',$id)->get();
-        return Helper::sendSuccess('Success',$district);
+        $districts = District::all();
+        return Helper::sendSuccess('Success',$districts);
     }
 
+    public function getDistrictByID(Request $request)
+    {
+        $district = District::where('division_id',$request->only('id'))->get();
+        return Helper::sendSuccess('Success',DistrictResource::collection($district));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -35,9 +42,13 @@ class DistrictController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+public function store(DistrictRequest $request)
     {
-        //
+      $district =  District::create($request->only('name','bn_name','url','division_id'));
+      if($district){
+        return Helper::sendSuccess('Successfully District Created');
+      }else
+      return Helper::sendError('District Creation Failed');
     }
 
     /**
@@ -69,9 +80,15 @@ class DistrictController extends Controller
      * @param  \App\Models\District  $district
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, District $district)
+    public function update($districtID,Request $request)
     {
-        //
+        $district = District::find($districtID);
+        if($district){
+            $district->update($request->all());
+            return Helper::sendSuccess('Successfully Updated District');
+        }else{
+            return Helper::sendError('District Not Found');
+        }
     }
 
     /**
@@ -80,8 +97,14 @@ class DistrictController extends Controller
      * @param  \App\Models\District  $district
      * @return \Illuminate\Http\Response
      */
-    public function destroy(District $district)
+    public function destroy($districtID)
     {
-        //
+        $district = District::find($districtID);
+        if($district){
+            $district->delete();
+            return Helper::sendSuccess('Successfully Deleted District');
+        }else{
+            return Helper::sendError('District Not Found');
+        }
     }
 }

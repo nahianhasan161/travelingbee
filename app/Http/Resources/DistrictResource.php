@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DivisionResource extends JsonResource
+class DistrictResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,7 @@ class DivisionResource extends JsonResource
             'name' => $this->name,
             'bn_name' => $this->bn_name,
             'url' => $this->url,
-            'subCount' => $this->districts->count()
+            'subCount' => $this->areas->count()
 
         ];
     }

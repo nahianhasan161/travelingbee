@@ -270,6 +270,8 @@ sweetAlert.fire({
 :data="divisions"
  :names="['#','Name','Bangla Name ','Url','Actions']"
  :fields="[{'name' : 'text'},{'bn_name' : 'text'},{'url':'text'},{'edit' : 'google.com' ,'delete' : 'test.com'}]"
+ :buttons="['Districts']"
+ :buttonLinks="['/manage/district/']"
  @edit-prop="editDivision"
  @delete-prop="alert"
  />

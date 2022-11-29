@@ -19,7 +19,7 @@ class GroupTourController extends Controller
      */
     public function index()
     {
-        return Helper::sendSuccess('Fetch Successfull' , GroupTour::latest());
+        return Helper::sendSuccess('GroupTour Fetch Successfull' , GroupTour::all());
     }
 
     /**
@@ -29,7 +29,7 @@ class GroupTourController extends Controller
      */
     public function create(GroupTourRequest $request){
 
-        return Helper::sendSuccess('plans' , $plans);
+        /* return Helper::sendSuccess('plans' , $plans); */
     }
 
     /**
@@ -71,9 +71,13 @@ class GroupTourController extends Controller
      * @param  \App\Models\GroupTour  $groupTour
      * @return \Illuminate\Http\Response
      */
-    public function show(GroupTour $groupTour)
+    public function show($groupTour)
     {
-        //
+        $grouptour = GroupTour::find($groupTour);
+        if($grouptour){
+           return  Helper::sendSuccess('Successfully Fetched GroupTour',$groupTour);
+        }
+        return Helper::sendError('Failed to Find GroupTour');
     }
 
     /**

@@ -157,7 +157,7 @@
     :minDate="new Date(new Date().setDate(new Date().getDate()-1))"
     :highlight="bookedDates"
     :disabledDates="bookedDates"
-    highlightDisabledDays
+                highlightDisabledDays
      />
     <!-- <input type="date" class="form-control" id="InputDate" aria-describedby="DateHelp" placeholder="Select Date" v-model="form.date" @change="validation" > -->
 
@@ -447,20 +447,23 @@ v-model:errors="reviewErrors.rating"
     <script setup>
 
         import { onMounted,reactive,watchEffect,ref } from 'vue';
-        import {UserStore} from '@/store/UserStore'
         import {useRouter,useRoute} from 'vue-router'
-        import { PlaceStore } from '../store/place/PlaceStore';
+        import {UserStore} from '@/store/UserStore'
+        import { PlaceStore } from '@/store/place/PlaceStore';
         import { useToastr } from '@/pages/toaster';
         import {storeToRefs} from 'pinia'
         import axios from 'axios';
+        import { GroupTourStore } from '@/store/grouptour/GroupTour';
         import inputRating from '@/pages/component/input/inputRating.vue'
         import addDays from 'date-fns/addDays';
-        const toastr = useToastr();
-        const router = new useRouter();
+            const toastr = useToastr();
+            const router = new useRouter();
             const route = new useRoute();
             const store = new UserStore();
+            const {grouptours} = storeToRefs(GroupTourStore())
             const {places,placeId,loading} = storeToRefs(PlaceStore())
             const {fetchPlace,getPlaces} = PlaceStore()
+            const {fetchGroupTour,getGroupTour} = GroupTourStore()
             const {currentUser} = UserStore()
             /* let currentUser; */
             let currentPlaceID = ref('');
@@ -708,16 +711,10 @@ v-model:errors="reviewErrors.rating"
             console.log(places.value.bookings)
            }
 
-            /*  foreach(booking in places.value.bookings )
-            {
-                console.log('bookings')
-                datesOfBooking = booking.date
-            }
-                       return  console.log(datesOfBooking)
-           } */
 
             watchEffect(async ()=>{
               await fetchPlace(currentPlaceID);
+              await fetchGroupTour(currentPlaceID);
               /* script()  */
              /*  console.log(places); */
             /*  console.log(ref.)   */

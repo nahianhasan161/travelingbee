@@ -5,46 +5,52 @@
     import { onMounted,watchEffect,ref } from 'vue';
     import {useRouter} from 'vue-router'
     import { UserStore } from '@/store/UserStore';
-   import { PlaceStore } from '@/store/place/PlaceStore';
+   import { GroupTourStore } from '@/store/grouptour/GroupTour';
    import { storeToRefs } from 'pinia';
 
    import { useToastr } from '@/pages/toaster';
-import axios from 'axios';
-    /* import {useVirtualList} from '@vueuse/core ' */
-
-    /* const {list,containerProps,wraperProps} = useVirtualList(categories,{
-        itemHeight : 200
-    }) */
+    import axios from 'axios';
 
 
 
-/*      const picker = useHotelDatePicker(); */
+
     const router = new useRouter();
- /*    let date = ref('') */
+
         const toastr = new useToastr();
         const store = new UserStore();
-        const {places,placeId,categories,loading} = storeToRefs(PlaceStore())
-        const {fetchPlaces,fetchCategories,setPlaceId,getPlaces} = PlaceStore();
+        const {grouptours,categories,loading} = storeToRefs(GroupTourStore())
+        const {fetchGroupTours,fetchCategories,getGroupTours} = GroupTourStore();
         let categoryName = ref('')
 
+        function formatDate(){
 
+let convert = Date().split('-')
+let year = convert[0];
+let month = convert[1];
+let day = convert[2];
+var formattedDate = [day, month, year].join("-");
+
+
+    return formattedDate;
+
+}
 
 
         function setCategoryName(name){
 
          categoryName.value == name ?  categoryName.value = '' :  categoryName.value = name
-           filteredPlaces()
+           filteredGroupTours()
 
         }
-       function filteredPlaces(){
+       function filteredGroupTours(){
            if(categoryName.value){
-               let alter =  places.value.filter(place => place.category.name == categoryName.value)
+               let alter =  grouptours.value.filter(grouptour => grouptour.category.name == categoryName.value)
 
 
                /* console.log(alter.length? alter : 'no') */
                return alter
             }else{
-                return places.value
+                return grouptours.value
             }
 
         }
@@ -62,22 +68,10 @@ $('.toggle').toggleClass("text-light");
         }
 
        watchEffect(async ()=>{
-        /* fetchPlaces() */
-      /*  await filteredPlaces() */
-
        })
-  /*  async function fetches(){
-       await fetchPlaces()
-       await fetchCategories()
-   } */
-     /* function createTour(){
-        axios.post('/api/group-tour',{title:'hello',plans:{place:'hello',district:'Dhaka'}},).then(res=>{
-            console.log(res)
-        })
-     } */
     onMounted(async ()=>{
 
-        await fetchPlaces()
+        await fetchGroupTours()
        await fetchCategories()
           categorySlider()
        /*   createTour() */
@@ -99,7 +93,7 @@ $('.toggle').toggleClass("text-light");
 <template>
 
     <div class="container">
-        <!-- {{filteredPlaces()}} -->
+        {{filteredGroupTours()}}
 <!-- <modal/> -->
 <div class="loader" v-if="loading"></div>
 <!-- <button class="btn btn-primary" @click="createTour()">Click here</button> -->
@@ -121,8 +115,8 @@ $('.toggle').toggleClass("text-light");
     </div>
     <button class="btn btn-sm btn-outline-info btn-rounded "  @click="categoryName = ''" v-if="categoryName"> <i class="fa fa-times"></i> {{categoryName}}</button>
     <div class="container d-flex justify-content-center mt-5" >
-        <h1 class="text-danger text-center" v-if="!filteredPlaces().length">No Record Found</h1>
-        <div class="row" v-if="filteredPlaces().length">
+        <h1 class="text-danger text-center" v-if="!filteredGroupTours().length">No Record Found</h1>
+        <div class="row" v-if="filteredGroupTours().length">
            <!--  <Suspense>
                 <template #default>
 
@@ -131,20 +125,23 @@ $('.toggle').toggleClass("text-light");
                 Product is loading...
             </template>
         </Suspense> -->
-            <div  :class="(filteredPlaces().length == 1 ? 'col-md-12' : (filteredPlaces().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredPlaces()" @click="setPlaceId(place.id)" :key="place.id" >
+            <div  :class="(filteredGroupTours().length == 1 ? 'col-md-12' : (filteredGroupTours().length == 2 ? 'col-md-6' : 'col-md-4'))"  v-for="place in filteredGroupTours()" @click="setPlaceId(place.id)" :key="place.id" >
          <div class="card">
-          <router-link :to="/place/+ place.id" class="text-dark text-decoration-none">
+          <router-link :to="/grouptour/+ place.id" class="text-dark text-decoration-none">
 <img class="card-img-top"
 :src="place.feature_image ? '/image/place/feature/'+place.feature_image : 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >  <!--   -->
 
-             <p class="rating">{{place.rating}}</p>
+             <p class="rating"> {{place.rating}}</p>
              <div class="card-body">
-                 <h5 class="card-title">{{place.name}}</h5>
+                 <h5 class="card-title">{{place.title}}</h5>
                  <p class="card-text text-success"><i class="fa fa-map-marker marker"></i>{{place.area}},{{place.district}},{{place.division}}</p>
-                 <p class="card-text text-primary"> <strong>Category:</strong> {{place.category.name}}</p>
+                 <!-- <p class="card-text text-primary"> <strong>Category:</strong> {{place.category.name}}</p> -->
                  <p class="card-text">{{place.description}}</p>
-                 <p class="card-text"><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i><i class="fa fa-star star-rating"></i></p>
-                 <p class="card-text">৳{{place.price}}</p>
+                 <p class="card-text"><i  class="fa fa-star star-rating" v-for="rate in place.rating"></i></p>
+                 <h4 class=" text-bold"><i class="fa fa-clock fa-1x text-info"></i>10-10-2022</h4>
+                 <h4 class=" text-bold"><i class="fa fa-user fa-1x text-danger"></i>{{place.person}}</h4>
+                 <h4 class=" text-bold"><i class="fa fa-sun fa-1x text-warning"></i>{{place.day}}</h4>
+                 <p class="card-text">৳{{place.price}} - Per Person</p>
              </div>
              </router-link>
            <!--   <div class="card-footer">

@@ -73,7 +73,9 @@
 
 
         <li class="nav-item">
-          <a class="nav-link mx-2 text-uppercase" href="#"><i class="fas fa-circle-info"></i>About</a>
+          <router-link active-class="active" to="/about" class="nav-link  text-uppercase" ><i class="fas fa-circle-info"></i>About</router-link>
+
+
         </li>
       </ul>
       <ul class="navbar-nav ms-auto " v-if="!token">
@@ -210,41 +212,20 @@ More
 
 </li>
 <li class="nav-item "  v-if="currentUser ? currentUser.roles[0] == 'suadmin' : false">
-<a href="#" class="nav-link " active-class="active">
-<i class="nav-icon fa fa-globe"></i>
-<p >
-Address
-<i class="right fas fa-angle-left"></i>
-</p>
-</a>
-<ul class="nav nav-treeview">
-<li class="nav-item">
-  <router-link active-class="active" :to="{name:'manage.division'}"  class="nav-link " >
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-        <p>Division</p>
+
+
+
+    <router-link active-class="active" :to="{name:'manage.division'}"  class="nav-link " >
+
+        <i class="nav-icon fa fa-map-marker"></i>
+        <p>Address</p>
         </router-link>
 
 
-</li>
-<li class="nav-item">
-  <router-link active-class="active" :to="{name:'manage.district'}"  class="nav-link " >
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-        <p>District</p>
-        </router-link>
 
 
-</li>
-<li class="nav-item">
-  <router-link active-class="active" :to="{name:'manage.area'}"  class="nav-link " >
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-        <p>Area</p>
-        </router-link>
 
 
-</li>
-
-
-</ul>
 </li>
 
 </ul>

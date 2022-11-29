@@ -1,7 +1,9 @@
 import {createWebHistory,createRouter} from 'vue-router';
 /* landing pages */
 import welcome from './pages/welcome.vue';
+import about from './pages/about.vue';
 import grouptour from './pages/GroupTour/group-tour.vue';
+import groutourDetails from './pages/GroupTour/group-tour-details.vue';
 import dashboard from './pages/auth/user/dashboard.vue';
 import place from './pages/place.vue';
 import test from './pages/test.vue';
@@ -18,6 +20,7 @@ import suadmin_dashboard from './pages/auth/suadmin/dashboard.vue';
 import manage_user from './pages/auth/suadmin/manage/manage_user.vue';
 import manage_roles from './pages/auth/suadmin/manage/manage_roles.vue';
 import manage_place_booking from './pages/auth/suadmin/manage/manage_booking.vue';
+
 import manage_group_tour from './pages/auth/suadmin/manage/manage_group_tour.vue';
 /* Management Address*/
 import manage_division from '@/pages/auth/suadmin/manage/address/manage_division.vue';
@@ -27,6 +30,7 @@ import manage_area from '@/pages/auth/suadmin/manage/address/manage_area.vue';
 /* Admin */
 import admin_dashboard from './pages/auth/admin/dashboard.vue';
 import manage_place from './pages/auth/admin/Place/manage_place.vue';
+import manage_place_images from './pages/auth/admin/Place/manage_place_images.vue';
 /* Payment */
 import invoice from './pages/auth/user/payment/invoice.vue'
 
@@ -68,6 +72,13 @@ const routes = [
 
 },
     {
+    path : '/about',
+    name : 'about',
+    component : about ,
+
+
+},
+    {
     path : '/group-tour',
     name : 'group-tour',
     component : grouptour ,
@@ -76,12 +87,20 @@ const routes = [
 },
 
     {
+    path : '/grouptour/:id',
+    name : 'place',
+    component : groutourDetails ,
+    props: true
+
+},
+    {
     path : '/place/:id',
     name : 'place',
     component : place ,
     props: true
 
 },
+
 /*  Authentication */
     {
     path : '/login',
@@ -186,6 +205,13 @@ component : register ,
     }
 },
 {
+    path : '/manage/place/:id/images',
+    name : 'place_images',
+    component : manage_place_images ,
+    props: true
+
+},
+{
     path : '/manage/group_tour',
     name : 'manage.group_tour',
     component : manage_group_tour ,
@@ -239,14 +265,6 @@ component : register ,
 },
 /* Manage */
 {
-    path : '/manage/district/:id',
-    name : 'manage.district.id',
-    component : manage_district,
-    meta:{
-        requiresAuth: true,
-    }
-},
-{
     path : '/manage/division',
     name : 'manage.division',
     component : manage_division ,
@@ -255,16 +273,17 @@ component : register ,
     }
 },
 {
-    path : '/manage/district',
-    name : 'manage.district',
+    path : '/manage/district/:id',
+    name : 'manage.district.divisonID',
     component : manage_district,
     meta:{
         requiresAuth: true,
     }
 },
+
 {
-    path : '/manage/area',
-    name : 'manage.area',
+    path : '/manage/area/:id',
+    name : 'manage.area.areaID',
     component : manage_area ,
     meta:{
         requiresAuth: true,

@@ -15,7 +15,7 @@
 </tr>
 </thead>
 <tbody>
-
+{{data.value}}
 <tr v-for="(datum,index) in data" :key="datum.id">
     <td>{{index+1}}</td>
 <td >{{datum.name}}</td>
@@ -27,12 +27,17 @@
 
 
 
- <router-link class="btn btn-app bg-secondary mr-1" :to="'/manage/district/'+datum.id"><i class="far fa-eye"></i>Districts
-    <span class="badge bg-info">{{datum.hasDistrict}}</span>
+ <router-link  class="btn btn-app bg-secondary mr-1" v-show="buttons ? buttons[0] : false"
+ :to="(buttonLinks ? buttonLinks[0] : '') + datum.id"><i class="far fa-eye"></i>{{(buttons ? buttons[0] : '') }}
+    <span class="badge bg-info">{{datum.subCount}}</span>
  </router-link>
- <button class="btn btn-app bg-warning mr-1" @click="emit('editProp', datum)"><i class="far fa-edit"></i>
+ <button class="btn btn-app bg-warning mr-1" @click="emit('editProp', datum)">
+    <i class="far fa-edit"></i>
 </button>
-    <button class="btn btn-app bg-danger" v-show="!datum.hasDistrict" @click="emit('deleteProp', datum.id)"><i class="fas fa-trash"></i></button>
+    <button class="btn btn-app bg-danger"
+    v-show="!datum.subCount" @click="emit('deleteProp', datum.id)">
+        <i class="fas fa-trash"></i>
+    </button>
 </td>
 
 </tr>
@@ -58,7 +63,7 @@
 
 <script setup>
 import {onMounted,defineProps,defineEmits} from 'vue'
-const props = defineProps(['names','fields','data','edit']
+const props = defineProps(['names','fields','data','edit','buttons','buttonLinks']
     )
 const emit = defineEmits(['editProp','deleteProp'])
     /* function editData(id) {
@@ -69,6 +74,6 @@ emit('editProp',{name:'hi'})
     } */
    /*  const newName = computed(() =>  props.name) */
  onMounted(()=>{
-    console.log(props.name);
+
 })
 </script>

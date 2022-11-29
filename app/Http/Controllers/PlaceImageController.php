@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Helper;
 use App\Models\PlaceImage;
 use Illuminate\Http\Request;
 
@@ -12,10 +13,19 @@ class PlaceImageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $images = PlaceImage::where('place_id',$request->only('id'))->get();
+        if($images){
+            return Helper::sendSuccess('success',$images);
+         }
+         else{
+            return Helper::sendError('can not find Images');
+         }
+
+
+
+}
 
     /**
      * Show the form for creating a new resource.
@@ -44,9 +54,15 @@ class PlaceImageController extends Controller
      * @param  \App\Models\PlaceImage  $placeImage
      * @return \Illuminate\Http\Response
      */
-    public function show(PlaceImage $placeImage)
+    public function show($id)
     {
-        //
+        $images = PlaceImage::where('place_id',$id)->get();
+        if($images){
+            return Helper::sendSuccess('success',$id);
+         }
+         else{
+            return Helper::sendError('can not find Images');
+    }
     }
 
     /**

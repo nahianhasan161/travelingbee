@@ -3,7 +3,7 @@ import axios from 'axios';
 import { storeToRefs } from 'pinia';
 import {onMounted ,ref,reactive} from 'vue';
 import { UserStore } from '@/store/UserStore';
-import { PlaceStore } from '@/store/place/PlaceStore';
+import { GroupTourStore } from '@/store/grouptour/GroupTour';
 import {AddressStore} from '@/store/address/Address'
 import { useToastr } from '@/pages/toaster';
 
@@ -21,10 +21,10 @@ const {fetchDivisions,fetchDistricts,fetchAreas} = AddressStore();
 const {divisions,districts,areas} = storeToRefs(AddressStore());
 
 /* place */
-const placeStore = new PlaceStore();
-const {places,categories,loading} = storeToRefs(PlaceStore());
-const {fetchPlaces} = PlaceStore();
-const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
+const grouptourStore = new GroupTourStore();
+const {grouptours,categories,loading} = storeToRefs(GroupTourStore());
+const {fetchGroupTours} = GroupTourStore();
+const {fetchCategories,setRoleId} = GroupTourStore();
 
 /* user */
 let users = ref(store.getAllUsers);
@@ -180,7 +180,7 @@ let form = reactive({
     }
     /* filters */
     function filterPlaces(){
-    return (currentUser.roles[0] == 'suadmin') ? places.value : currentUserPlaces
+    return (currentUser.roles[0] == 'suadmin') ? grouptours.value : currentUserPlaces
     }
     function filteredDistricts(){
 
@@ -260,7 +260,7 @@ let form = reactive({
 
 
 
-           fetchPlaces();
+           fetchGroupTours();
 
             toastr.success('success')
 
@@ -299,7 +299,7 @@ let form = reactive({
       }
       console.log(form_data)
          axios.post('/api/place/'+editId,form_data,config).then(res=>{
-           fetchPlaces();
+           fetchGroupTours();
             toastr.info('success')
             $('#ModalCenter').modal('hide');
         }).catch((err=>{
@@ -313,7 +313,7 @@ let form = reactive({
 
 }
   function  getCurrentUserPlaces(){
-     currentUserPlaces = places.value.filter(place => place.user.id == currentUser.user_id)
+     currentUserPlaces = grouptours.value.filter(place => place.user.id == currentUser.user_id)
      console.log(currentUserPlaces)
     }
 
@@ -343,7 +343,7 @@ function selectionDistrict(){
 }
     onMounted( async ()=>{
    let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null
-       await fetchPlaces();
+       await fetchGroupTours();
       fetchCategories();
       fetchDivisions();
       fetchDistricts();
@@ -359,9 +359,8 @@ function selectionDistrict(){
 <template>
     <div class="wrap">
 
-      {{form}}
-     <!--  {{divisions}}
-      {{areas}} -->
+      <!-- {{form}} -->
+     {{grouptours}}
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary my-3" @click="addUser">
@@ -611,11 +610,13 @@ v-model:errors="errors.rating"
 <tr>
 <th>#</th>
 <th>Image</th>
-<th>Name</th>
+<th>Title</th>
 <th>Description</th>
 <th>features</th>
 <th>rating</th>
 <th>Price</th>
+<th>Total Person</th>
+<th>Tour Day</th>
 <th>Address</th>
 <!-- <th>Category</th> -->
 <th>Action</th>
@@ -630,7 +631,7 @@ v-model:errors="errors.rating"
     <td>{{index+1}}</td>
     <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
 <td v-else> <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class=" img-fluid" ></td>
-<td ><strong>{{place.name}}</strong></td>
+<td ><strong>{{place.title}}</strong></td>
 <td >
   <textarea name="description" id="description" class="form-control" cols="30" rows="10" disabled>{{place.description}}</textarea>
 
@@ -645,7 +646,11 @@ v-model:errors="errors.rating"
 <td ><textarea  name="features" id="features" class="form-control" cols="30" rows="10" disabled>{{place.features}}</textarea></td>
 <td >{{place.rating}}<i class="fas fa-star text-warning"></i></td>
 <td >৳{{place.price}}</td>
-<td >{{place.area}},{{place.district}},{{place.division}}</td>
+<td > <i class="fa fa-user fa-1x text-danger"></i>
+{{place.person}}
+</td>
+<td ><i class="fa fa-sun fa-1x text-warning"  ></i> {{place.day}}</td>
+<td >{{place.place}}, <br> {{place.area}},{{place.district}},{{place.division}}</td>
 
 <td>
   <router-link :to="'/manage/place/'+place.id+'/booking'" class="btn btn-warning mr-1">Bookings</router-link>

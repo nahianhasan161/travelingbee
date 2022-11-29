@@ -14,6 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\GroupTourController;
+use App\Http\Controllers\PlaceImageController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -65,22 +66,23 @@ Route::resource('/roles', RoleController::class);
 /* start place&booking */
 
 Route::resource('/place', PlaceController::class);
+Route::resource('/place/images/manage', PlaceImageController::class);
 Route::resource('/category', CategoryController::class);
 
 Route::resource('/booking',BookingController::class);
-Route::get('/booking/user/{id}', [BookingController::class, 'userBookingDetails']); 
-Route::post('/place/bookings/by', [BookingController::class, 'getBookingBy']); 
-Route::post('/place/details/{place}', [BookingController::class, 'BookingDetails']); 
-Route::get('/manage/place/{place}/booking/all', [BookingController::class, 'BookingByUser']); 
-Route::post('/place/payments', [BookingController::class, 'payments']); 
+Route::get('/booking/user/{id}', [BookingController::class, 'userBookingDetails']);
+Route::post('/place/bookings/by', [BookingController::class, 'getBookingBy']);
+Route::post('/place/details/{place}', [BookingController::class, 'BookingDetails']);
+Route::get('/manage/place/{place}/booking/all', [BookingController::class, 'BookingByUser']);
+Route::post('/place/payments', [BookingController::class, 'payments']);
 
 /* END place&booking */
 
 
 Route::resource('/review',ReviewController::class);
 Route::post('/review/place/{id}',[ReviewController::class,'storeByPlace']);
-Route::resource('/group-tour',GroupTourController::class);
-Route::resource('/group-tour/plan',PlanController::class);
+Route::resource('/grouptour',GroupTourController::class);
+Route::resource('/grouptour/plan',PlanController::class);
 
 
 
@@ -92,7 +94,9 @@ Route::resource('/group-tour/plan',PlanController::class);
 //Address Start
 Route::resource('/address/division', DivisionController::class);
 Route::resource('/address/district', DistrictController::class);
+Route::post('/address/district/id', [DistrictController::class, 'getDistrictByID']);
 Route::resource('/address/area', AreaController::class);
+Route::post('/address/area/district_id', [AreaController::class, 'areasByDistrictID']);
 
 //Address End
 //SSLCOMMERZ Start
@@ -103,5 +107,5 @@ Route::post('/success', [SslCommerzPaymentController::class, 'success']);
 Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
 Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
 
-Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']); 
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 //SSLCOMMERZ END

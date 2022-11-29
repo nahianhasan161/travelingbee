@@ -130,9 +130,9 @@ export const AddressStore = defineStore({
         /* end Division */
 
         /*  District */
-        async fetchDistricts(id){
+          fetchDistricts(){
             this.loading = true
-           await axios.get(this.districtUrl+'/?id='+id).then(res=>{
+            axios.get(this.districtUrl).then(res=>{
                 if(res.data.success){
 
                     this.districts = res.data.data
@@ -144,14 +144,43 @@ export const AddressStore = defineStore({
                     console.log(res)
                 }
 
-            }).catch((err=>{
-                toastr.error('Error! Can not get Districts')
-                console.log('Error! Can not Fetch Districts'+err)
-            })).finally(()=>{
-                this.loading = false
-            });
+            })
 
         },
+          fetchDistrictsByDivision(divisionID){
+            this.loading = true
+            axios.post(this.districtUrl+'/id',{'id' : divisionID}).then(res=>{
+                if(res.data.success){
+
+                    this.districts = res.data.data
+
+
+
+                }else{
+                    toastr.error('Can not get Districts')
+                    console.log(res)
+                }
+
+            })
+
+        },
+
+        deleteDistrict(districtID){
+
+            this.loading = true;
+            /* console.log(placeId); */
+            axios.delete(this.districtUrl+'/'+districtID).then(res=>{
+                let index = this.districts.findIndex(district=>district.id == districtID);
+                this.districts.splice(index,1);
+
+                /* console.log(this.places); */
+                toastr.error(res.data.message);
+                console.log(res.data);
+            }).finally(()=>{
+                this.loading = false
+
+            })
+    },
         /* end  District */
 
 
@@ -159,6 +188,7 @@ export const AddressStore = defineStore({
         /*end  Area*/
         async fetchAreas(){
             this.loading = true
+
            await axios.get(this.areaUrl).then(res=>{
                 if(res.data.success){
 
@@ -179,7 +209,45 @@ export const AddressStore = defineStore({
             });
 
         },
+        async fetchAreasByDistrict(districtID){
+            this.loading = true
 
+           await axios.post(this.areaUrl+'/district_id',{'id' : districtID}).then(res=>{
+                if(res.data.success){
+
+                    this.areas = res.data.data
+
+
+
+                }else{
+                    toastr.error('Can not get Areas')
+                    console.log(res)
+                }
+
+            }).catch((err=>{
+                toastr.error('Error! Can not get Areas')
+                console.log('Error! Can not Fetch Areas'+err)
+            })).finally(()=>{
+                this.loading = false
+            });
+
+        },
+        deleteArea(areaID){
+
+            this.loading = true;
+            /* console.log(placeId); */
+            axios.delete(this.areaUrl+'/'+areaID).then(res=>{
+                let index = this.areas.findIndex(area=>area.id == areaID);
+                this.areas.splice(index,1);
+
+                /* console.log(this.places); */
+                toastr.error(res.data.message);
+                console.log(res.data);
+            }).finally(()=>{
+                this.loading = false
+
+            })
+    },
         /* end Area*/
 
 

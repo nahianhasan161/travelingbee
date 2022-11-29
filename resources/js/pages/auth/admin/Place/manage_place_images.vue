@@ -6,6 +6,8 @@ import { UserStore } from '@/store/UserStore';
 import { PlaceStore } from '@/store/place/PlaceStore';
 import {AddressStore} from '@/store/address/Address'
 import { useToastr } from '@/pages/toaster';
+import {useRouter,useRoute} from 'vue-router'
+
 /* toaster */
 const toastr = useToastr();
 
@@ -13,6 +15,8 @@ const toastr = useToastr();
 const store = new UserStore();
 const {deleteUser,currentUser} = UserStore();
 const {allUser,getCurrentUser} = storeToRefs(UserStore());
+const route = new useRoute();
+const router = new useRouter();
 /* Address */
 const addressStore = new AddressStore();
 const {fetchDivisions,fetchDistricts,fetchAreas} = AddressStore();
@@ -21,7 +25,7 @@ const {divisions,districts,areas} = storeToRefs(AddressStore());
 /* place */
 const placeStore = new PlaceStore();
 const {places,categories,loading} = storeToRefs(PlaceStore());
-const {fetchPlaces} = PlaceStore();
+const {fetchPlaces,fetchPlace} = PlaceStore();
 const {deletePlace,fetchCategories,setRoleId} = PlaceStore();
 
 /* user */
@@ -255,44 +259,37 @@ let form = reactive({
 
 
 }
-  function  getCurrentUserPlaces(){
-     currentUserPlaces = places.value.filter(place => place.user.id == currentUser.user_id)
-     console.log(currentUserPlaces)
-    }
 
-    //Selection Event
-function selectionDivision(){
+async function fetchImages(id){
 
-  if(form.division){
 
-    form.area = ''
-    form.district = ''
 
-    filteredDistricts()
-    filteredAreas()
-console.log(form)
-  }
+           await  axios.get('/api/place/images/manage/?id='+id).then(res=>{
+                if(res.data.success){
+                    console.log(res)
+                  /*   this.places = res.data.data */
 
-}
-function selectionDistrict(){
 
-  if(form.district){
+                }else{
+                    console.log(res)
+                }
 
-   form.area = ''
+            })
 
-    filteredAreas()
-  }
 
 }
+
+
+
+
+
     onMounted( async ()=>{
    let roleId =  getCurrentUser.value.roles[0] ? getCurrentUser.value.user_id : null
-       await fetchPlaces();
-      fetchCategories();
-      fetchDivisions();
-      fetchDistricts();
-      fetchAreas();
+       await fetchPlace(route.params.id);
+
+
       setRoleId(roleId)
-      getCurrentUserPlaces()
+      fetchImages(route.params.id)
 
 
 });
@@ -300,14 +297,14 @@ function selectionDistrict(){
 </script>
 
 <template>
-    <div class="wrap">
-      <!-- {{districts}}
-      {{divisions}}
-      {{areas}} -->
+    <h1 class="text-center text-danger" v-if="places.length">No Data Found</h1>
+    <div class="wrap" v-else>
+      {{places}}
+
         <div class="loader" v-if="loading"></div>
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary my-3" @click="addUser">
-  Create Place
+  Add Image on {{places.name}}
 </button >
 
 <!-- Modal -->
@@ -316,112 +313,20 @@ function selectionDistrict(){
     <div class="modal-content">
         <form @submit.prevent="formAction">
       <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle" v-if="editing">Edit Place</h5>
-        <h5 class="modal-title" id="exampleModalLongTitle" v-else>Create Place</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle" v-if="editing">Change Image of this Place</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle" v-else>Add Image on Place</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
   <div class="form">
-    <div class="form-group ">
-      <label for="inputName">Name</label>
-      <input type="text" class="form-control" :class="errors.name ? 'is-invalid' : '' " id="inputName" placeholder="Name" v-model="form.name">
-      <div class="text-danger" v-if="errors.name">
-               <p v-for="error in errors.name">
-                {{error}}
-               </p>
-             </div>
-    </div>
-    <div class="form-group ">
-      <label for="inputDescription">description</label>
-      <input type="description" class="form-control" :class="errors.description ? 'is-invalid' : '' " id="inputDescription" placeholder="description" v-model="form.description">
-      <div class="text-danger" v-if="errors.description">
-               <p v-for="error in errors.description">
-                {{error}}
-               </p>
-             </div>
-    </div>
-    <div class="form-group " >
-      <label for="inputFeatures">features</label>
-      <input type="features" class="form-control" :class="errors.features ? 'is-invalid' : '' " id="inputFeatures" placeholder="features" v-model="form.features">
-      <div class="text-danger" v-if="errors.features">
-               <p v-for="error in errors.features">
-                {{error}}
-               </p>
-             </div>
-
-    </div>
-    <div class="form-group " >
-      <label for="inputRating">Rating</label>
-      <input type="number" class="form-control" :class="errors.rating ? 'is-invalid' : '' " id="inputRating" placeholder="Rating" v-model="form.rating">
 
 
-    </div>
-    <div class="form-group ">
-      <label for="inputPrice">Price</label>
-      <input type="number" class="form-control" :class="errors.price ? 'is-invalid' : '' " id="inputPrice" placeholder="Price" v-model="form.price">
-
-
-
-    </div>
-
-    <div class="form-group " >
-      <label for="inputPrice">Category</label>
-      <select class="custom-select" :class="errors.category_id ? 'is-invalid' : '' " id="inputCategory"  v-model="form.category_id">
-  <!-- <option selected>Open this select menu</option> -->
-  <option value="" >Choose ...</option>
-  <option  v-for="category in categories" :value="category.id">{{category.name}}</option>
-
-</select>
-
-
-    </div>
-    <div class="form-group " >
-      <label for="inputPrice">Division </label>
-      <select class="custom-select" :class="errors.division ? 'is-invalid' : '' " id="inputDivision"  v-model="form.division" @change="selectionDivision()">
-  <!-- <option selected>Open this select menu</option> -->
-  <option value="" selected>Choose ...</option>
-  <option  v-for="division in divisions" :value="division.name">{{division.name}}</option>
-
-</select>
-
-
-    </div>
-    <div class="form-group " v-show="form.division">
-      <label for="inputPrice">District</label>
-      <select class="custom-select" :class="errors.district ? 'is-invalid' : '' " id="inputDistrict"  v-model="form.district" @change="selectionDistrict()">
-  <!-- <option selected>Open this select menu</option> -->
-  <option value="" >Choose ...</option>
-  <option  v-for="district in filteredDistricts()" :value="district.name">{{district.name}}</option>
-
-</select>
-
-
-    </div>
-    <div class="form-group " v-show="form.district && form.division">
-      <label for="inputPrice">Area</label>
-      <select class="custom-select" :class="errors.area ? 'is-invalid' : '' " id="inputArea"  v-model="form.area">
-  <!-- <option selected>Open this select menu</option> -->
-  <option value="" >Choose ...</option>
-  <option  v-for="area in filteredAreas()" :value="area.name">{{area.name}}</option>
-
-</select>
-
-
-    </div>
 
 
     <div class="form-group " >
-      <label for="inputFeatureImage">Feature Image </label><br>
-      <input type="file" class="file-control"  :class="errors.feature_image ? 'is-invalid' : '' " id="inputFeatureImage" @change="setFeatureImage($event)">
-
-
-
-
-    </div>
-    <div class="form-group " >
-      <label for="inputImages">More Image </label><br>
+      <label for="inputImages">Add Multiple Image </label><br>
       <input type="file" class="file-control" multiple
        :class="errors.images ? 'is-invalid' : '' " id="inputImages" @change="setImages($event)">
 
@@ -449,73 +354,27 @@ function selectionDistrict(){
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3 class="card-title">Manage Place</h3>
+<h3 class="card-title">Manage Place Images</h3>
 </div>
 
-<div class="card-body table-responsive">
-<table class="table table-bordered table-hover">
-<thead>
-<tr>
-<th>#</th>
-<th>Image</th>
-<th>Name</th>
-<th>Description</th>
-<th>features</th>
-<th>rating</th>
-<th>Price</th>
-<th>Address</th>
-<!-- <th>Category</th> -->
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-  {{currentUserPlaces.value}}
-  <tr v-for="(place,index) in filterPlaces()" :key="place.id" v-if="filterPlaces().length">
+<div class=" row">
+<div class="col-md-4 card">
+    <img class="card-img-top" loading="lazy"
+:src=" 'https://images.unsplash.com/photo-1587222318667-31212ce2828d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y294cyUyMGJhemFyfGVufDB8fDB8fA%3D%3D&w=1000&q=80'" width="340" height="340" alt="Card image cap" >
+<div class="card-footer d-flex">
+    <button class="btn btn-app bg-warning "
+    v-show="true" >
+        <i class="fas fa-pen"></i>
+    </button>
+    <button class="btn btn-app bg-danger ml-auto"
+    v-show="true" >
+        <i class="fas fa-trash"></i>
+    </button>
 
-
-    <td>{{index+1}}</td>
-    <td v-if="place.feature_image"> <img :src="'/image/place/feature/'+place.feature_image" width="240" height="240" class=" img-fluid" ></td>
-<td v-else> <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" width="240" height="240" class=" img-fluid" ></td>
-<td ><strong>{{place.name}}</strong></td>
-<td >
-  <textarea name="description" id="description" class="form-control" cols="30" rows="10" disabled>{{place.description}}</textarea>
-
-<!--   <div class="form-group">
-
-  <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10">{{place.description}}</textarea>
-</div> -->
-
-
-
-</td>
-<td ><textarea  name="features" id="features" class="form-control" cols="30" rows="10" disabled>{{place.features}}</textarea></td>
-<td >{{place.rating}}<i class="fas fa-star text-warning"></i></td>
-<td >৳{{place.price}}</td>
-<td >{{place.area}},{{place.district}},{{place.division}}</td>
-
-<td>
-  <router-link :to="'/manage/place/'+place.id+'/images'" class="btn btn-info mr-1 mb-1">Images</router-link>
-  <router-link :to="'/manage/place/'+place.id+'/booking'" class="btn btn-warning mr-1 mb-1">Bookings</router-link>
-    <button class="btn btn-primary mr-3" @click="editPlace(place)">
-
-
- <i class="far fa-edit"></i></button>
-    <button class="btn btn-danger mb-1" @click="deletePlace(place.id)"><i class="fas fa-trash"></i></button>
-</td>
-
-</tr>
-
-
-
-
-
-
-
-
-
-
-</tbody>
-</table>
+</div>
+</div>
+<div class="col-md-4"></div>
+<div class="col-md-4"></div>
 </div>
 
 </div>
