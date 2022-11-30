@@ -35,6 +35,8 @@ import manage_place from './pages/auth/admin/Place/manage_place.vue';
 import manage_place_images from './pages/auth/admin/Place/manage_place_images.vue';
 /* Payment */
 import invoice from './pages/auth/user/payment/invoice.vue'
+import payment_success from './pages/auth/user/payment/success.vue'
+import payment_fail from './pages/auth/user/payment/fail.vue'
 
 
 import category from './pages/auth/suadmin/manage/manage_category.vue';
@@ -297,6 +299,22 @@ component : register ,
     path : '/payment/invoice/:id',
     name : 'payment.invoice',
     component : invoice ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/payment/success/',
+    name : 'payment.success',
+    component : payment_success ,
+    meta:{
+        requiresAuth: true,
+    }
+},
+{
+    path : '/payment/fail',
+    name : 'payment.fail',
+    component : payment_fail ,
     meta:{
         requiresAuth: true,
     }

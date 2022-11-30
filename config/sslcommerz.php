@@ -18,7 +18,7 @@ return [
 	'apiDomain' => $apiDomain,
 	'connect_from_localhost' => env("IS_LOCALHOST", true), // For Sandbox, use "true", For Live, use "false"
 	'success_url' => 'http://localhost:8000/api/success',
-	'failed_url' => 'http://localhost:8000/api/fail',
+'failed_url' => 'http://localhost:8000/api/fail',
 	'cancel_url' => 'http://localhost:8000/api/cancel',
 	'ipn_url' => 'http://localhost:8000/api/ipn',
 ];

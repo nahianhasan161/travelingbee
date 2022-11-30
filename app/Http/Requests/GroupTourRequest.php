@@ -32,14 +32,14 @@ class GroupTourRequest extends FormRequest
             'district' => 'required',
             'area' => 'required',
             'place' => 'required',
-
+            'date' => 'required',
             'feature_image'=> '',
 
             'person' => 'required|numeric|max:10000',
             'price' => 'required|numeric|max:100000',
             'rating' => 'required|numeric|max:5',
-            'plans' => 'required'
-
+            'plans' => 'required',
+            'user_id' => 'required'
             /* 'place'=> 'required',
             'description'=> 'required',
             'category'=> 'required',

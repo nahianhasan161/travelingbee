@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Helper;
 use App\Http\Requests\GroupTourRequest;
 use App\Models\GroupTour;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -41,16 +42,21 @@ class GroupTourController extends Controller
     public function store(GroupTourRequest $request)
     {
         /*  $plans = explode('""',$request->plans); */
-        $plans = $request->plans;
-      /*   foreach($request->plans as $index=>$plan){
+        /*   foreach($request->plans as $index=>$plan){
             return Helper::sendSuccess('Success' ,$plan);
         } */
-
+        Helper::sendSuccess('hi',$request->date);
+        $plans = $request->plans;
 
         $groupTour = $request->except('plans','images');
-        DB::transaction(function () use ($groupTour,$plans,$request) {
-            $tour = GroupTour::create($groupTour);
-            foreach($request->plans as $index=>$plan){
+
+        $new = array_merge($groupTour,['date' =>  '2022-11-30 02:33:07']);
+
+        /* Carbon::createFromFormat('d/m/Y',
+        $groupTour['date'])->format('Y-m-d')]); */
+        DB::transaction(function () use ($groupTour,$new,$plans,$request) {
+            $tour = GroupTour::create($new);
+            foreach($plans as $index=>$plan){
 
                 $tour->plans()->create(
                     [

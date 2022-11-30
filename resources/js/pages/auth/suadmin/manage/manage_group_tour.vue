@@ -43,12 +43,12 @@ let form = reactive({
         rating:'',
         price:'',
         day : '',
-
+        date:'',
         place: '',
         division:'',
         district:'',
         area:'',
-
+        user_id:'',
         feature_image : '',
         images:'',
 
@@ -90,6 +90,7 @@ let form = reactive({
        if(editing.value){
         updateUser()
        }else{
+
         createPlace()
        }
       /*  console.log(editing.value); */
@@ -159,6 +160,7 @@ let form = reactive({
         form_data.append('images',form.images)
 
         form_data.append('day',form.day)
+        form_data.append('date',form.date)
         form_data.append('person',form.person)
 
         form_data.append('place',form.place)
@@ -166,6 +168,7 @@ let form = reactive({
         form_data.append('district',form.district)
         form_data.append('area',form.area)
 
+        form_data.append('user_id',form.user_id)
 
      form.plans.forEach((element,index) => {
     form_data.append('plans['+index+'][place]', element.place);
@@ -255,7 +258,7 @@ let form = reactive({
             }
         }
         /* console.log(form_data) */
-        await axios.post('/api/group-tour',form_data,config).then(res=>{
+        await axios.post('/api/grouptour',form_data,config).then(res=>{
            if(res.data.success){
 
 
@@ -439,6 +442,25 @@ v-model:errors="errors.rating"
       <input type="number" class="form-control" :class="errors.price ? 'is-invalid' : '' " id="inputPrice" placeholder="Price" v-model="form.price">
       <div class="text-danger" v-if="errors.price">
                <p v-for="error in errors.price">
+                {{error}}
+               </p>
+             </div>
+
+
+    </div>
+    <div class="form-group ">
+      <label for="inputPrice">Starting Date</label>
+      <picker modelType="dd-MM-yyyy"
+
+    :state="errors.date ? false : true" v-model="form.date"
+    :minDate="new Date(new Date().setDate(new Date().getDate()-1))"
+
+     />
+    <!--  :highlight="bookedDates"
+    :disabledDates="bookedDates"
+    highlightDisabledDays -->
+      <div class="text-danger" v-if="errors.date">
+               <p v-for="error in errors.date">
                 {{error}}
                </p>
              </div>

@@ -9,13 +9,13 @@
 
                 <div class="mb-md-5 mt-md-4 pb-5">
 
-                  <h2 class="fw-bold mb-2 text-uppercase text-success">Your Payment Has Been Successfull</h2>
-                  <p class="text-white-50 mb-5 ">Thank You for  your Payment!</p>
+                  <h2 class="fw-bold mb-2 text-uppercase text-danger">Your Payment Has Been UnSuccessfull</h2>
+                  <p class="text-white-50 mb-5 ">Something Went Wrong.Plase Try Again</p>
                   <p class="text-danger mb-5" v-if="errmsg">{{errmsg}}</p>
 
 
                   <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                      <i class="fa fa-check text-success" aria-hidden="true" style="font-size:100px"></i>
+                      <i class="fa fa-times text-danger" aria-hidden="true" style="font-size:100px"></i>
                  <!--    <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
                     <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
                     <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a> -->
